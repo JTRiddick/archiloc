@@ -3,6 +3,7 @@ var nodemon = require('gulp-nodemon');
 var sourcemaps = require('gulp-sourcemaps');
 var sass = require('gulp-sass');
 var babel = require('gulp-babel');
+var concat = require('gulp-concat');
 
 
 // gulp.task('default',[])
@@ -34,11 +35,13 @@ gulp.task('sass:watch', function () {
 });
 
 gulp.task('babel', function() {
-  return gulp.src('./client/js/**/*.js')
+  return gulp.src(['./client/js/components/*.js',
+      './client/js/router.js'])
       .pipe(sourcemaps.init())
       .pipe(babel({
           presets: ['es2015','react']
       }))
+      .pipe(concat('all.js'))
       .pipe(sourcemaps.write('.'))
       .pipe(gulp.dest('public'));
 });

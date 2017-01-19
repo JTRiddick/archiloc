@@ -8,30 +8,39 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var mountNode = document.querySelector('#react-root');
+if (window.ArchMap === undefined) {
+  window.ArchMap = {};
+}
 
-var HelloMessage = function (_React$Component) {
-  _inherits(HelloMessage, _React$Component);
+(function () {
 
-  function HelloMessage() {
-    _classCallCheck(this, HelloMessage);
+  var mountNode = document.querySelector('#react-root');
 
-    return _possibleConstructorReturn(this, (HelloMessage.__proto__ || Object.getPrototypeOf(HelloMessage)).apply(this, arguments));
-  }
+  var AppComponent = function (_React$Component) {
+    _inherits(AppComponent, _React$Component);
 
-  _createClass(HelloMessage, [{
-    key: 'render',
-    value: function render() {
-      return React.createElement(
-        'div',
-        null,
-        'Hello Bob!'
-      );
+    function AppComponent() {
+      _classCallCheck(this, AppComponent);
+
+      return _possibleConstructorReturn(this, (AppComponent.__proto__ || Object.getPrototypeOf(AppComponent)).apply(this, arguments));
     }
-  }]);
 
-  return HelloMessage;
-}(React.Component);
+    _createClass(AppComponent, [{
+      key: 'render',
+      value: function render() {
+        return React.createElement(
+          'div',
+          null,
+          'Hello Bob!'
+        );
+      }
+    }]);
 
-ReactDOM.render(React.createElement(HelloMessage, null), mountNode);
-//# sourceMappingURL=script.js.map
+    return AppComponent;
+  }(React.Component);
+
+  ReactDOM.render(React.createElement(AppComponent, null), mountNode);
+
+  ArchMap.AppComponent = AppComponent;
+})();
+//# sourceMappingURL=App.js.map

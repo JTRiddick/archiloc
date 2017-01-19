@@ -1,6 +1,8 @@
 @import "reset";
+@import "palette1";
 
 $stack-one:'Andale mono','Menlo','Monaco',monospace;
+
 body{
   font-family: $stack-one;
 }
