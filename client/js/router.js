@@ -1,4 +1,4 @@
-if (window.ArchMap === undefined) {window.ArchMap = {};}
+if (window.AL === undefined) {window.AL = {};}
 
 (function() {
 
@@ -6,11 +6,15 @@ if (window.ArchMap === undefined) {window.ArchMap = {};}
 
     var Router = ReactRouter.Router;
     var Route = ReactRouter.Route;
-    var IndexRoute = ReactRouter.IndexRoute;
+
 
     var router = <Router history={ReactRouter.hashHistory}>
-    <Route path="/" component={ArchMap.TestComponent} />
-    <Route path="/map" component={ArchMap.MapComponent} />
+      <Route path="/" component={AL.AppComponent}>
+        ReactRouter.IndexRoute component={AL.MapComponent} />
+        <Route path="/map" component={AL.MapComponent} />
+        <Route path="/test" component={AL.TestComponent} />
+        <Route path="/test/asd" component={AL.EditorComponent} />
+      </Route>
     </Router>;
 
 ReactDOM.render(router, mountNode);

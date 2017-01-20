@@ -1,0 +1,37 @@
+@import "palette1";
+@import "reset";
+
+body{
+  background-color: $color3;
+  max-width: 960px;
+  margin: 0 auto;
+
+}
+.add-structure{
+  background-color: $color1;
+  color: $color5;
+  margin: 2em auto;
+  padding:12px;
+
+  form{
+    border:1px solid $color5;
+    text-align: center;
+    position: relative;
+    padding:4px;
+  }
+
+  input{
+    display: inline-block;
+    width:75%;
+    padding:9px;
+  }
+
+  button{
+    display: block;
+    margin: 0 auto;
+    text-align: center;
+    padding:1em;
+    border: none;
+  }
+
+}

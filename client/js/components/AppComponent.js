@@ -1,4 +1,4 @@
-if (window.ArchMap === undefined) {window.ArchMap = { }; }
+if (window.AL === undefined) {window.AL = { }; }
 
 (function() {
 
@@ -14,5 +14,5 @@ if (window.ArchMap === undefined) {window.ArchMap = { }; }
     }
   }
 
-  ArchMap.AppComponent = AppComponent;
+  AL.AppComponent = AppComponent;
 }());

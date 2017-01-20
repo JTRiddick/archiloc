@@ -8,8 +8,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-if (window.ArchMap === undefined) {
-  window.ArchMap = {};
+if (window.AL === undefined) {
+  window.AL = {};
 }
 
 (function () {
@@ -43,7 +43,193 @@ if (window.ArchMap === undefined) {
     return AppComponent;
   }(React.Component);
 
-  ArchMap.AppComponent = AppComponent;
+  AL.AppComponent = AppComponent;
+})();
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+if (window.AL === undefined) {
+  window.AL = {};
+}
+
+(function () {
+  var EditorComponent = function (_React$Component) {
+    _inherits(EditorComponent, _React$Component);
+
+    function EditorComponent() {
+      _classCallCheck(this, EditorComponent);
+
+      var _this = _possibleConstructorReturn(this, (EditorComponent.__proto__ || Object.getPrototypeOf(EditorComponent)).call(this));
+
+      _this.state = {
+        name: ""
+      };
+      return _this;
+    }
+
+    _createClass(EditorComponent, [{
+      key: 'validateStructure',
+      value: function validateStructure(evt) {
+        evt.preventDefault();
+
+        //validate conditions here
+
+        this.submitStructure(evt);
+      }
+    }, {
+      key: 'submitStructure',
+      value: function submitStructure(evt) {
+        var _this2 = this;
+
+        //api POST
+        $.ajax({
+          url: 'http://requestb.in/vi3w13vi',
+          method: 'POST',
+          dataType: 'JSONP',
+          data: {
+            name: this.nameInput.value,
+            type: this.typeInput.value,
+            year: this.yearInput.value,
+            arch: this.archInput.value,
+            location: { street: this.archInput.value,
+              city: this.cityInput.value,
+              country: this.countryInput.value }
+          }
+
+        }).fail(function () {
+          window.alert('no');
+          console.log('request unsucessful');
+        }).done(function (data) {
+          console.log('request successful');
+          console.log('data ', data);
+          _this2.setState({
+            data: data
+          });
+        });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this3 = this;
+
+        var review;
+
+        if (this.state !== undefined) {
+          if (this.state.data) {
+            review = React.createElement(ReviewData, { info: this.state.data });
+          }
+        }
+
+        return React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'div',
+            { className: 'add-structure' },
+            React.createElement(
+              'h3',
+              null,
+              'Add Structure'
+            ),
+            React.createElement('hr', null),
+            React.createElement(
+              'form',
+              { onSubmit: function onSubmit(evt) {
+                  _this3.validateStructure(evt);
+                } },
+              React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
+                  _this3.nameInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'Type', ref: function ref(input) {
+                  _this3.typeInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
+                  _this3.yearInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
+                  _this3.archInput = input;
+                } }),
+              React.createElement('hr', null),
+              React.createElement(
+                'h4',
+                null,
+                'Location'
+              ),
+              React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
+                  _this3.streetInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'City', ref: function ref(input) {
+                  _this3.cityInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
+                  _this3.countryInput = input;
+                } }),
+              React.createElement(
+                'button',
+                null,
+                'Add'
+              )
+            )
+          ),
+          ' ',
+          this.review
+        );
+      }
+      //Type and Style should be set to select/dropdown list
+
+    }]);
+
+    return EditorComponent;
+  }(React.Component);
+  //end of EditorComponent
+
+  var ReviewData = function (_React$Component2) {
+    _inherits(ReviewData, _React$Component2);
+
+    function ReviewData() {
+      _classCallCheck(this, ReviewData);
+
+      return _possibleConstructorReturn(this, (ReviewData.__proto__ || Object.getPrototypeOf(ReviewData)).call(this));
+    }
+
+    _createClass(ReviewData, [{
+      key: 'onComponentMount',
+      value: function onComponentMount() {
+        this.setState({
+          name: this.props.name
+        });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        return React.createElement(
+          'div',
+          { className: 'review' },
+          React.createElement(
+            'ol',
+            null,
+            React.createElement(
+              'li',
+              null,
+              'Name: ',
+              this.state.name
+            )
+          )
+        );
+      }
+    }]);
+
+    return ReviewData;
+  }(React.Component);
+
+  AL.EditorComponent = EditorComponent;
 })();
 "use strict";
 
@@ -55,8 +241,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-if (window.ArchMap === undefined) {
-  window.ArchMap = {};
+if (window.AL === undefined) {
+  window.AL = {};
 }
 
 (function () {
@@ -84,7 +270,7 @@ if (window.ArchMap === undefined) {
     return MapComponent;
   }(React.Component);
 
-  ArchMap.MapComponent = MapComponent;
+  AL.MapComponent = MapComponent;
 })();
 "use strict";
 
@@ -96,8 +282,8 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-if (window.ArchMap === undefined) {
-  window.ArchMap = {};
+if (window.AL === undefined) {
+  window.AL = {};
 }
 
 (function () {
@@ -125,29 +311,36 @@ if (window.ArchMap === undefined) {
     return TestComponent;
   }(React.Component);
 
-  ArchMap.TestComponent = TestComponent;
+  AL.TestComponent = TestComponent;
 })();
 "use strict";
 
-if (window.ArchMap === undefined) {
-    window.ArchMap = {};
+if (window.AL === undefined) {
+  window.AL = {};
 }
 
 (function () {
 
-    var mountNode = document.querySelector('#react-root');
+  var mountNode = document.querySelector('#react-root');
 
-    var Router = ReactRouter.Router;
-    var Route = ReactRouter.Route;
-    var IndexRoute = ReactRouter.IndexRoute;
+  var Router = ReactRouter.Router;
+  var Route = ReactRouter.Route;
 
-    var router = React.createElement(
-        Router,
-        { history: ReactRouter.hashHistory },
-        React.createElement(Route, { path: "/", component: ArchMap.TestComponent }),
-        React.createElement(Route, { path: "/map", component: ArchMap.MapComponent })
-    );
+  var router = React.createElement(
+    Router,
+    { history: ReactRouter.hashHistory },
+    React.createElement(
+      Route,
+      { path: "/", component: AL.AppComponent },
+      "ReactRouter.IndexRoute component=",
+      AL.MapComponent,
+      " />",
+      React.createElement(Route, { path: "/map", component: AL.MapComponent }),
+      React.createElement(Route, { path: "/test", component: AL.TestComponent }),
+      React.createElement(Route, { path: "/test/asd", component: AL.EditorComponent })
+    )
+  );
 
-    ReactDOM.render(router, mountNode);
+  ReactDOM.render(router, mountNode);
 })();
 //# sourceMappingURL=all.js.map
