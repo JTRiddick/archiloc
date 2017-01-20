@@ -2,13 +2,16 @@ if (window.AL === undefined){window.AL = {}; }
 
 (function() {
 
+
   class EditorComponent extends React.Component{
+
+
 
     constructor(){
       super();
 
       this.state = ({
-        name:""
+        type:"cultural"
       })
     }
 
@@ -19,18 +22,19 @@ if (window.AL === undefined){window.AL = {}; }
 
         this.submitStructure(evt);
 
-
     }
 
     submitStructure(evt){
+      //test
+      console.log("sending...", this.nameInput.value, this.state.type);
       //api POST
       $.ajax({
         url: 'http://requestb.in/vi3w13vi',
         method: 'POST',
-        dataType:'JSONP',
+        dataType:'JSON',
         data:{
           name:this.nameInput.value,
-          type:this.typeInput.value,
+          type:this.state.type,
           year:this.yearInput.value,
           arch:this.archInput.value,
           location:{street:this.archInput.value,
@@ -55,6 +59,13 @@ if (window.AL === undefined){window.AL = {}; }
     render(){
       var review;
 
+
+      var setType = function(input){
+        this.setState({
+          type:input
+        })
+      }
+
       if(this.state !== undefined){
         if(this.state.data){
           review = <ReviewData info={this.state.data} />
@@ -69,10 +80,18 @@ if (window.AL === undefined){window.AL = {}; }
           <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
 
             <input placeholder="Name" ref={(input) => {this.nameInput = input}}/>
-            <input placeholder="Type" ref={(input) => {this.typeInput = input}}/>
             <input placeholder="Year" ref={(input) => {this.yearInput = input}}/>
             <input placeholder="Architect/Firm" ref={(input) => {this.archInput = input}}/>
 
+            <hr/>
+
+            <select value = {this.state.value} onChange={this.setType}>
+              <option value="cultural">Cultural</option>
+              <option value="residential">Residential</option>
+              <option value="industrial">Industrial</option>
+              <option value="commercial">Commercial</option>
+              <option value="infrastructural">Infrastructural</option>
+            </select>
             <hr/>
 
             <h4>Location</h4>

@@ -45,7 +45,7 @@ if (window.AL === undefined) {
 
   AL.AppComponent = AppComponent;
 })();
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -69,13 +69,13 @@ if (window.AL === undefined) {
       var _this = _possibleConstructorReturn(this, (EditorComponent.__proto__ || Object.getPrototypeOf(EditorComponent)).call(this));
 
       _this.state = {
-        name: ""
+        type: "cultural"
       };
       return _this;
     }
 
     _createClass(EditorComponent, [{
-      key: 'validateStructure',
+      key: "validateStructure",
       value: function validateStructure(evt) {
         evt.preventDefault();
 
@@ -84,18 +84,20 @@ if (window.AL === undefined) {
         this.submitStructure(evt);
       }
     }, {
-      key: 'submitStructure',
+      key: "submitStructure",
       value: function submitStructure(evt) {
         var _this2 = this;
 
+        //test
+        console.log("sending...", this.nameInput.value, this.state.type);
         //api POST
         $.ajax({
           url: 'http://requestb.in/vi3w13vi',
           method: 'POST',
-          dataType: 'JSONP',
+          dataType: 'JSON',
           data: {
             name: this.nameInput.value,
-            type: this.typeInput.value,
+            type: this.state.type,
             year: this.yearInput.value,
             arch: this.archInput.value,
             location: { street: this.archInput.value,
@@ -115,11 +117,17 @@ if (window.AL === undefined) {
         });
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
         var _this3 = this;
 
         var review;
+
+        var setType = function setType(input) {
+          this.setState({
+            type: input
+          });
+        };
 
         if (this.state !== undefined) {
           if (this.state.data) {
@@ -128,57 +136,84 @@ if (window.AL === undefined) {
         }
 
         return React.createElement(
-          'div',
+          "div",
           null,
           React.createElement(
-            'div',
-            { className: 'add-structure' },
+            "div",
+            { className: "add-structure" },
             React.createElement(
-              'h3',
+              "h3",
               null,
-              'Add Structure'
+              "Add Structure"
             ),
-            React.createElement('hr', null),
+            React.createElement("hr", null),
             React.createElement(
-              'form',
+              "form",
               { onSubmit: function onSubmit(evt) {
                   _this3.validateStructure(evt);
                 } },
-              React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
+              React.createElement("input", { placeholder: "Name", ref: function ref(input) {
                   _this3.nameInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'Type', ref: function ref(input) {
-                  _this3.typeInput = input;
-                } }),
-              React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
+              React.createElement("input", { placeholder: "Year", ref: function ref(input) {
                   _this3.yearInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
+              React.createElement("input", { placeholder: "Architect/Firm", ref: function ref(input) {
                   _this3.archInput = input;
                 } }),
-              React.createElement('hr', null),
+              React.createElement("hr", null),
               React.createElement(
-                'h4',
-                null,
-                'Location'
+                "select",
+                { value: this.state.value, onChange: this.setType },
+                React.createElement(
+                  "option",
+                  { value: "cultural" },
+                  "Cultural"
+                ),
+                React.createElement(
+                  "option",
+                  { value: "residential" },
+                  "Residential"
+                ),
+                React.createElement(
+                  "option",
+                  { value: "industrial" },
+                  "Industrial"
+                ),
+                React.createElement(
+                  "option",
+                  { value: "commercial" },
+                  "Commercial"
+                ),
+                React.createElement(
+                  "option",
+                  { value: "infrastructural" },
+                  "Infrastructural"
+                )
               ),
-              React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
+              React.createElement("hr", null),
+              React.createElement(
+                "h4",
+                null,
+                "Location"
+              ),
+              React.createElement("input", { placeholder: "Street", ref: function ref(input) {
                   _this3.streetInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'City', ref: function ref(input) {
+              React.createElement("input", { placeholder: "City", ref: function ref(input) {
                   _this3.cityInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
+              React.createElement("input", { placeholder: "Country", ref: function ref(input) {
                   _this3.countryInput = input;
                 } }),
               React.createElement(
-                'button',
+                "button",
                 null,
-                'Add'
+                "Add"
               )
             )
           ),
-          ' ',
+          " ",
           this.review
         );
       }
@@ -200,25 +235,25 @@ if (window.AL === undefined) {
     }
 
     _createClass(ReviewData, [{
-      key: 'onComponentMount',
+      key: "onComponentMount",
       value: function onComponentMount() {
         this.setState({
           name: this.props.name
         });
       }
     }, {
-      key: 'render',
+      key: "render",
       value: function render() {
         return React.createElement(
-          'div',
-          { className: 'review' },
+          "div",
+          { className: "review" },
           React.createElement(
-            'ol',
+            "ol",
             null,
             React.createElement(
-              'li',
+              "li",
               null,
-              'Name: ',
+              "Name: ",
               this.state.name
             )
           )
