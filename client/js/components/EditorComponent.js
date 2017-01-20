@@ -10,9 +10,6 @@ if (window.AL === undefined){window.AL = {}; }
     constructor(){
       super();
 
-      this.state = ({
-        type:"cultural"
-      })
     }
 
     validateStructure(evt){
@@ -26,7 +23,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     submitStructure(evt){
       //test
-      console.log("sending...", this.nameInput.value, this.state.type);
+      console.log("sending...", this.nameInput.value, this.typeInput.value);
       //api POST
       $.ajax({
         url: 'http://requestb.in/vi3w13vi',
@@ -34,7 +31,7 @@ if (window.AL === undefined){window.AL = {}; }
         dataType:'JSON',
         data:{
           name:this.nameInput.value,
-          type:this.state.type,
+          type:this.typeInput.value,
           year:this.yearInput.value,
           arch:this.archInput.value,
           location:{street:this.archInput.value,
@@ -66,7 +63,7 @@ if (window.AL === undefined){window.AL = {}; }
         })
       }
 
-      if(this.state !== undefined){
+      if(this.state){
         if(this.state.data){
           review = <ReviewData info={this.state.data} />
         }
@@ -78,14 +75,14 @@ if (window.AL === undefined){window.AL = {}; }
           <hr />
 
           <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
-
+            <h4>Details</h4>
             <input placeholder="Name" ref={(input) => {this.nameInput = input}}/>
             <input placeholder="Year" ref={(input) => {this.yearInput = input}}/>
             <input placeholder="Architect/Firm" ref={(input) => {this.archInput = input}}/>
 
             <hr/>
-
-            <select value = {this.state.value} onChange={this.setType}>
+            <h4>Categories</h4>
+            <select ref={(input) => {this.typeInput = input}}>
               <option value="cultural">Cultural</option>
               <option value="residential">Residential</option>
               <option value="industrial">Industrial</option>
