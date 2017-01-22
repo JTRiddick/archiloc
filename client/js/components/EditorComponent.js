@@ -26,9 +26,9 @@ if (window.AL === undefined){window.AL = {}; }
       console.log("sending...", this.nameInput.value, this.typeInput.value);
       //api POST
       $.ajax({
-        url: 'http://requestb.in/vi3w13vi',
+        url: '/api/sheds',
         method: 'POST',
-        dataType:'JSON',
+        dataType: 'JSON',
         data:{
           name:this.nameInput.value,
           type:this.typeInput.value,
@@ -56,12 +56,6 @@ if (window.AL === undefined){window.AL = {}; }
     render(){
       var review;
 
-
-      var setType = function(input){
-        this.setState({
-          type:input
-        })
-      }
 
       if(this.state){
         if(this.state.data){
