@@ -36,7 +36,7 @@ db.once('open',function(){
   var Shed = require('./models/shed.js');
   // console.log('shed is',Shed);
 
-  app.post('/api/sheds',(req,res) => {
+  router.post('/api/sheds',(req,res) => {
     console.log('request', req.data);
     var cb = (data) => {
       console.log('i saved a shed :', data);

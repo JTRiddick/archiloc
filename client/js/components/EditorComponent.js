@@ -40,16 +40,16 @@ if (window.AL === undefined){window.AL = {}; }
         },
 
       })
-      .fail(()=>{
-        window.alert('no');
+      .fail((req,stat,err)=>{
+        // window.alert('no');
         console.log('request unsucessful');
+        console.log("req",req);
+        console.log("stat",stat);
+        console.log("err",err);
       })
       .done((data)=>{
         console.log('request successful');
-        console.log('data ',data);
-        this.setState({
-          data:data
-        })
+        console.log('data: ',data);
       })
     }
 

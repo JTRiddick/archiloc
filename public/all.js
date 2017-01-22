@@ -81,8 +81,6 @@ if (window.AL === undefined) {
     }, {
       key: 'submitStructure',
       value: function submitStructure(evt) {
-        var _this2 = this;
-
         //test
         console.log("sending...", this.nameInput.value, this.typeInput.value);
         //api POST
@@ -100,21 +98,21 @@ if (window.AL === undefined) {
               country: this.countryInput.value }
           }
 
-        }).fail(function () {
-          window.alert('no');
+        }).fail(function (req, stat, err) {
+          // window.alert('no');
           console.log('request unsucessful');
+          console.log("req", req);
+          console.log("stat", stat);
+          console.log("err", err);
         }).done(function (data) {
           console.log('request successful');
-          console.log('data ', data);
-          _this2.setState({
-            data: data
-          });
+          console.log('data: ', data);
         });
       }
     }, {
       key: 'render',
       value: function render() {
-        var _this3 = this;
+        var _this2 = this;
 
         var review;
 
@@ -139,7 +137,7 @@ if (window.AL === undefined) {
             React.createElement(
               'form',
               { onSubmit: function onSubmit(evt) {
-                  _this3.validateStructure(evt);
+                  _this2.validateStructure(evt);
                 } },
               React.createElement(
                 'h4',
@@ -147,13 +145,13 @@ if (window.AL === undefined) {
                 'Details'
               ),
               React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
-                  _this3.nameInput = input;
+                  _this2.nameInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
-                  _this3.yearInput = input;
+                  _this2.yearInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
-                  _this3.archInput = input;
+                  _this2.archInput = input;
                 } }),
               React.createElement('hr', null),
               React.createElement(
@@ -164,7 +162,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'select',
                 { ref: function ref(input) {
-                    _this3.typeInput = input;
+                    _this2.typeInput = input;
                   } },
                 React.createElement(
                   'option',
@@ -199,13 +197,13 @@ if (window.AL === undefined) {
                 'Location'
               ),
               React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
-                  _this3.streetInput = input;
+                  _this2.streetInput = input;
                 } }),
               React.createElement('input', { placeholder: 'City', ref: function ref(input) {
-                  _this3.cityInput = input;
+                  _this2.cityInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
-                  _this3.countryInput = input;
+                  _this2.countryInput = input;
                 } }),
               React.createElement(
                 'button',
