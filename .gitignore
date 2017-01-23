@@ -1,3 +1,4 @@
 node_modules
 *.sh
 start-mongo.sh
+windows-mongo.txt

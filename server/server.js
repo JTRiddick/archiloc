@@ -49,10 +49,6 @@ db.once('open',function(){
     shed.year = req.body.year;
     shed.arch = req.body.arch;
     shed.location = req.body.location;
-    // shed.location = req.body.location;
-    // shed.location.street = req.body.street;
-    // shed.location.city = req.body.city;
-    // shed.location.country = req.body.country;
     shed.save(cb);
   });
 

@@ -24,6 +24,11 @@ if (window.AL === undefined){window.AL = {}; }
     submitStructure(evt){
       //test
       console.log("sending...", this.nameInput.value, this.typeInput.value);
+      var location = {
+        "street":this.streetInput.value,
+        "city":this.cityInput.value,
+        "country":this.countryInput.value
+      }
       //api POST
       $.ajax({
         url: '/api/sheds',
@@ -34,10 +39,7 @@ if (window.AL === undefined){window.AL = {}; }
           type:this.typeInput.value,
           year:this.yearInput.value,
           arch:this.archInput.value,
-          location:
-            {street:this.archInput.value,
-            city:this.cityInput.value,
-          country:this.countryInput.value}
+          location: this.location
         }
 
       })
