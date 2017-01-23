@@ -16,7 +16,7 @@ module.exports = function(){
     };
     console.log('req body', req.body);
     var shed = new Shed();
-    shed.title = req.body.name;
+    shed.title = req.body.title;
     shed.type = req.body.type;
     shed.year = req.body.year;
     shed.arch = req.body.arch;

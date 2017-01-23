@@ -81,9 +81,11 @@ if (window.AL === undefined) {
     }, {
       key: 'submitStructure',
       value: function submitStructure(evt) {
+        var _this2 = this;
+
         //test
         console.log("sending...", this.nameInput.value, this.typeInput.value);
-        var location = {};
+
         //api POST
         $.ajax({
           url: '/api/sheds',
@@ -108,18 +110,21 @@ if (window.AL === undefined) {
         }).done(function (data) {
           console.log('request successful');
           console.log('data: ', data);
+          _this2.setState({ lastAdded: data });
         });
       }
     }, {
       key: 'render',
       value: function render() {
-        var _this2 = this;
+        var _this3 = this;
 
         var review;
 
         if (this.state) {
-          if (this.state.data) {
-            review = React.createElement(ReviewData, { info: this.state.data });
+          if (this.state.lastAdded) {
+            review = React.createElement(ReviewData, { info: this.state.lastAdded });
+
+            console.log('returned data in state', this.state.lastAdded);
           }
         }
 
@@ -138,7 +143,7 @@ if (window.AL === undefined) {
             React.createElement(
               'form',
               { onSubmit: function onSubmit(evt) {
-                  _this2.validateStructure(evt);
+                  _this3.validateStructure(evt);
                 } },
               React.createElement(
                 'h4',
@@ -146,13 +151,13 @@ if (window.AL === undefined) {
                 'Details'
               ),
               React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
-                  _this2.nameInput = input;
+                  _this3.nameInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
-                  _this2.yearInput = input;
+                  _this3.yearInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
-                  _this2.archInput = input;
+                  _this3.archInput = input;
                 } }),
               React.createElement('hr', null),
               React.createElement(
@@ -163,7 +168,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'select',
                 { defaultValue: 'cultural', ref: function ref(input) {
-                    _this2.typeInput = input;
+                    _this3.typeInput = input;
                   } },
                 React.createElement(
                   'option',
@@ -198,13 +203,13 @@ if (window.AL === undefined) {
                 'Location'
               ),
               React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
-                  _this2.streetInput = input;
+                  _this3.streetInput = input;
                 } }),
               React.createElement('input', { placeholder: 'City', ref: function ref(input) {
-                  _this2.cityInput = input;
+                  _this3.cityInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
-                  _this2.countryInput = input;
+                  _this3.countryInput = input;
                 } }),
               React.createElement(
                 'button',
@@ -213,8 +218,7 @@ if (window.AL === undefined) {
               )
             )
           ),
-          ' ',
-          this.review
+          review
         );
       }
       //Type and Style should be set to select/dropdown list
@@ -232,21 +236,18 @@ if (window.AL === undefined) {
       _classCallCheck(this, ReviewData);
 
       return _possibleConstructorReturn(this, (ReviewData.__proto__ || Object.getPrototypeOf(ReviewData)).call(this));
+      //
+      // this.state = {
+      //   name:this.props.info.title
+      // }
     }
 
     _createClass(ReviewData, [{
-      key: 'onComponentMount',
-      value: function onComponentMount() {
-        this.setState({
-          name: this.props.name
-        });
-      }
-    }, {
       key: 'render',
       value: function render() {
         return React.createElement(
           'div',
-          { className: 'review' },
+          { className: 'review add-structure' },
           React.createElement(
             'ol',
             null,
@@ -254,7 +255,8 @@ if (window.AL === undefined) {
               'li',
               null,
               'Name: ',
-              this.state.name
+              this.props.info.title,
+              ' '
             )
           )
         );
@@ -264,6 +266,7 @@ if (window.AL === undefined) {
     return ReviewData;
   }(React.Component);
 
+  AL.ReviewData = ReviewData;
   AL.EditorComponent = EditorComponent;
 })();
 "use strict";

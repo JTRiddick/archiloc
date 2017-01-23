@@ -126,6 +126,10 @@ body {
     padding: 1em;
     border: none; }
 
+.review {
+  background-color: white;
+  margin: 1em auto; }
+
 body {
   font-family: "Andale mono", "Menlo", "Monaco", monospace; }
 

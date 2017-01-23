@@ -24,9 +24,7 @@ if (window.AL === undefined){window.AL = {}; }
     submitStructure(evt){
       //test
       console.log("sending...", this.nameInput.value, this.typeInput.value);
-      var location = {
 
-      }
       //api POST
       $.ajax({
         url: '/api/sheds',
@@ -53,6 +51,8 @@ if (window.AL === undefined){window.AL = {}; }
       .done((data)=>{
         console.log('request successful');
         console.log('data: ',data);
+        this.setState({lastAdded:data});
+
       })
     }
 
@@ -61,10 +61,13 @@ if (window.AL === undefined){window.AL = {}; }
 
 
       if(this.state){
-        if(this.state.data){
-          review = <ReviewData info={this.state.data} />
+        if(this.state.lastAdded){
+          review = <ReviewData info={this.state.lastAdded} />
+
+          console.log('returned data in state', this.state.lastAdded);
         }
       }
+
 
       return (<div>
           <div className='add-structure'>
@@ -96,7 +99,8 @@ if (window.AL === undefined){window.AL = {}; }
             <button>Add</button>
           </form>
 
-        </div> {this.review}
+        </div>
+      {review}
       </div>)
     }
     //Type and Style should be set to select/dropdown list
@@ -106,22 +110,22 @@ if (window.AL === undefined){window.AL = {}; }
   class ReviewData extends React.Component {
     constructor(){
       super();
-    }
-    onComponentMount(){
-      this.setState({
-        name:this.props.name
-      })
+      //
+      // this.state = {
+      //   name:this.props.info.title
+      // }
     }
 
+
     render(){
-      return (<div className='review'>
+      return (<div className='review add-structure'>
         <ol>
-          <li>Name: {this.state.name}</li>
+          <li>Name: {this.props.info.title} </li>
         </ol>
       </div>)
     }
 
   }
-
+  AL.ReviewData = ReviewData;
   AL.EditorComponent = EditorComponent;
 }());
