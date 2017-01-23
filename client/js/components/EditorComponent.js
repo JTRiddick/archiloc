@@ -30,14 +30,15 @@ if (window.AL === undefined){window.AL = {}; }
         method: 'POST',
         dataType: 'JSON',
         data:{
-          "name":this.nameInput.value,
-          "type":this.typeInput.value,
-          "year":this.yearInput.value,
-          "arch":this.archInput.value,
-          "location":{"street":this.archInput.value,
-          "city":this.cityInput.value,
-          "country":this.countryInput.value}
-        },
+          name:this.nameInput.value,
+          type:this.typeInput.value,
+          year:this.yearInput.value,
+          arch:this.archInput.value,
+          location:
+            {street:this.archInput.value,
+            city:this.cityInput.value,
+          country:this.countryInput.value}
+        }
 
       })
       .fail((req,stat,error)=>{
