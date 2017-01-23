@@ -17,44 +17,9 @@ db.once('open',function(){
   // console.log('db',db);
 });
 
-//mongo test
-
-// var trashSchema = mongoose.Schema({
-//   id: Number,
-//   name: String
-// });
-//
-// var PopTart = mongoose.model('PopTart',trashSchema);
-//
-// var cherry = new PopTart({id:1,name:'Cherry mit Frosting'});
-// console.log(cherry.name);
-// console.log(cherry.id);
-// console.log(cherry._id);
+app.use(require('./api-routes.js')());
 
 
-
-  var Shed = require('./models/shed.js');
-  // console.log('shed is',Shed);
-
-  app.post('/api/sheds',(req,res) => {
-    console.log('request', req.data);
-    var cb = (data) => {
-      console.log('i saved a shed :', data);
-      res.send(data);
-    };
-    console.log('req body', req.body);
-    var shed = new Shed();
-    shed.title = req.body.name;
-    shed.type = req.body.type;
-    shed.year = req.body.year;
-    shed.arch = req.body.arch;
-    shed.street = req.body.street;
-    shed.city = req.body.city;
-    shed.country = req.body.country;
-    shed.save(cb);
-  });
-
-//end of mongo test
 
 app.use(express.static('public'));
 
