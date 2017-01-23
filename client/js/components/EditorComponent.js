@@ -25,9 +25,7 @@ if (window.AL === undefined){window.AL = {}; }
       //test
       console.log("sending...", this.nameInput.value, this.typeInput.value);
       var location = {
-        "street":this.streetInput.value,
-        "city":this.cityInput.value,
-        "country":this.countryInput.value
+
       }
       //api POST
       $.ajax({
@@ -39,7 +37,9 @@ if (window.AL === undefined){window.AL = {}; }
           type:this.typeInput.value,
           year:this.yearInput.value,
           arch:this.archInput.value,
-          location: this.location
+          street:this.streetInput.value,
+          city:this.cityInput.value,
+          country:this.countryInput.value
         }
 
       })
@@ -79,8 +79,8 @@ if (window.AL === undefined){window.AL = {}; }
 
             <hr/>
             <h4>Categories</h4>
-            <select ref={(input) => {this.typeInput = input}}>
-              <option value="cultural" selected="selected">Cultural</option>
+            <select defaultValue="cultural" ref={(input) => {this.typeInput = input}}>
+              <option value="cultural">Cultural</option>
               <option value="residential">Residential</option>
               <option value="industrial">Industrial</option>
               <option value="commercial">Commercial</option>
