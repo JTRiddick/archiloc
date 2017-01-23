@@ -80,7 +80,7 @@ if (window.AL === undefined){window.AL = {}; }
             <hr/>
             <h4>Categories</h4>
             <select ref={(input) => {this.typeInput = input}}>
-              <option value="cultural">Cultural</option>
+              <option value="cultural" selected="selected">Cultural</option>
               <option value="residential">Residential</option>
               <option value="industrial">Industrial</option>
               <option value="commercial">Commercial</option>
