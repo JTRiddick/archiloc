@@ -28,7 +28,7 @@ if (window.AL === undefined){window.AL = {}; }
       $.ajax({
         url: '/api/sheds',
         method: 'POST',
-        dataType: 'JSON',
+        dataType: 'JSONP',
         data:{
           name:this.nameInput.value,
           type:this.typeInput.value,
@@ -40,12 +40,12 @@ if (window.AL === undefined){window.AL = {}; }
         },
 
       })
-      .fail((req,stat,err)=>{
+      .fail((req,stat,error)=>{
         // window.alert('no');
         console.log('request unsucessful');
         console.log("req",req);
         console.log("stat",stat);
-        console.log("err",err);
+        console.log("err",error);
       })
       .done((data)=>{
         console.log('request successful');

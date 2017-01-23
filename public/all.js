@@ -87,7 +87,7 @@ if (window.AL === undefined) {
         $.ajax({
           url: '/api/sheds',
           method: 'POST',
-          dataType: 'JSON',
+          dataType: 'JSONP',
           data: {
             name: this.nameInput.value,
             type: this.typeInput.value,
@@ -98,12 +98,12 @@ if (window.AL === undefined) {
               country: this.countryInput.value }
           }
 
-        }).fail(function (req, stat, err) {
+        }).fail(function (req, stat, error) {
           // window.alert('no');
           console.log('request unsucessful');
           console.log("req", req);
           console.log("stat", stat);
-          console.log("err", err);
+          console.log("err", error);
         }).done(function (data) {
           console.log('request successful');
           console.log('data: ', data);
