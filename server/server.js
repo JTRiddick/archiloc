@@ -44,7 +44,7 @@ db.once('open',function(){
     };
     console.log('req body', req.body);
     var shed = new Shed();
-    shed.name = req.body.name;
+    shed.title = req.body.name;
     shed.type = req.body.type;
     shed.year = req.body.year;
     shed.arch = req.body.arch;

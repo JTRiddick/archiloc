@@ -90,7 +90,7 @@ if (window.AL === undefined) {
           method: 'POST',
           dataType: 'JSON',
           data: {
-            name: this.nameInput.value,
+            title: this.nameInput.value,
             type: this.typeInput.value,
             year: this.yearInput.value,
             arch: this.archInput.value,

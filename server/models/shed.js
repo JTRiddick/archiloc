@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var shedSchema = new Schema({
-  title:{type: String},
+  title:{type: String, required:true},
   type:{type: String},
   year:{type: String},
   arch:{type: String},
