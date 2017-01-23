@@ -45,7 +45,7 @@ db.once('open',function(){
     console.log('req body', req.body.type);
     var shed = new Shed();
     shed.name = req.body.name;
-    shed.type = req.body.type.toString();
+    shed.type = req.body.type;
     shed.year = req.body.year;
     shed.arch = req.body.arch;
     shed.location = req.body.location;

@@ -28,15 +28,15 @@ if (window.AL === undefined){window.AL = {}; }
       $.ajax({
         url: '/api/sheds',
         method: 'POST',
-        dataType: 'JSONP',
+        dataType: 'JSON',
         data:{
-          name:this.nameInput.value,
-          type:this.typeInput.value,
-          year:this.yearInput.value,
-          arch:this.archInput.value,
-          location:{street:this.archInput.value,
-          city:this.cityInput.value,
-          country:this.countryInput.value}
+          "name":this.nameInput.value,
+          "type":this.typeInput.value,
+          "year":this.yearInput.value,
+          "arch":this.archInput.value,
+          "location":{"street":this.archInput.value,
+          "city":this.cityInput.value,
+          "country":this.countryInput.value}
         },
 
       })
