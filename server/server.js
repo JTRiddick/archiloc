@@ -14,7 +14,7 @@ var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'connection error:'));
 db.once('open',function(){
   console.log('mongoose connected to mongo???');
-  console.log('db',db);
+  // console.log('db',db);
 });
 
 //mongo test
@@ -36,23 +36,19 @@ db.once('open',function(){
   var Shed = require('./models/shed.js');
   // console.log('shed is',Shed);
 
-  router.post('/api/sheds',(req,res) => {
+  app.post('/api/sheds',(req,res) => {
     console.log('request', req.data);
     var cb = (data) => {
       console.log('i saved a shed :', data);
       res.send(data);
     };
-
+    console.log('req body', req.body.type);
     var shed = new Shed();
     shed.name = req.body.name;
     shed.type = req.body.type;
     shed.year = req.body.year;
     shed.arch = req.body.arch;
     shed.location = req.body.location;
-    // shed.location = req.body.location;
-    // shed.location.street = req.body.street;
-    // shed.location.city = req.body.city;
-    // shed.location.country = req.body.country;
     shed.save(cb);
   });
 
