@@ -47,11 +47,12 @@ if (window.AL === undefined){window.AL = {}; }
         console.log("req",req);
         console.log("stat",stat);
         console.log("err",error);
+        this.setState({error:stat});
       })
       .done((data)=>{
         console.log('request successful');
         console.log('data: ',data);
-        this.setState({lastAdded:data});
+        this.setState({lastAdded:data, error:false});
 
       })
     }
@@ -65,6 +66,9 @@ if (window.AL === undefined){window.AL = {}; }
           review = <ReviewData info={this.state.lastAdded} />
 
           console.log('returned data in state', this.state.lastAdded);
+        }
+        if(this.state.error){
+          review = <ReviewData warning={this.state.error} />
         }
       }
 
@@ -110,18 +114,35 @@ if (window.AL === undefined){window.AL = {}; }
   class ReviewData extends React.Component {
     constructor(){
       super();
-      //
-      // this.state = {
-      //   name:this.props.info.title
-      // }
+
     }
 
 
     render(){
-      return (<div className='review add-structure'>
-        <ol>
+
+      var info;
+
+      if (this.props.warning){
+
+        info = "Error " + JSON.stringify(this.props.warning);
+      }
+
+      if (this.props.info){
+        info = <ol>
           <li>Name: {this.props.info.title} </li>
+          <li>Year: {this.props.info.year} </li>
+          <li>Arch: {this.props.info.arch} </li>
+          <li>Type: {this.props.info.type} </li>
+          <li>Street: {this.props.info.street} </li>
+          <li>City: {this.props.info.city} </li>
+          <li>Country: {this.props.info.country} </li>
         </ol>
+
+      }
+
+      return (<div className='review add-structure'>
+          <h4> Saved... </h4>
+          {this.info}
       </div>)
     }
 

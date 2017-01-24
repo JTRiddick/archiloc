@@ -14,6 +14,7 @@ if (window.AL === undefined) {window.AL = {};}
         <Route path="/map" component={AL.MapComponent} />
         <Route path="/test" component={AL.TestComponent} />
         <Route path="/test/asd" component={AL.EditorComponent} />
+        <Route path="/test/all" component={AL.ShowAllComponent} />
       </Route>
     </Router>;
 

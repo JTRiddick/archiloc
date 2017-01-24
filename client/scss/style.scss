@@ -1,10 +1,14 @@
 @import "reset";
 @import "palette1";
 @import "asd";
+@import "sites-view";
 
 $stack-one:'Andale mono','Menlo','Monaco',monospace;
 
 body{
+  background-color: $color3;
+  max-width: 960px;
+  margin: 0 auto;
   font-family: $stack-one;
 }
 h1{

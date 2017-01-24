@@ -107,10 +107,11 @@ if (window.AL === undefined) {
           console.log("req", req);
           console.log("stat", stat);
           console.log("err", error);
+          _this2.setState({ error: stat });
         }).done(function (data) {
           console.log('request successful');
           console.log('data: ', data);
-          _this2.setState({ lastAdded: data });
+          _this2.setState({ lastAdded: data, error: false });
         });
       }
     }, {
@@ -125,6 +126,9 @@ if (window.AL === undefined) {
             review = React.createElement(ReviewData, { info: this.state.lastAdded });
 
             console.log('returned data in state', this.state.lastAdded);
+          }
+          if (this.state.error) {
+            review = React.createElement(ReviewData, { warning: this.state.error });
           }
         }
 
@@ -236,19 +240,21 @@ if (window.AL === undefined) {
       _classCallCheck(this, ReviewData);
 
       return _possibleConstructorReturn(this, (ReviewData.__proto__ || Object.getPrototypeOf(ReviewData)).call(this));
-      //
-      // this.state = {
-      //   name:this.props.info.title
-      // }
     }
 
     _createClass(ReviewData, [{
       key: 'render',
       value: function render() {
-        return React.createElement(
-          'div',
-          { className: 'review add-structure' },
-          React.createElement(
+
+        var info;
+
+        if (this.props.warning) {
+
+          info = "Error " + JSON.stringify(this.props.warning);
+        }
+
+        if (this.props.info) {
+          info = React.createElement(
             'ol',
             null,
             React.createElement(
@@ -257,8 +263,61 @@ if (window.AL === undefined) {
               'Name: ',
               this.props.info.title,
               ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Year: ',
+              this.props.info.year,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Arch: ',
+              this.props.info.arch,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Type: ',
+              this.props.info.type,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Street: ',
+              this.props.info.street,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'City: ',
+              this.props.info.city,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Country: ',
+              this.props.info.country,
+              ' '
             )
-          )
+          );
+        }
+
+        return React.createElement(
+          'div',
+          { className: 'review add-structure' },
+          React.createElement(
+            'h4',
+            null,
+            ' Saved... '
+          ),
+          this.info
         );
       }
     }]);
@@ -309,6 +368,117 @@ if (window.AL === undefined) {
   }(React.Component);
 
   AL.MapComponent = MapComponent;
+})();
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+if (window.AL === undefined) {
+  window.AL = {};
+}
+
+(function () {
+  var ShowAllComponent = function (_React$Component) {
+    _inherits(ShowAllComponent, _React$Component);
+
+    function ShowAllComponent() {
+      _classCallCheck(this, ShowAllComponent);
+
+      var _this = _possibleConstructorReturn(this, (ShowAllComponent.__proto__ || Object.getPrototypeOf(ShowAllComponent)).call(this));
+
+      _this.state = {
+        sites: []
+      };
+      return _this;
+    }
+
+    _createClass(ShowAllComponent, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {}
+    }, {
+      key: 'populateList',
+      value: function populateList(evt) {
+        var _this2 = this;
+
+        evt.preventDefault();
+
+        //api get all
+        $.ajax({
+          url: '/api/sheds',
+          method: 'GET',
+          dataType: 'JSON'
+        }).done(function (data) {
+          console.log(data);
+          _this2.setState({
+            sites: data.sheds
+          });
+        });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this3 = this;
+
+        var sitesList = "";
+
+        if (this.state.sites !== []) {
+          sitesList = JSON.stringify(this.state.sites);
+          // ^ test
+
+        }
+
+        return React.createElement(
+          'div',
+          { className: 'sites-view' },
+          React.createElement(
+            'form',
+            { onSubmit: function onSubmit(evt) {
+                _this3.populateList(evt);
+              } },
+            React.createElement(
+              'button',
+              null,
+              'Populate'
+            )
+          ),
+          React.createElement(
+            'div',
+            null,
+            sitesList
+          )
+        );
+      }
+    }]);
+
+    return ShowAllComponent;
+  }(React.Component);
+
+  ;
+
+  var siteViewComponent = function (_React$Component2) {
+    _inherits(siteViewComponent, _React$Component2);
+
+    function siteViewComponent() {
+      _classCallCheck(this, siteViewComponent);
+
+      return _possibleConstructorReturn(this, (siteViewComponent.__proto__ || Object.getPrototypeOf(siteViewComponent)).call(this));
+    }
+
+    _createClass(siteViewComponent, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {}
+    }]);
+
+    return siteViewComponent;
+  }(React.Component);
+
+  AL.ShowAllComponent = ShowAllComponent;
 })();
 "use strict";
 
@@ -375,7 +545,8 @@ if (window.AL === undefined) {
       " />",
       React.createElement(Route, { path: "/map", component: AL.MapComponent }),
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
-      React.createElement(Route, { path: "/test/asd", component: AL.EditorComponent })
+      React.createElement(Route, { path: "/test/asd", component: AL.EditorComponent }),
+      React.createElement(Route, { path: "/test/all", component: AL.ShowAllComponent })
     )
   );
 
