@@ -27,9 +27,12 @@ module.exports = function(){
   });
 
   router.delete('/api/sheds/:shedId', (req,res) => {
-  
+    var cb = (err,data) => {
+      console.log('delete cb ,',err,data);
+      res.send(data);
+    }
     console.log('delete params :', req.params);
-    Shed.findByIdAndRemove(req.params.shedId);
+    Shed.findByIdAndRemove(req.params.shedId,cb);
   })
 
 

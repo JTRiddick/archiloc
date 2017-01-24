@@ -45,7 +45,42 @@ if (window.AL === undefined) {
 
   AL.AppComponent = AppComponent;
 })();
-"use strict";
+'use strict';
+
+if (window.AL === undefined) {
+  window.AL = {};
+}
+
+(function () {
+  var ControlObject;
+
+  window.AL.ControlObject = {
+    callbacks: [],
+
+    registerCallback: function registerCallback(cb) {
+      this.callbacks.push(cb);
+    },
+    reloadItems: function reloadItems() {
+      this.callbacks.forEach(function (cb) {
+        cb();
+      });
+    },
+    deleteItem: function deleteItem(itemId, cb) {
+      var _this = this;
+
+      $.ajax({
+        url: '/api/sheds/' + itemId,
+        method: 'DELETE',
+        dataType: 'JSON'
+      }).done(function (data) {
+        console.log('callbacks', _this.callbacks);
+        console.log('deleted, ', data);
+
+        _this.reloadItems();
+      });
+    }
+  };
+})();
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -403,11 +438,17 @@ if (window.AL === undefined) {
 
     _createClass(ShowAllComponent, [{
       key: 'componentDidMount',
-      value: function componentDidMount() {}
+      value: function componentDidMount() {
+        var _this2 = this;
+
+        AL.ControlObject.registerCallback(function () {
+          _this2.populateList();
+        });
+      }
     }, {
       key: 'populateList',
       value: function populateList() {
-        var _this2 = this;
+        var _this3 = this;
 
         //reset
         this.setState({
@@ -421,22 +462,9 @@ if (window.AL === undefined) {
           dataType: 'JSON'
         }).done(function (data) {
           console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
-          _this2.setState({
+          _this3.setState({
             sites: data.sheds
           });
-        });
-      }
-    }, {
-      key: 'deleteItem',
-      value: function deleteItem(itemId) {
-        var _this3 = this;
-
-        $.ajax({
-          url: '/api/sheds/' + itemId,
-          method: 'DELETE',
-          dataType: 'JSON'
-        }).done(function () {
-          _this3.populateList();
         });
       }
     }, {
@@ -499,6 +527,7 @@ if (window.AL === undefined) {
       key: 'componentDidMount',
       value: function componentDidMount() {
         console.log(this, 'viewbox mounted');
+
         this.setState({
           info: this.props.info
         });
@@ -571,7 +600,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ShowAllComponent.deleteItem(_this6.state.info.id);
+                  AL.ControlObject.deleteItem(_this6.state.info.id);
                 } },
               'delete'
             ),

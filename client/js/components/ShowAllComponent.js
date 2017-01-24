@@ -13,6 +13,10 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentDidMount(){
 
+      AL.ControlObject.registerCallback(() => {
+        this.populateList();
+      });
+
     }
 
     populateList(){
@@ -37,17 +41,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     }
 
-    deleteItem(itemId){
 
-      $.ajax({
-        url:'/api/sheds/' + itemId,
-        method: 'DELETE',
-        dataType:'JSON'
-      })
-      .done(() => {
-        this.populateList();
-      });
-    }
 
 
     render(){
@@ -89,6 +83,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
     componentDidMount(){
       console.log(this,'viewbox mounted');
+
       this.setState(
         {
           info:this.props.info
@@ -107,7 +102,6 @@ if (window.AL === undefined){window.AL = {}; }
     render(){
 
 
-
       return (<div className="site-inner-box">
         <div className="site-info">
           <ol>
@@ -124,7 +118,7 @@ if (window.AL === undefined){window.AL = {}; }
 
         <div className = "site-controls">
           <div className = "button" onClick={() =>
-            {AL.ShowAllComponent.deleteItem(this.state.info.id)}}>delete</div>
+            {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
           <div className = "button">edit</div>
           <div className = "button" onClick={() => {console.log("This is item ID of ,",this.state.info.id)}}>view</div>
         </div>
