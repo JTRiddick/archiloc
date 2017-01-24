@@ -26,6 +26,12 @@ module.exports = function(){
     shed.save(cb);
   });
 
+  router.delete('/api/sheds/:shedId', (req,res) => {
+  
+    console.log('delete params :', req.params);
+    Shed.findByIdAndRemove(req.params.shedId);
+  })
+
 
   router.get('/api/sheds',(req,res) => {
     Shed.find({

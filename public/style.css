@@ -79,7 +79,40 @@ table {
 .sites-view {
   margin: 0.5em auto;
   background-color: #0d1f2d;
-  color: #546a7b; }
+  color: #546a7b;
+  position: relative;
+  overflow: auto; }
+  .sites-view .site-info-box {
+    position: relative;
+    float: left;
+    width: calc(33.333% - 0.75em);
+    background-color: black;
+    margin: 0.5em 0.25em; }
+  .sites-view .site-info {
+    background-color: #546a7b;
+    color: #0d1f2d; }
+  .sites-view .site-controls {
+    margin: 0.2em 0; }
+  .sites-view .button {
+    border: #dbd83b;
+    background-color: #0d1f2d;
+    color: #546a7b;
+    display: inline-block;
+    min-width: 20%;
+    text-align: center;
+    padding: 2px 3px; }
+  .sites-view .load {
+    background-color: #dbd83b;
+    margin: 1em;
+    padding: 1em;
+    min-width: 1em;
+    min-height: 1em; }
+  .sites-view .button:hover {
+    background-color: #dbd83b;
+    color: #35ad1a; }
+  .sites-view .load:hover {
+    background-color: #546a7b;
+    color: black; }
 
 body {
   background-color: #3f5e5a;

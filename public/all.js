@@ -45,6 +45,7 @@ if (window.AL === undefined) {
 
   AL.AppComponent = AppComponent;
 })();
+"use strict";
 'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -371,6 +372,8 @@ if (window.AL === undefined) {
 })();
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -403,10 +406,13 @@ if (window.AL === undefined) {
       value: function componentDidMount() {}
     }, {
       key: 'populateList',
-      value: function populateList(evt) {
+      value: function populateList() {
         var _this2 = this;
 
-        evt.preventDefault();
+        //reset
+        this.setState({
+          sites: []
+        });
 
         //api get all
         $.ajax({
@@ -414,43 +420,62 @@ if (window.AL === undefined) {
           method: 'GET',
           dataType: 'JSON'
         }).done(function (data) {
-          console.log(data);
+          console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
           _this2.setState({
             sites: data.sheds
           });
         });
       }
     }, {
-      key: 'render',
-      value: function render() {
+      key: 'deleteItem',
+      value: function deleteItem(itemId) {
         var _this3 = this;
 
-        var sitesList = "";
+        $.ajax({
+          url: '/api/sheds/' + itemId,
+          method: 'DELETE',
+          dataType: 'JSON'
+        }).done(function () {
+          _this3.populateList();
+        });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this4 = this;
 
-        if (this.state.sites !== []) {
-          sitesList = JSON.stringify(this.state.sites);
+        var sitesList;
+
+        if (this.state.sites != []) {
+          // sitesList = JSON.stringify(this.state.sites);
           // ^ test
-
+          sitesList = this.state.sites.map(function (site, index) {
+            return React.createElement(
+              'div',
+              { className: 'site-info-box', key: index },
+              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this4.deleteItem })
+            );
+          });
         }
 
         return React.createElement(
           'div',
           { className: 'sites-view' },
           React.createElement(
-            'form',
-            { onSubmit: function onSubmit(evt) {
-                _this3.populateList(evt);
+            'div',
+            { className: 'button load', onClick: function onClick() {
+                _this4.populateList();
               } },
-            React.createElement(
-              'button',
-              null,
-              'Populate'
-            )
+            ' LOAD '
           ),
           React.createElement(
             'div',
             null,
-            sitesList
+            React.createElement(
+              'ol',
+              null,
+              sitesList
+            )
           )
         );
       }
@@ -461,23 +486,116 @@ if (window.AL === undefined) {
 
   ;
 
-  var siteViewComponent = function (_React$Component2) {
-    _inherits(siteViewComponent, _React$Component2);
+  var SiteViewComponent = function (_React$Component2) {
+    _inherits(SiteViewComponent, _React$Component2);
 
-    function siteViewComponent() {
-      _classCallCheck(this, siteViewComponent);
+    function SiteViewComponent() {
+      _classCallCheck(this, SiteViewComponent);
 
-      return _possibleConstructorReturn(this, (siteViewComponent.__proto__ || Object.getPrototypeOf(siteViewComponent)).call(this));
+      return _possibleConstructorReturn(this, (SiteViewComponent.__proto__ || Object.getPrototypeOf(SiteViewComponent)).call(this));
     }
 
-    _createClass(siteViewComponent, [{
+    _createClass(SiteViewComponent, [{
       key: 'componentDidMount',
-      value: function componentDidMount() {}
+      value: function componentDidMount() {
+        console.log(this, 'viewbox mounted');
+        this.setState({
+          info: this.props.info
+        });
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        console.log(this, 'viewbox unmount');
+        this.setState({});
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this6 = this;
+
+        return React.createElement(
+          'div',
+          { className: 'site-inner-box' },
+          React.createElement(
+            'div',
+            { className: 'site-info' },
+            React.createElement(
+              'ol',
+              null,
+              React.createElement(
+                'li',
+                null,
+                this.props.info.id
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.title
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.year
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.arch
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.type
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.street
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.city
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.country
+              )
+            )
+          ),
+          React.createElement(
+            'div',
+            { className: 'site-controls' },
+            React.createElement(
+              'div',
+              { className: 'button', onClick: function onClick() {
+                  AL.ShowAllComponent.deleteItem(_this6.state.info.id);
+                } },
+              'delete'
+            ),
+            React.createElement(
+              'div',
+              { className: 'button' },
+              'edit'
+            ),
+            React.createElement(
+              'div',
+              { className: 'button', onClick: function onClick() {
+                  console.log("This is item ID of ,", _this6.state.info.id);
+                } },
+              'view'
+            )
+          )
+        );
+      }
     }]);
 
-    return siteViewComponent;
+    return SiteViewComponent;
   }(React.Component);
 
+  AL.SiteViewComponent = SiteViewComponent;
   AL.ShowAllComponent = ShowAllComponent;
 })();
 "use strict";
