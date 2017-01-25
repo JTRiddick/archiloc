@@ -26,7 +26,7 @@ module.exports = function(){
     shed.save(cb);
   });
 
-  router.delete('/api/sheds/:shedId', (req,res) => {
+  router.delete('/api/sheds/:shedId/delete', (req,res) => {
     var cb = (err,data) => {
       console.log('delete cb ,',err,data);
       res.send(data);
@@ -43,16 +43,29 @@ module.exports = function(){
       res.send(data);
     }
     console.log('edit req body',req.body);
-    Shed.findByIdAndUpdate(req.params.shedId, {$set:{
+    Shed.findByIdAndUpdate(req.params.shedId, {
       title: req.body.title,
       type: req.body.type,
       year: req.body.year,
       arch: req.body.arch,
       street: req.body.street,
       city: req.body.city,
-      country: req.body.country}
-    },{safe:false,upsert:true,new:true,runValidators:false},cb)
+      country: req.body.country
+    },{safe:true,upsert:true,new:true,runValidators:false},cb)
   });
+
+  router.get('/api/sheds/:shedId',(req,res) => {
+    console.log('find req params', req.params.shedId);
+    var cb = (err,data) => {
+      console.log('i found something!');
+      if (err){throw err};
+      res.send(data);
+    }
+    Shed.findById(req.params.shedId)
+    .exec((err,data)=>{
+      cb(err,data);
+    })
+  })
 
   router.get('/api/sheds',(req,res) => {
     Shed.find({

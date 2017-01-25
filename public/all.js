@@ -348,7 +348,7 @@ if (window.AL === undefined) {
     registerFailCallback: function registerFailCallback(cb) {
       this.callbacks.push(cb);
     },
-    reloadItems: function reloadItems() {
+    callbacksGood: function callbacksGood() {
       this.callbacks.forEach(function (cb) {
         cb();
       });
@@ -358,22 +358,37 @@ if (window.AL === undefined) {
         cb();
       });
     },
-    deleteItem: function deleteItem(itemId, cb) {
+    getItemById: function getItemById(itemId) {
       var _this = this;
+
+      $.ajax({
+        url: '/api/sheds/' + itemId,
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function (data) {
+        console.log("found ", data);
+        _this.callbacksGood();
+      }).fail(function (req, stat, err) {
+        console.log('failed to get req,', req);
+        //??
+      });
+    },
+    deleteItem: function deleteItem(itemId, cb) {
+      var _this2 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId,
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
-        console.log('callbacks', _this.callbacks);
+        console.log('callbacks', _this2.callbacks);
         console.log('deleted, ', data);
 
-        _this.reloadItems();
+        _this2.callbacksGood();
       });
     },
     addItem: function addItem(inputs) {
-      var _this2 = this;
+      var _this3 = this;
 
       //test
       console.log("sending...", inputs.name, inputs.type);
@@ -399,15 +414,15 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this2.callbacksFailure();
+        _this3.callbacksFailure();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this2.reloadItems();
+        _this3.callbacksGood();
       });
     }, //end of addItem
     editItem: function editItem(itemId, inputs) {
-      var _this3 = this;
+      var _this4 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId + '/edit',
@@ -428,11 +443,11 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this3.callbacksFailure();
+        _this4.callbacksFailure();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this3.reloadItems();
+        _this4.callbacksGood();
       });
     } };
 })();
@@ -539,9 +554,6 @@ if (window.AL === undefined) {
           });
         });
       }
-    }, {
-      key: 'sendToEdit',
-      value: function sendToEdit(itemId) {}
     }, {
       key: 'render',
       value: function render() {

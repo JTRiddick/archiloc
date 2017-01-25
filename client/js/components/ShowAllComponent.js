@@ -41,13 +41,6 @@ if (window.AL === undefined){window.AL = {}; }
 
     }
 
-    sendToEdit(itemId){
-
-
-
-    }
-
-
     render(){
 
       var sitesList;

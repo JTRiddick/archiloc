@@ -13,7 +13,7 @@ if (window.AL === undefined){window.AL = {}; }
     registerFailCallback: function(cb){
       this.callbacks.push(cb);
     },
-    reloadItems: function(){
+    callbacksGood: function(){
       this.callbacks.forEach((cb) => {
         cb();
       })
@@ -21,6 +21,22 @@ if (window.AL === undefined){window.AL = {}; }
     callbacksFailure: function(){
       this.postFail.forEach((cb) => {
         cb();
+      })
+    },
+    getItemById: function(itemId){
+
+      $.ajax({
+        url:'/api/sheds/' + itemId,
+        method:'GET',
+        dataType:'JSON',
+      })
+      .done((data)=>{
+        console.log("found ", data);
+        this.callbacksGood();
+      })
+      .fail((req,stat,err)=>{
+        console.log('failed to get req,', req);
+        //??
       })
     },
     deleteItem: function(itemId,cb){
@@ -34,7 +50,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log('callbacks',this.callbacks);
         console.log('deleted, ',data);
 
-        this.reloadItems();
+        this.callbacksGood();
       });
     },
     addItem: function(inputs){
@@ -68,7 +84,7 @@ if (window.AL === undefined){window.AL = {}; }
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
-          this.reloadItems();
+          this.callbacksGood();
 
         })
       },//end of addItem
@@ -99,7 +115,7 @@ if (window.AL === undefined){window.AL = {}; }
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
-          this.reloadItems();
+          this.callbacksGood();
 
         })
       },//end of editor
