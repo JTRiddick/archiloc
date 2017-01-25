@@ -31,6 +31,8 @@
     min-width: 20%;
     text-align: center;
     padding: 2px 3px;
+    cursor: default;
+    user-select: none;
   }
   .load{
     background-color:$color5;
@@ -46,6 +48,14 @@
   .load:hover{
     background-color:$color2;
     color: black;
+  }
+  .button:active{
+    background-color:firebrick;
+    color:white;
+  }
+  .link{
+    text-decoration: none;
+    color:$color2;
   }
 }
 //test ^

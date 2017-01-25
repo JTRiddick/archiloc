@@ -13,6 +13,290 @@ if (window.AL === undefined) {
 }
 
 (function () {
+  var AddEditComponent = function (_React$Component) {
+    _inherits(AddEditComponent, _React$Component);
+
+    function AddEditComponent() {
+      _classCallCheck(this, AddEditComponent);
+
+      var _this = _possibleConstructorReturn(this, (AddEditComponent.__proto__ || Object.getPrototypeOf(AddEditComponent)).call(this));
+
+      AL.ControlObject.callbacks = [];
+      return _this;
+    }
+
+    _createClass(AddEditComponent, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        var _this2 = this;
+
+        AL.ControlObject.registerCallback(function () {
+          _this2.setState({
+            error: false,
+            lastAdded: _this2.data
+          });
+        });
+        AL.ControlObject.registerFailCallback(function () {
+          _this2.setState({
+            error: _this2.stat
+          });
+        });
+
+        if (this.props) {
+          console.log('mounted with props, ', this.props);
+        }
+      }
+    }, {
+      key: 'validateStructure',
+      value: function validateStructure(evt) {
+        evt.preventDefault();
+
+        //validate conditions here
+
+        // this.submitStructure(evt);
+
+        // input to control object
+        var inputs = {
+          title: this.nameInput.value,
+          type: this.typeInput.value,
+          year: this.yearInput.value,
+          arch: this.archInput.value,
+          street: this.streetInput.value,
+          city: this.cityInput.value,
+          country: this.countryInput.value
+        };
+        console.log(inputs);
+        AL.ControlObject.addItem(inputs);
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        var _this3 = this;
+
+        var review;
+
+        if (this.state) {
+          if (this.state.lastAdded) {
+            review = React.createElement(ReviewData, { info: this.state.lastAdded });
+
+            console.log('returned data in state', this.state.lastAdded);
+          }
+          if (this.state.error) {
+            review = React.createElement(ReviewData, { warning: this.state.error });
+          }
+        }
+
+        return React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'div',
+            { className: 'add-structure' },
+            React.createElement(
+              'h3',
+              null,
+              'Add Structure'
+            ),
+            React.createElement('hr', null),
+            React.createElement(
+              'form',
+              { onSubmit: function onSubmit(evt) {
+                  _this3.validateStructure(evt);
+                } },
+              React.createElement(
+                'h4',
+                null,
+                'Details'
+              ),
+              React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
+                  _this3.nameInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
+                  _this3.yearInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
+                  _this3.archInput = input;
+                } }),
+              React.createElement('hr', null),
+              React.createElement(
+                'h4',
+                null,
+                'Categories'
+              ),
+              React.createElement(
+                'select',
+                { defaultValue: 'cultural', ref: function ref(input) {
+                    _this3.typeInput = input;
+                  } },
+                React.createElement(
+                  'option',
+                  { value: 'cultural' },
+                  'Cultural'
+                ),
+                React.createElement(
+                  'option',
+                  { value: 'residential' },
+                  'Residential'
+                ),
+                React.createElement(
+                  'option',
+                  { value: 'industrial' },
+                  'Industrial'
+                ),
+                React.createElement(
+                  'option',
+                  { value: 'commercial' },
+                  'Commercial'
+                ),
+                React.createElement(
+                  'option',
+                  { value: 'infrastructural' },
+                  'Infrastructural'
+                )
+              ),
+              React.createElement('hr', null),
+              React.createElement(
+                'h4',
+                null,
+                'Location'
+              ),
+              React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
+                  _this3.streetInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'City', ref: function ref(input) {
+                  _this3.cityInput = input;
+                } }),
+              React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
+                  _this3.countryInput = input;
+                } }),
+              React.createElement(
+                'button',
+                null,
+                'Add'
+              )
+            )
+          ),
+          review
+        );
+      }
+      //Type and Style should be set to select/dropdown list
+
+    }]);
+
+    return AddEditComponent;
+  }(React.Component);
+  //end of EditorComponent
+
+  var ReviewData = function (_React$Component2) {
+    _inherits(ReviewData, _React$Component2);
+
+    function ReviewData() {
+      _classCallCheck(this, ReviewData);
+
+      return _possibleConstructorReturn(this, (ReviewData.__proto__ || Object.getPrototypeOf(ReviewData)).call(this));
+    }
+
+    _createClass(ReviewData, [{
+      key: 'render',
+      value: function render() {
+
+        var info;
+
+        if (this.props.warning) {
+
+          info = "Error " + JSON.stringify(this.props.warning);
+        }
+
+        if (this.props.info) {
+          info = React.createElement(
+            'ol',
+            null,
+            React.createElement(
+              'li',
+              null,
+              'Name: ',
+              this.props.info.title,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Year: ',
+              this.props.info.year,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Arch: ',
+              this.props.info.arch,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Type: ',
+              this.props.info.type,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Street: ',
+              this.props.info.street,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'City: ',
+              this.props.info.city,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Country: ',
+              this.props.info.country,
+              ' '
+            )
+          );
+        }
+
+        return React.createElement(
+          'div',
+          { className: 'review add-structure' },
+          React.createElement(
+            'h4',
+            null,
+            ' Saved... '
+          ),
+          this.info
+        );
+      }
+    }]);
+
+    return ReviewData;
+  }(React.Component);
+
+  AL.ReviewData = ReviewData;
+  AL.AddEditComponent = AddEditComponent;
+})();
+'use strict';
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+if (window.AL === undefined) {
+  window.AL = {};
+}
+
+(function () {
   var AppComponent = function (_React$Component) {
     _inherits(AppComponent, _React$Component);
 
@@ -152,319 +436,6 @@ if (window.AL === undefined) {
       });
     } };
 })();
-'use strict';
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-if (window.AL === undefined) {
-  window.AL = {};
-}
-
-(function () {
-  var EditorComponent = function (_React$Component) {
-    _inherits(EditorComponent, _React$Component);
-
-    function EditorComponent() {
-      _classCallCheck(this, EditorComponent);
-
-      return _possibleConstructorReturn(this, (EditorComponent.__proto__ || Object.getPrototypeOf(EditorComponent)).call(this));
-    }
-
-    _createClass(EditorComponent, [{
-      key: 'componentDidMount',
-      value: function componentDidMount() {
-        var _this2 = this;
-
-        AL.ControlObject.registerCallback(function () {
-          _this2.setState({
-            error: false,
-            lastAdded: _this2.data
-          });
-        });
-        AL.ControlObject.registerFailCallback(function () {
-          _this2.setState({
-            error: _this2.stat
-          });
-        });
-      }
-    }, {
-      key: 'validateStructure',
-      value: function validateStructure(evt) {
-        evt.preventDefault();
-
-        //validate conditions here
-
-        // this.submitStructure(evt);
-
-        // input to control object
-        var inputs = {
-          title: this.nameInput.value,
-          type: this.typeInput.value,
-          year: this.yearInput.value,
-          arch: this.archInput.value,
-          street: this.streetInput.value,
-          city: this.cityInput.value,
-          country: this.countryInput.value
-        };
-        console.log(inputs);
-        AL.ControlObject.addItem(inputs);
-      }
-    }, {
-      key: 'submitStructure',
-      value: function submitStructure(evt) {
-        var _this3 = this;
-
-        //test
-        console.log("sending...", this.nameInput.value, this.typeInput.value);
-
-        //api POST
-        $.ajax({
-          url: '/api/sheds',
-          method: 'POST',
-          dataType: 'JSON',
-          data: {
-            title: this.nameInput.value,
-            type: this.typeInput.value,
-            year: this.yearInput.value,
-            arch: this.archInput.value,
-            street: this.streetInput.value,
-            city: this.cityInput.value,
-            country: this.countryInput.value
-          }
-
-        }).fail(function (req, stat, error) {
-          // window.alert('no');
-          console.log('request unsucessful');
-          console.log("req", req);
-          console.log("stat", stat);
-          console.log("err", error);
-          _this3.setState({ error: stat });
-        }).done(function (data) {
-          console.log('request successful');
-          console.log('data: ', data);
-          _this3.setState({ lastAdded: data, error: false });
-        });
-      }
-    }, {
-      key: 'render',
-      value: function render() {
-        var _this4 = this;
-
-        var review;
-
-        if (this.state) {
-          if (this.state.lastAdded) {
-            review = React.createElement(ReviewData, { info: this.state.lastAdded });
-
-            console.log('returned data in state', this.state.lastAdded);
-          }
-          if (this.state.error) {
-            review = React.createElement(ReviewData, { warning: this.state.error });
-          }
-        }
-
-        return React.createElement(
-          'div',
-          null,
-          React.createElement(
-            'div',
-            { className: 'add-structure' },
-            React.createElement(
-              'h3',
-              null,
-              'Add Structure'
-            ),
-            React.createElement('hr', null),
-            React.createElement(
-              'form',
-              { onSubmit: function onSubmit(evt) {
-                  _this4.validateStructure(evt);
-                } },
-              React.createElement(
-                'h4',
-                null,
-                'Details'
-              ),
-              React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
-                  _this4.nameInput = input;
-                } }),
-              React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
-                  _this4.yearInput = input;
-                } }),
-              React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
-                  _this4.archInput = input;
-                } }),
-              React.createElement('hr', null),
-              React.createElement(
-                'h4',
-                null,
-                'Categories'
-              ),
-              React.createElement(
-                'select',
-                { defaultValue: 'cultural', ref: function ref(input) {
-                    _this4.typeInput = input;
-                  } },
-                React.createElement(
-                  'option',
-                  { value: 'cultural' },
-                  'Cultural'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'residential' },
-                  'Residential'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'industrial' },
-                  'Industrial'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'commercial' },
-                  'Commercial'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'infrastructural' },
-                  'Infrastructural'
-                )
-              ),
-              React.createElement('hr', null),
-              React.createElement(
-                'h4',
-                null,
-                'Location'
-              ),
-              React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
-                  _this4.streetInput = input;
-                } }),
-              React.createElement('input', { placeholder: 'City', ref: function ref(input) {
-                  _this4.cityInput = input;
-                } }),
-              React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
-                  _this4.countryInput = input;
-                } }),
-              React.createElement(
-                'button',
-                null,
-                'Add'
-              )
-            )
-          ),
-          review
-        );
-      }
-      //Type and Style should be set to select/dropdown list
-
-    }]);
-
-    return EditorComponent;
-  }(React.Component);
-  //end of EditorComponent
-
-  var ReviewData = function (_React$Component2) {
-    _inherits(ReviewData, _React$Component2);
-
-    function ReviewData() {
-      _classCallCheck(this, ReviewData);
-
-      return _possibleConstructorReturn(this, (ReviewData.__proto__ || Object.getPrototypeOf(ReviewData)).call(this));
-    }
-
-    _createClass(ReviewData, [{
-      key: 'render',
-      value: function render() {
-
-        var info;
-
-        if (this.props.warning) {
-
-          info = "Error " + JSON.stringify(this.props.warning);
-        }
-
-        if (this.props.info) {
-          info = React.createElement(
-            'ol',
-            null,
-            React.createElement(
-              'li',
-              null,
-              'Name: ',
-              this.props.info.title,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Year: ',
-              this.props.info.year,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Arch: ',
-              this.props.info.arch,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Type: ',
-              this.props.info.type,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Street: ',
-              this.props.info.street,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'City: ',
-              this.props.info.city,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Country: ',
-              this.props.info.country,
-              ' '
-            )
-          );
-        }
-
-        return React.createElement(
-          'div',
-          { className: 'review add-structure' },
-          React.createElement(
-            'h4',
-            null,
-            ' Saved... '
-          ),
-          this.info
-        );
-      }
-    }]);
-
-    return ReviewData;
-  }(React.Component);
-
-  AL.ReviewData = ReviewData;
-  AL.EditorComponent = EditorComponent;
-})();
 "use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -569,6 +540,9 @@ if (window.AL === undefined) {
         });
       }
     }, {
+      key: 'sendToEdit',
+      value: function sendToEdit(itemId) {}
+    }, {
       key: 'render',
       value: function render() {
         var _this4 = this;
@@ -637,12 +611,18 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log(this, 'viewbox unmount');
-        this.setState({});
+        // this.setState({})
       }
     }, {
       key: 'render',
       value: function render() {
         var _this6 = this;
+
+        var editLinkId;
+
+        if (this.state && this.state.info.id) {
+          editLinkId = this.state.info.id;
+        }
 
         return React.createElement(
           'div',
@@ -707,10 +687,12 @@ if (window.AL === undefined) {
             ),
             React.createElement(
               'div',
-              { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.editItem(_this6.state.info.id);
-                } },
-              'edit'
+              { className: 'button' },
+              React.createElement(
+                ReactRouter.Link,
+                { className: 'link', to: "/test/asd/" + editLinkId + "/edit" },
+                'edit'
+              )
             ),
             React.createElement(
               'div',
@@ -783,6 +765,7 @@ if (window.AL === undefined) {
 
   var Router = ReactRouter.Router;
   var Route = ReactRouter.Route;
+  var Link = Router.Link;
 
   var router = React.createElement(
     Router,
@@ -795,7 +778,8 @@ if (window.AL === undefined) {
       " />",
       React.createElement(Route, { path: "/map", component: AL.MapComponent }),
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
-      React.createElement(Route, { path: "/test/asd", component: AL.EditorComponent }),
+      React.createElement(Route, { path: "/test/asd", component: AL.AddEditComponent }),
+      React.createElement(Route, { path: "/test/asd/:sId/edit", component: AL.AddEditComponent }),
       React.createElement(Route, { path: "/test/all", component: AL.ShowAllComponent })
     )
   );

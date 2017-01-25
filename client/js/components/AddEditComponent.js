@@ -3,12 +3,12 @@ if (window.AL === undefined){window.AL = {}; }
 (function() {
 
 
-  class EditorComponent extends React.Component{
+  class AddEditComponent extends React.Component{
 
 
     constructor(){
       super();
-
+      AL.ControlObject.callbacks = [];
     }
 
     componentDidMount(){
@@ -17,12 +17,16 @@ if (window.AL === undefined){window.AL = {}; }
           error:false,
           lastAdded:this.data,
         })
-      })
+      });
       AL.ControlObject.registerFailCallback(()=>{
         this.setState({
           error:this.stat
         })
-      })
+      });
+
+      if (this.props){
+        console.log('mounted with props, ',this.props);
+      }
     }
 
     validateStructure(evt){
@@ -45,42 +49,6 @@ if (window.AL === undefined){window.AL = {}; }
       console.log(inputs);
       AL.ControlObject.addItem(inputs);
 
-    }
-
-    submitStructure(evt){
-      //test
-      console.log("sending...", this.nameInput.value, this.typeInput.value);
-
-      //api POST
-      $.ajax({
-        url: '/api/sheds',
-        method: 'POST',
-        dataType: 'JSON',
-        data:{
-          title:this.nameInput.value,
-          type:this.typeInput.value,
-          year:this.yearInput.value,
-          arch:this.archInput.value,
-          street:this.streetInput.value,
-          city:this.cityInput.value,
-          country:this.countryInput.value
-        }
-
-      })
-      .fail((req,stat,error)=>{
-        // window.alert('no');
-        console.log('request unsucessful');
-        console.log("req",req);
-        console.log("stat",stat);
-        console.log("err",error);
-        this.setState({error:stat});
-      })
-      .done((data)=>{
-        console.log('request successful');
-        console.log('data: ',data);
-        this.setState({lastAdded:data, error:false});
-
-      })
     }
 
     render(){
@@ -174,5 +142,5 @@ if (window.AL === undefined){window.AL = {}; }
 
   }
   AL.ReviewData = ReviewData;
-  AL.EditorComponent = EditorComponent;
+  AL.AddEditComponent = AddEditComponent;
 }());

@@ -100,7 +100,9 @@ table {
     display: inline-block;
     min-width: 20%;
     text-align: center;
-    padding: 2px 3px; }
+    padding: 2px 3px;
+    cursor: default;
+    user-select: none; }
   .sites-view .load {
     background-color: #dbd83b;
     margin: 1em;
@@ -113,6 +115,12 @@ table {
   .sites-view .load:hover {
     background-color: #546a7b;
     color: black; }
+  .sites-view .button:active {
+    background-color: firebrick;
+    color: white; }
+  .sites-view .link {
+    text-decoration: none;
+    color: #546a7b; }
 
 body {
   background-color: #3f5e5a;

@@ -41,6 +41,12 @@ if (window.AL === undefined){window.AL = {}; }
 
     }
 
+    sendToEdit(itemId){
+
+
+
+    }
+
 
     render(){
 
@@ -90,15 +96,15 @@ if (window.AL === undefined){window.AL = {}; }
     }
     componentWillUnmount(){
       console.log(this,'viewbox unmount');
-      this.setState(
-        {
-
-        }
-      )
+      // this.setState({})
     }
 
     render(){
+      var editLinkId;
 
+      if(this.state && this.state.info.id){
+        editLinkId = this.state.info.id;
+      }
 
       return (<div className="site-inner-box">
         <div className="site-info">
@@ -117,8 +123,9 @@ if (window.AL === undefined){window.AL = {}; }
         <div className = "site-controls">
           <div className = "button" onClick={() =>
             {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
-          <div className = "button" onClick={() =>
-            {AL.ControlObject.editItem(this.state.info.id)}}>edit</div>
+          <div className = "button">
+           <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }>edit</ReactRouter.Link>
+          </div>
           <div className = "button" onClick={() => {console.log("This is item ID of ,",this.state.info.id)}}>view</div>
         </div>
       </div>)
