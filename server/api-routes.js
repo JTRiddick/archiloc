@@ -33,8 +33,26 @@ module.exports = function(){
     }
     console.log('delete params :', req.params);
     Shed.findByIdAndRemove(req.params.shedId,cb);
-  })
+  });
 
+  router.put('/api/sheds/:shedId/edit', (req,res) => {
+    console.log('req params', req.params.shedId);
+    var cb = (err,data) => {
+      console.log('i updated a shed :',err,data);
+      if (err){throw err};
+      res.send(data);
+    }
+    console.log('edit req body',req.body);
+    Shed.findByIdAndUpdate(req.params.shedId, {$set:{
+      title: req.body.title,
+      type: req.body.type,
+      year: req.body.year,
+      arch: req.body.arch,
+      street: req.body.street,
+      city: req.body.city,
+      country: req.body.country}
+    },{safe:false,upsert:true,new:true,runValidators:false},cb)
+  });
 
   router.get('/api/sheds',(req,res) => {
     Shed.find({

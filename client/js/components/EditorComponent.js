@@ -6,10 +6,23 @@ if (window.AL === undefined){window.AL = {}; }
   class EditorComponent extends React.Component{
 
 
-
     constructor(){
       super();
 
+    }
+
+    componentDidMount(){
+      AL.ControlObject.registerCallback(() => {
+        this.setState({
+          error:false,
+          lastAdded:this.data,
+        })
+      })
+      AL.ControlObject.registerFailCallback(()=>{
+        this.setState({
+          error:this.stat
+        })
+      })
     }
 
     validateStructure(evt){
@@ -17,7 +30,20 @@ if (window.AL === undefined){window.AL = {}; }
 
       //validate conditions here
 
-        this.submitStructure(evt);
+      // this.submitStructure(evt);
+
+      // input to control object
+      var inputs = {
+        title:this.nameInput.value,
+        type:this.typeInput.value,
+        year:this.yearInput.value,
+        arch:this.archInput.value,
+        street:this.streetInput.value,
+        city:this.cityInput.value,
+        country:this.countryInput.value,
+      }
+      console.log(inputs);
+      AL.ControlObject.addItem(inputs);
 
     }
 

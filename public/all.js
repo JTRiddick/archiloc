@@ -56,12 +56,21 @@ if (window.AL === undefined) {
 
   window.AL.ControlObject = {
     callbacks: [],
-
+    postSuccess: [],
+    postFail: [],
     registerCallback: function registerCallback(cb) {
+      this.callbacks.push(cb);
+    },
+    registerFailCallback: function registerFailCallback(cb) {
       this.callbacks.push(cb);
     },
     reloadItems: function reloadItems() {
       this.callbacks.forEach(function (cb) {
+        cb();
+      });
+    },
+    callbacksFailure: function callbacksFailure() {
+      this.postFail.forEach(function (cb) {
         cb();
       });
     },
@@ -78,8 +87,70 @@ if (window.AL === undefined) {
 
         _this.reloadItems();
       });
-    }
-  };
+    },
+    addItem: function addItem(inputs) {
+      var _this2 = this;
+
+      //test
+      console.log("sending...", inputs.name, inputs.type);
+
+      //api POST
+      $.ajax({
+        url: '/api/sheds',
+        method: 'POST',
+        dataType: 'JSON',
+        data: {
+          title: inputs.title,
+          type: inputs.type,
+          year: inputs.year,
+          arch: inputs.arch,
+          street: inputs.street,
+          city: inputs.city,
+          country: inputs.country
+        }
+
+      }).fail(function (req, stat, error) {
+        // window.alert('no');
+        console.log('request unsucessful');
+        console.log("req", req);
+        console.log("stat", stat);
+        console.log("err", error);
+        _this2.callbacksFailure();
+      }).done(function (data) {
+        console.log('request successful');
+        console.log('data: ', data);
+        _this2.reloadItems();
+      });
+    }, //end of addItem
+    editItem: function editItem(itemId, inputs) {
+      var _this3 = this;
+
+      $.ajax({
+        url: '/api/sheds/' + itemId + '/edit',
+        method: 'PUT',
+        dataType: 'JSON',
+        data: {
+          title: inputs.title,
+          type: inputs.type,
+          year: inputs.year,
+          arch: inputs.arch,
+          street: inputs.street,
+          city: inputs.city,
+          country: inputs.country
+        }
+      }).fail(function (req, stat, error) {
+        // window.alert('no');
+        console.log('request unsucessful');
+        console.log("req", req);
+        console.log("stat", stat);
+        console.log("err", error);
+        _this3.callbacksFailure();
+      }).done(function (data) {
+        console.log('request successful');
+        console.log('data: ', data);
+        _this3.reloadItems();
+      });
+    } };
 })();
 'use strict';
 
@@ -106,18 +177,48 @@ if (window.AL === undefined) {
     }
 
     _createClass(EditorComponent, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        var _this2 = this;
+
+        AL.ControlObject.registerCallback(function () {
+          _this2.setState({
+            error: false,
+            lastAdded: _this2.data
+          });
+        });
+        AL.ControlObject.registerFailCallback(function () {
+          _this2.setState({
+            error: _this2.stat
+          });
+        });
+      }
+    }, {
       key: 'validateStructure',
       value: function validateStructure(evt) {
         evt.preventDefault();
 
         //validate conditions here
 
-        this.submitStructure(evt);
+        // this.submitStructure(evt);
+
+        // input to control object
+        var inputs = {
+          title: this.nameInput.value,
+          type: this.typeInput.value,
+          year: this.yearInput.value,
+          arch: this.archInput.value,
+          street: this.streetInput.value,
+          city: this.cityInput.value,
+          country: this.countryInput.value
+        };
+        console.log(inputs);
+        AL.ControlObject.addItem(inputs);
       }
     }, {
       key: 'submitStructure',
       value: function submitStructure(evt) {
-        var _this2 = this;
+        var _this3 = this;
 
         //test
         console.log("sending...", this.nameInput.value, this.typeInput.value);
@@ -143,17 +244,17 @@ if (window.AL === undefined) {
           console.log("req", req);
           console.log("stat", stat);
           console.log("err", error);
-          _this2.setState({ error: stat });
+          _this3.setState({ error: stat });
         }).done(function (data) {
           console.log('request successful');
           console.log('data: ', data);
-          _this2.setState({ lastAdded: data, error: false });
+          _this3.setState({ lastAdded: data, error: false });
         });
       }
     }, {
       key: 'render',
       value: function render() {
-        var _this3 = this;
+        var _this4 = this;
 
         var review;
 
@@ -183,7 +284,7 @@ if (window.AL === undefined) {
             React.createElement(
               'form',
               { onSubmit: function onSubmit(evt) {
-                  _this3.validateStructure(evt);
+                  _this4.validateStructure(evt);
                 } },
               React.createElement(
                 'h4',
@@ -191,13 +292,13 @@ if (window.AL === undefined) {
                 'Details'
               ),
               React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
-                  _this3.nameInput = input;
+                  _this4.nameInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
-                  _this3.yearInput = input;
+                  _this4.yearInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
-                  _this3.archInput = input;
+                  _this4.archInput = input;
                 } }),
               React.createElement('hr', null),
               React.createElement(
@@ -208,7 +309,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'select',
                 { defaultValue: 'cultural', ref: function ref(input) {
-                    _this3.typeInput = input;
+                    _this4.typeInput = input;
                   } },
                 React.createElement(
                   'option',
@@ -243,13 +344,13 @@ if (window.AL === undefined) {
                 'Location'
               ),
               React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
-                  _this3.streetInput = input;
+                  _this4.streetInput = input;
                 } }),
               React.createElement('input', { placeholder: 'City', ref: function ref(input) {
-                  _this3.cityInput = input;
+                  _this4.cityInput = input;
                 } }),
               React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
-                  _this3.countryInput = input;
+                  _this4.countryInput = input;
                 } }),
               React.createElement(
                 'button',
@@ -606,7 +707,9 @@ if (window.AL === undefined) {
             ),
             React.createElement(
               'div',
-              { className: 'button' },
+              { className: 'button', onClick: function onClick() {
+                  AL.ControlObject.editItem(_this6.state.info.id);
+                } },
               'edit'
             ),
             React.createElement(

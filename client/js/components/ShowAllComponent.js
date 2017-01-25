@@ -42,8 +42,6 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
 
-
-
     render(){
 
       var sitesList;
@@ -119,7 +117,8 @@ if (window.AL === undefined){window.AL = {}; }
         <div className = "site-controls">
           <div className = "button" onClick={() =>
             {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
-          <div className = "button">edit</div>
+          <div className = "button" onClick={() =>
+            {AL.ControlObject.editItem(this.state.info.id)}}>edit</div>
           <div className = "button" onClick={() => {console.log("This is item ID of ,",this.state.info.id)}}>view</div>
         </div>
       </div>)
