@@ -48,68 +48,15 @@ table {
 /* Coolors Exported Palette - coolors.co/0d1f2d-546a7b-3f5e5a-35ad1a-dbd83b */
 /* HSL */
 /* RGB */
-/* Coolors Exported Palette - coolors.co/0d1f2d-546a7b-3f5e5a-35ad1a-dbd83b */
-/* HSL */
-/* RGB */
-/* http://meyerweb.com/eric/tools/css/reset/
-   v2.0 | 20110126
-   License: none (public domain)
-*/
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed,
-figure, figcaption, footer, header, hgroup,
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-  margin: 0;
-  padding: 0;
-  border: 0;
-  font-size: 100%;
-  font: inherit;
-  vertical-align: baseline; }
-
-/* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure,
-footer, header, hgroup, menu, nav, section {
-  display: block; }
-
-body {
-  line-height: 1; }
-
-ol, ul {
-  list-style: none; }
-
-blockquote, q {
-  quotes: none; }
-
-blockquote:before, blockquote:after,
-q:before, q:after {
-  content: '';
-  content: none; }
-
-table {
-  border-collapse: collapse;
-  border-spacing: 0; }
-
-body {
-  background-color: #3f5e5a;
-  max-width: 960px;
-  margin: 0 auto; }
-
 .add-structure {
+  max-width: 960px;
   background-color: #0d1f2d;
   color: #dbd83b;
   margin: 2em auto;
   padding: 12px; }
   .add-structure h1, .add-structure h2, .add-structure h3, .add-structure h4 {
-    padding: 6px; }
+    padding: 6px;
+    margin: 0.25em; }
   .add-structure form {
     border: 1px solid #dbd83b;
     text-align: center;
@@ -125,8 +72,87 @@ body {
     text-align: center;
     padding: 1em;
     border: none; }
+  .add-structure .nav-button {
+    background-color: #546a7b;
+    color: #dbd83b;
+    margin: 0.5em;
+    padding: 0.5em;
+    min-width: 1em;
+    min-height: 1em;
+    display: inline-block;
+    min-width: 20%;
+    text-align: center;
+    cursor: default;
+    user-select: none; }
+  .add-structure .nav-button:hover {
+    background-color: #dbd83b;
+    color: #35ad1a; }
+  .add-structure .nav-button:hover {
+    background-color: #dbd83b;
+    color: black; }
+  .add-structure .nav-button:active {
+    background-color: firebrick;
+    color: white; }
+  .add-structure .panel-header {
+    overflow: auto; }
+
+.review {
+  color: black;
+  background-color: white;
+  margin: 1em auto; }
+
+.sites-view {
+  max-width: 1200px;
+  margin: 0.5em auto;
+  background-color: #0d1f2d;
+  color: #546a7b;
+  position: relative;
+  overflow: auto; }
+  .sites-view .site-info-box {
+    position: relative;
+    float: left;
+    width: calc(33.333% - 0.75em);
+    background-color: black;
+    margin: 0.5em 0.25em; }
+  .sites-view .site-info {
+    background-color: #546a7b;
+    color: #0d1f2d; }
+  .sites-view .site-controls {
+    margin: 0.2em 0; }
+  .sites-view .button {
+    border: #dbd83b;
+    background-color: #0d1f2d;
+    color: #546a7b;
+    display: inline-block;
+    width: 20%;
+    text-align: center;
+    padding: 2px 3px;
+    cursor: default;
+    user-select: none; }
+  .sites-view .load {
+    background-color: #546a7b;
+    color: #dbd83b;
+    margin: 1em;
+    padding: 0.25em;
+    min-width: 1em;
+    height: 1em; }
+  .sites-view .button:hover {
+    background-color: #dbd83b;
+    color: #35ad1a; }
+  .sites-view .load:hover {
+    background-color: #dbd83b;
+    color: black; }
+  .sites-view .button:active {
+    background-color: firebrick;
+    color: white; }
+  .sites-view .link {
+    text-decoration: none;
+    color: #546a7b; }
 
 body {
+  background-color: #3f5e5a;
+  max-width: 1200px;
+  margin: 0 auto;
   font-family: "Andale mono", "Menlo", "Monaco", monospace; }
 
 h1 {
@@ -140,5 +166,13 @@ h3 {
 
 h4 {
   font-size: 1.5em; }
+
+.left {
+  float: left;
+  clear: none; }
+
+.right {
+  float: right;
+  clear: none; }
 
 /*# sourceMappingURL=style.css.map */

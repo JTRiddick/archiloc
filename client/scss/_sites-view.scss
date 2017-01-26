@@ -1,0 +1,63 @@
+
+.sites-view{
+  max-width: 1200px;
+  margin:0.5em auto;
+  background-color: $color1;
+  color:$color2;
+  position: relative;
+  overflow: auto;
+
+
+  .site-info-box{
+    position: relative;
+    float:left;
+    width: calc(33.333% - 0.75em);
+    background-color: black;
+    margin: 0.5em 0.25em;
+  }
+  .site-info{
+    background-color: $color2;
+    color: $color1;
+  }
+  .site-controls{
+
+    margin:0.2em 0;
+  }
+
+  .button{
+    border:$color5;
+    background-color: $color1;
+    color:$color2;
+    display: inline-block;
+    width: 20%;
+    text-align: center;
+    padding: 2px 3px;
+    cursor: default;
+    user-select: none;
+  }
+  .load{
+    background-color:$color2;
+    color:$color5;
+    margin: 1em;
+    padding:0.25em;
+    min-width: 1em;
+    height: 1em;
+  }
+  .button:hover{
+    background-color: $color5;
+    color:$color4;
+  }
+  .load:hover{
+    background-color:$color5;
+    color: black;
+  }
+  .button:active{
+    background-color:firebrick;
+    color:white;
+  }
+  .link{
+    text-decoration: none;
+    color:$color2;
+  }
+}
+//test ^
