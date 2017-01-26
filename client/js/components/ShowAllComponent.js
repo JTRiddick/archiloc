@@ -36,9 +36,11 @@ if (window.AL === undefined){window.AL = {}; }
         this.setState({
           sites:data.sheds
         })
-
       })
+    }
 
+    sendToNewEditor(){
+      ReactRouter.hashHistory.push('/test/asd');
     }
 
     render(){
@@ -59,6 +61,7 @@ if (window.AL === undefined){window.AL = {}; }
       return(
         <div className = 'sites-view'>
           <div className = "button load" onClick={() => {this.populateList()}}> LOAD </div>
+          <div className = "button load new" onClick={() => {this.sendToNewEditor()}}> ADD </div>
           <div>
             <ol>
               {sitesList}

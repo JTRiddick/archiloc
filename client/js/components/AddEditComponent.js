@@ -36,6 +36,10 @@ if (window.AL === undefined){window.AL = {}; }
       AL.ControlObject.resetControl();
     }
 
+    sendToViewer(){
+      ReactRouter.hashHistory.push('/test/all');
+
+    }
 
     validateStructure(evt){
       evt.preventDefault();
@@ -108,7 +112,10 @@ if (window.AL === undefined){window.AL = {}; }
 
       return (<div>
           <div className='add-structure'>
-          <h3>Add Structure</h3>
+          <div className='panel-header'>
+            <h3 className= "left">Add Structure</h3>
+            <div className = "nav-button view right" onClick={() => {this.sendToViewer()}}> Show All </div>
+          </div>
           <hr />
 
           <form onSubmit = {(evt) => {this.validateStructure(evt)}}>

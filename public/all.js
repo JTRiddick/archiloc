@@ -52,6 +52,11 @@ if (window.AL === undefined) {
         AL.ControlObject.resetControl();
       }
     }, {
+      key: 'sendToViewer',
+      value: function sendToViewer() {
+        ReactRouter.hashHistory.push('/test/all');
+      }
+    }, {
       key: 'validateStructure',
       value: function validateStructure(evt) {
         evt.preventDefault();
@@ -125,9 +130,20 @@ if (window.AL === undefined) {
             'div',
             { className: 'add-structure' },
             React.createElement(
-              'h3',
-              null,
-              'Add Structure'
+              'div',
+              { className: 'panel-header' },
+              React.createElement(
+                'h3',
+                { className: 'left' },
+                'Add Structure'
+              ),
+              React.createElement(
+                'div',
+                { className: 'nav-button view right', onClick: function onClick() {
+                    _this2.sendToViewer();
+                  } },
+                ' Show All '
+              )
             ),
             React.createElement('hr', null),
             React.createElement(
@@ -604,6 +620,11 @@ if (window.AL === undefined) {
         });
       }
     }, {
+      key: 'sendToNewEditor',
+      value: function sendToNewEditor() {
+        ReactRouter.hashHistory.push('/test/asd');
+      }
+    }, {
       key: 'render',
       value: function render() {
         var _this4 = this;
@@ -631,6 +652,13 @@ if (window.AL === undefined) {
                 _this4.populateList();
               } },
             ' LOAD '
+          ),
+          React.createElement(
+            'div',
+            { className: 'button load new', onClick: function onClick() {
+                _this4.sendToNewEditor();
+              } },
+            ' ADD '
           ),
           React.createElement(
             'div',

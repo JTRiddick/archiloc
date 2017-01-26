@@ -51,7 +51,7 @@ module.exports = function(){
       street: req.body.street,
       city: req.body.city,
       country: req.body.country
-    },{safe:true,upsert:true,new:true,runValidators:false},cb)
+    },{safe:true,upsert:true,new:true,runValidators:true},cb)
   });
 
   router.get('/api/sheds/:shedId',(req,res) => {
@@ -74,19 +74,20 @@ module.exports = function(){
     })
     .exec((err,data)=>{
       var shedArray = [];
-      for (var key in data) {
-        var shed = {
-          id:data[key]._id,
-          title: data[key].title,
-          type:data[key].type,
-          year:data[key].year,
-          arch:data[key].arch,
-          street:data[key].street,
-          city:data[key].city,
-          country:data[key].country
-        };
+      data.forEach((item) =>{
+          shed = {
+            id:item._id,
+            title: item.title,
+            type:item.type,
+            year:item.year,
+            arch:item.arch,
+            street:item.street,
+            city:item.city,
+            country:item.country
+          };
         shedArray.push(shed);
-      }
+      })
+
       res.send({
         sheds: shedArray
       });
