@@ -515,7 +515,7 @@ if (window.AL === undefined) {
       });
     } };
 })();
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -540,13 +540,30 @@ if (window.AL === undefined) {
     }
 
     _createClass(MapComponent, [{
-      key: "render",
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        console.log('this map', this.map);
+        this.googleMap = new google.maps.Map(this.map, {
+          center: { lat: -34.397, lng: 150.644 },
+          zoom: 10
+        });
+      }
+    }, {
+      key: 'render',
       value: function render() {
+        var _this2 = this;
 
         return React.createElement(
-          "div",
+          'div',
           null,
-          "Map Component"
+          'Map Component',
+          React.createElement(
+            'div',
+            null,
+            React.createElement('div', { ref: function ref(map) {
+                _this2.map = map;
+              }, style: { width: '100%', height: '400px' } })
+          )
         );
       }
     }]);
