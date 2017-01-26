@@ -21,36 +21,41 @@ if (window.AL === undefined) {
 
       var _this = _possibleConstructorReturn(this, (AddEditComponent.__proto__ || Object.getPrototypeOf(AddEditComponent)).call(this));
 
-      AL.ControlObject.callbacks = [];
+      _this.state = { editMode: false };
+
+      AL.ControlObject.registerCallback(function () {
+        _this.setState({
+          lastAdded: AL.ControlObject.sendData
+        });
+      });
+
+      console.log('added callbacks', AL.ControlObject.cbSuccess, AL.ControlObject.cbFail);
+
       return _this;
     }
 
     _createClass(AddEditComponent, [{
-      key: 'componentDidMount',
-      value: function componentDidMount() {
-        var _this2 = this;
-
-        AL.ControlObject.registerCallback(function () {
-          _this2.setState({
-            error: false,
-            lastAdded: _this2.data
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        console.log('mounting with params, ', this.props.params);
+        if (this.props.params.sId && !this.state.editMode) {
+          this.setState({
+            editMode: true
           });
-        });
-        AL.ControlObject.registerFailCallback(function () {
-          _this2.setState({
-            error: _this2.stat
-          });
-        });
-
-        if (this.props) {
-          console.log('mounted with props, ', this.props);
+          AL.ControlObject.getStructById(this.props.params.sId);
         }
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        console.log('unmount');
+        AL.ControlObject.resetControl();
       }
     }, {
       key: 'validateStructure',
       value: function validateStructure(evt) {
         evt.preventDefault();
-
+        console.log("state check", this.state);
         //validate conditions here
 
         // this.submitStructure(evt);
@@ -65,19 +70,46 @@ if (window.AL === undefined) {
           city: this.cityInput.value,
           country: this.countryInput.value
         };
-        console.log(inputs);
-        AL.ControlObject.addItem(inputs);
+
+        //edit?
+        console.log('inputs?', inputs);
+        if (this.state.editMode) {
+          AL.ControlObject.editItem(this.props.params.sId, inputs);
+        } else {
+          AL.ControlObject.addItem(inputs);
+        }
       }
     }, {
       key: 'render',
       value: function render() {
-        var _this3 = this;
+        var _this2 = this;
 
+        console.log('@render, state set to ', this.state);
         var review;
+        var fields;
+
+        //field placeholders
+        var name = "Name";
+        var year = "Year of Construction/Completion";
+        var arch = "Architect/Firm";
+        var type = "Cultural";
+        var street = "Street";
+        var city = "City";
+        var country = "Country";
 
         if (this.state) {
+          console.log('last added/edit', this.state.lastAdded);
           if (this.state.lastAdded) {
             review = React.createElement(ReviewData, { info: this.state.lastAdded });
+            if (this.state.editMode) {
+              name = this.state.lastAdded.title;
+              year = this.state.lastAdded.year || 'Add Year';
+              arch = this.state.lastAdded.arch;
+              type = this.state.lastAdded.type;
+              street = this.state.lastAdded.street;
+              city = this.state.lastAdded.city;
+              country = this.state.lastAdded.country;
+            }
 
             console.log('returned data in state', this.state.lastAdded);
           }
@@ -101,21 +133,21 @@ if (window.AL === undefined) {
             React.createElement(
               'form',
               { onSubmit: function onSubmit(evt) {
-                  _this3.validateStructure(evt);
+                  _this2.validateStructure(evt);
                 } },
               React.createElement(
                 'h4',
                 null,
                 'Details'
               ),
-              React.createElement('input', { placeholder: 'Name', ref: function ref(input) {
-                  _this3.nameInput = input;
+              React.createElement('input', { placeholder: name, ref: function ref(input) {
+                  _this2.nameInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'Year', ref: function ref(input) {
-                  _this3.yearInput = input;
+              React.createElement('input', { placeholder: year, ref: function ref(input) {
+                  _this2.yearInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'Architect/Firm', ref: function ref(input) {
-                  _this3.archInput = input;
+              React.createElement('input', { placeholder: arch, ref: function ref(input) {
+                  _this2.archInput = input;
                 } }),
               React.createElement('hr', null),
               React.createElement(
@@ -125,8 +157,8 @@ if (window.AL === undefined) {
               ),
               React.createElement(
                 'select',
-                { defaultValue: 'cultural', ref: function ref(input) {
-                    _this3.typeInput = input;
+                { defaultValue: type, ref: function ref(input) {
+                    _this2.typeInput = input;
                   } },
                 React.createElement(
                   'option',
@@ -160,14 +192,14 @@ if (window.AL === undefined) {
                 null,
                 'Location'
               ),
-              React.createElement('input', { placeholder: 'Street', ref: function ref(input) {
-                  _this3.streetInput = input;
+              React.createElement('input', { placeholder: street, ref: function ref(input) {
+                  _this2.streetInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'City', ref: function ref(input) {
-                  _this3.cityInput = input;
+              React.createElement('input', { placeholder: city, ref: function ref(input) {
+                  _this2.cityInput = input;
                 } }),
-              React.createElement('input', { placeholder: 'Country', ref: function ref(input) {
-                  _this3.countryInput = input;
+              React.createElement('input', { placeholder: country, ref: function ref(input) {
+                  _this2.countryInput = input;
                 } }),
               React.createElement(
                 'button',
@@ -197,13 +229,18 @@ if (window.AL === undefined) {
     }
 
     _createClass(ReviewData, [{
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        console.log('review props', this.props);
+      }
+    }, {
       key: 'render',
       value: function render() {
 
         var info;
 
         if (this.props.warning) {
-
+          console.log(this.props.warning);
           info = "Error " + JSON.stringify(this.props.warning);
         }
 
@@ -271,7 +308,7 @@ if (window.AL === undefined) {
             null,
             ' Saved... '
           ),
-          this.info
+          info
         );
       }
     }]);
@@ -337,29 +374,29 @@ if (window.AL === undefined) {
 
 (function () {
   var ControlObject;
+  var sendData;
 
   window.AL.ControlObject = {
     callbacks: [],
-    postSuccess: [],
-    postFail: [],
     registerCallback: function registerCallback(cb) {
       this.callbacks.push(cb);
     },
-    registerFailCallback: function registerFailCallback(cb) {
-      this.callbacks.push(cb);
-    },
-    callbacksGood: function callbacksGood() {
-      this.callbacks.forEach(function (cb) {
-        cb();
-      });
-    },
-    callbacksFailure: function callbacksFailure() {
-      this.postFail.forEach(function (cb) {
-        cb();
-      });
-    },
-    getItemById: function getItemById(itemId) {
+    callbacksEdit: function callbacksEdit() {
       var _this = this;
+
+      this.callbacks.forEach(function (cb) {
+        console.log("this.sendData", _this.sendData);
+        cb(_this.sendData);
+        console.log('callback');
+      });
+    },
+    resetControl: function resetControl() {
+      this.callbacks = [];
+      this.sendData = {};
+    },
+
+    getStructById: function getStructById(itemId) {
+      var _this2 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId,
@@ -367,33 +404,40 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         console.log("found ", data);
-        _this.callbacksGood();
+        _this2.sendData = data;
+        _this2.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
+        _this2.sendData = (req, stat, err);
+        _this2.callbacksEdit();
         //??
       });
     },
-    deleteItem: function deleteItem(itemId, cb) {
-      var _this2 = this;
+    deleteItem: function deleteItem(itemId) {
+      var _this3 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId,
+        url: '/api/sheds/' + itemId + "/delete",
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
-        console.log('callbacks', _this2.callbacks);
+        console.log('callbacksEdit', _this3.callbacksEdit);
         console.log('deleted, ', data);
-
-        _this2.callbacksGood();
+        _this3.sendData = data;
+        _this3.callbacksEdit();
+      }).fail(function (req, stat, err) {
+        console.log('delete failure');
+        _this3.sendData = (req, stat, err);
+        _this3.callbacksEdit();
       });
     },
     addItem: function addItem(inputs) {
-      var _this3 = this;
+      var _this4 = this;
 
       //test
       console.log("sending...", inputs.name, inputs.type);
 
-      //api POST
+      //api POST NEW
       $.ajax({
         url: '/api/sheds',
         method: 'POST',
@@ -414,15 +458,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this3.callbacksFailure();
+        _this4.sendData = (req, stat, error);
+        _this4.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this3.callbacksGood();
+        _this4.sendData = data;
+        _this4.callbacksEdit();
       });
     }, //end of addItem
     editItem: function editItem(itemId, inputs) {
-      var _this4 = this;
+      var _this5 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId + '/edit',
@@ -443,11 +489,13 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this4.callbacksFailure();
+        _this5.sendData = (req, stat, err);
+        _this5.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this4.callbacksGood();
+        _this5.sendData = data;
+        _this5.callbacksEdit();
       });
     } };
 })();
@@ -528,6 +576,7 @@ if (window.AL === undefined) {
       value: function componentDidMount() {
         var _this2 = this;
 
+        AL.ControlObject.resetControl();
         AL.ControlObject.registerCallback(function () {
           _this2.populateList();
         });
@@ -623,7 +672,7 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log(this, 'viewbox unmount');
-        // this.setState({})
+        AL.ControlObject.resetControl();
       }
     }, {
       key: 'render',

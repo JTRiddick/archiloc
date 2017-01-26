@@ -12,7 +12,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentDidMount(){
-
+      AL.ControlObject.resetControl();
       AL.ControlObject.registerCallback(() => {
         this.populateList();
       });
@@ -89,7 +89,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
     componentWillUnmount(){
       console.log(this,'viewbox unmount');
-      // this.setState({})
+      AL.ControlObject.resetControl();
     }
 
     render(){

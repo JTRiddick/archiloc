@@ -63,6 +63,7 @@ module.exports = function(){
     }
     Shed.findById(req.params.shedId)
     .exec((err,data)=>{
+      console.log('data in get api to cb', data);
       cb(err,data);
     })
   })

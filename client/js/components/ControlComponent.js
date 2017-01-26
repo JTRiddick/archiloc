@@ -2,28 +2,26 @@ if (window.AL === undefined){window.AL = {}; }
 
 (() => {
   var ControlObject;
+  var sendData;
 
   window.AL.ControlObject = {
     callbacks: [],
-    postSuccess: [],
-    postFail:[],
     registerCallback: function(cb){
       this.callbacks.push(cb);
     },
-    registerFailCallback: function(cb){
-      this.callbacks.push(cb);
-    },
-    callbacksGood: function(){
+    callbacksEdit: function(){
       this.callbacks.forEach((cb) => {
-        cb();
+        console.log("this.sendData",this.sendData);
+        cb(this.sendData);
+        console.log('callback');
       })
     },
-    callbacksFailure: function(){
-      this.postFail.forEach((cb) => {
-        cb();
-      })
+    resetControl: function(){
+      this.callbacks = [];
+      this.sendData = {};
     },
-    getItemById: function(itemId){
+
+    getStructById: function(itemId){
 
       $.ajax({
         url:'/api/sheds/' + itemId,
@@ -32,32 +30,41 @@ if (window.AL === undefined){window.AL = {}; }
       })
       .done((data)=>{
         console.log("found ", data);
-        this.callbacksGood();
+        this.sendData = data;
+        this.callbacksEdit();
       })
       .fail((req,stat,err)=>{
         console.log('failed to get req,', req);
+        this.sendData = (req,stat,err);
+        this.callbacksEdit();
         //??
       })
     },
-    deleteItem: function(itemId,cb){
+    deleteItem: function(itemId){
 
       $.ajax({
-        url:'/api/sheds/' + itemId,
+        url:'/api/sheds/' + itemId +"/delete",
         method: 'DELETE',
         dataType:'JSON'
       })
       .done((data) => {
-        console.log('callbacks',this.callbacks);
+        console.log('callbacksEdit',this.callbacksEdit);
         console.log('deleted, ',data);
+        this.sendData = data;
+        this.callbacksEdit();
 
-        this.callbacksGood();
+      })
+      .fail((req,stat,err) => {
+        console.log('delete failure');
+        this.sendData = (req,stat,err);
+        this.callbacksEdit();
       });
     },
     addItem: function(inputs){
       //test
       console.log("sending...", inputs.name, inputs.type);
 
-      //api POST
+      //api POST NEW
       $.ajax({
         url: '/api/sheds',
         method: 'POST',
@@ -79,12 +86,14 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("req",req);
           console.log("stat",stat);
           console.log("err",error);
-          this.callbacksFailure();
+          this.sendData = (req,stat,error);
+          this.callbacksEdit();
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
-          this.callbacksGood();
+          this.sendData = data;
+          this.callbacksEdit();
 
         })
       },//end of addItem
@@ -110,12 +119,14 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("req",req);
           console.log("stat",stat);
           console.log("err",error);
-          this.callbacksFailure();
+          this.sendData = (req,stat,err);
+          this.callbacksEdit();
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
-          this.callbacksGood();
+          this.sendData = data;
+          this.callbacksEdit();
 
         })
       },//end of editor

@@ -49,6 +49,7 @@ table {
 /* HSL */
 /* RGB */
 .add-structure {
+  max-width: 960px;
   background-color: #0d1f2d;
   color: #dbd83b;
   margin: 2em auto;
@@ -77,6 +78,7 @@ table {
   margin: 1em auto; }
 
 .sites-view {
+  max-width: 1200px;
   margin: 0.5em auto;
   background-color: #0d1f2d;
   color: #546a7b;
@@ -124,7 +126,7 @@ table {
 
 body {
   background-color: #3f5e5a;
-  max-width: 960px;
+  max-width: 1200px;
   margin: 0 auto;
   font-family: "Andale mono", "Menlo", "Monaco", monospace; }
 

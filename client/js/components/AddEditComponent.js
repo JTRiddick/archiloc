@@ -8,30 +8,38 @@ if (window.AL === undefined){window.AL = {}; }
 
     constructor(){
       super();
-      AL.ControlObject.callbacks = [];
-    }
 
-    componentDidMount(){
+      this.state = {editMode:false};
+
       AL.ControlObject.registerCallback(() => {
         this.setState({
-          error:false,
-          lastAdded:this.data,
-        })
-      });
-      AL.ControlObject.registerFailCallback(()=>{
-        this.setState({
-          error:this.stat
+          lastAdded:AL.ControlObject.sendData
         })
       });
 
-      if (this.props){
-        console.log('mounted with props, ',this.props);
-      }
+    console.log('added callbacks', AL.ControlObject.cbSuccess,AL.ControlObject.cbFail);
+
     }
+    componentWillMount(){
+      console.log('mounting with params, ',this.props.params);
+      if(this.props.params.sId && !this.state.editMode){
+        this.setState({
+          editMode:true
+        })
+        AL.ControlObject.getStructById(this.props.params.sId);
+      }
+
+    }
+
+    componentWillUnmount(){
+      console.log('unmount');
+      AL.ControlObject.resetControl();
+    }
+
 
     validateStructure(evt){
       evt.preventDefault();
-
+      console.log("state check", this.state);
       //validate conditions here
 
       // this.submitStructure(evt);
@@ -46,24 +54,55 @@ if (window.AL === undefined){window.AL = {}; }
         city:this.cityInput.value,
         country:this.countryInput.value,
       }
-      console.log(inputs);
-      AL.ControlObject.addItem(inputs);
+
+      //edit?
+      console.log('inputs?',inputs);
+      if (this.state.editMode){
+        AL.ControlObject.editItem(this.props.params.sId,inputs);
+      }else{
+        AL.ControlObject.addItem(inputs);
+      }
+
 
     }
 
     render(){
+      console.log('@render, state set to ', this.state);
       var review;
+      var fields;
+
+      //field placeholders
+      var name = "Name";
+      var year = "Year of Construction/Completion";
+      var arch = "Architect/Firm";
+      var type = "Cultural";
+      var street = "Street";
+      var city = "City";
+      var country = "Country";
+
 
 
       if(this.state){
+        console.log('last added/edit', this.state.lastAdded);
         if(this.state.lastAdded){
           review = <ReviewData info={this.state.lastAdded} />
+          if(this.state.editMode){
+            name = this.state.lastAdded.title;
+            year = this.state.lastAdded.year || 'Add Year';
+            arch = this.state.lastAdded.arch;
+            type = this.state.lastAdded.type;
+            street = this.state.lastAdded.street;
+            city = this.state.lastAdded.city;
+            country = this.state.lastAdded.country;
+          }
+
 
           console.log('returned data in state', this.state.lastAdded);
         }
         if(this.state.error){
           review = <ReviewData warning={this.state.error} />
         }
+
       }
 
 
@@ -74,13 +113,13 @@ if (window.AL === undefined){window.AL = {}; }
 
           <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
             <h4>Details</h4>
-            <input placeholder="Name" ref={(input) => {this.nameInput = input}}/>
-            <input placeholder="Year" ref={(input) => {this.yearInput = input}}/>
-            <input placeholder="Architect/Firm" ref={(input) => {this.archInput = input}}/>
+            <input placeholder={name} ref={(input) => {this.nameInput = input}}/>
+            <input placeholder={year} ref={(input) => {this.yearInput = input}}/>
+            <input placeholder={arch} ref={(input) => {this.archInput = input}}/>
 
             <hr/>
             <h4>Categories</h4>
-            <select defaultValue="cultural" ref={(input) => {this.typeInput = input}}>
+            <select defaultValue={type} ref={(input) => {this.typeInput = input}}>
               <option value="cultural">Cultural</option>
               <option value="residential">Residential</option>
               <option value="industrial">Industrial</option>
@@ -90,9 +129,9 @@ if (window.AL === undefined){window.AL = {}; }
             <hr/>
 
             <h4>Location</h4>
-            <input placeholder="Street" ref={(input) => {this.streetInput = input}}/>
-            <input placeholder="City" ref={(input) => {this.cityInput = input}}/>
-            <input placeholder="Country" ref={(input) => {this.countryInput = input}}/>
+            <input placeholder={street} ref={(input) => {this.streetInput = input}}/>
+            <input placeholder={city} ref={(input) => {this.cityInput = input}}/>
+            <input placeholder={country} ref={(input) => {this.countryInput = input}}/>
 
             <button>Add</button>
           </form>
@@ -110,14 +149,16 @@ if (window.AL === undefined){window.AL = {}; }
       super();
 
     }
-
+    componentDidMount(){
+      console.log('review props',this.props)
+    }
 
     render(){
 
       var info;
 
       if (this.props.warning){
-
+        console.log(this.props.warning);
         info = "Error " + JSON.stringify(this.props.warning);
       }
 
@@ -136,7 +177,7 @@ if (window.AL === undefined){window.AL = {}; }
 
       return (<div className='review add-structure'>
           <h4> Saved... </h4>
-          {this.info}
+          {info}
       </div>)
     }
 
