@@ -558,13 +558,22 @@ if (window.AL === undefined) {
 }
 
 (function () {
+  var mapData;
+
+  window.AL.mapData = {
+    markers: []
+
+  };
+})();
+
+(function () {
   var MapComponent = function (_React$Component) {
     _inherits(MapComponent, _React$Component);
 
-    function MapComponent(props) {
+    function MapComponent() {
       _classCallCheck(this, MapComponent);
 
-      var _this = _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).call(this, props));
+      var _this = _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).call(this));
 
       var defaultView = { lat: 32.779, lng: -96.802 };
       var mapZoom = 10;
@@ -585,28 +594,53 @@ if (window.AL === undefined) {
         if (this.props.params.sId) {
           console.log('registerCallback');
           AL.ControlObject.registerCallback(function () {
-            _this2.addLocationObj(AL.ControlObject.locationObjects, AL.ControlObject.sendData);
+            _this2.addLocationObj(AL.ControlObject.sendData);
           });
         }
       }
     }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
-        AL.ControlObject.getStructById(this.props.params.sId);
-
         console.log('this map', this.map);
-        this.googleMap = new google.maps.Map(this.map, {
+        this.map = new google.maps.Map(this.map, {
           center: this.state.focus,
           zoom: this.state.zoom
         });
+        this.marker = new google.maps.Marker({
+          lat: 0,
+          lng: 0
+        });
+        this.geocoder = new google.maps.Geocoder();
+
+        AL.ControlObject.getStructById(this.props.params.sId);
+      }
+    }, {
+      key: 'geoCode',
+      value: function geoCode(address) {
+        console.log('geocoding');
+        this.geocoder.geocode({ 'address': address }, function handleResults(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            this.map.setCenter(results[0].geometry.location);
+            this.marker.setPosition(results[0].geometry.location);
+
+            this.setState({
+              center: results[0].formatted_address,
+              isGeocodingError: false
+            });
+            return;
+          }
+        }.bind(this));
       }
     }, {
       key: 'addLocationObj',
-      value: function addLocationObj(arr, obj) {
+      value: function addLocationObj(obj) {
+        var arr = AL.ControlObject.locationObjects;
         console.log('adding location', obj);
         arr.push(obj);
         console.log('locations,', arr, 'last', arr[arr.length - 1]._id);
-        this.geoCode(arr.pop().street);
+        var address = obj.street + " " + obj.city + " " + obj.country;
+
+        this.geoCode(address);
       }
     }, {
       key: 'setFocus',
@@ -616,30 +650,6 @@ if (window.AL === undefined) {
           zoom: 2
         });
         console.log('set focus to,', this.state.focus);
-      }
-    }, {
-      key: 'geoCode',
-      value: function geoCode(locId) {
-        var map = this.googleMap;
-        var address = locId;
-        console.log(" address to geocoder", address);
-        // address = address.street;
-        var geoCoder = new google.maps.Geocoder();
-        geoCoder.geocode({ 'address': address }, function (results, status) {
-          if (status == 'OK') {
-            var marker = new google.maps.Marker({
-              map: this.googleMap,
-              position: results[0].geometry.location
-            });
-
-            var xy = results[0].geometry.location;
-            console.log('new focus @', xy);
-          } else {
-            alert('Geocode was not successful for the following reason: ' + status);
-          }
-        });
-
-        this.setFocus(xy);
       }
 
       //^^ Test Geocode
