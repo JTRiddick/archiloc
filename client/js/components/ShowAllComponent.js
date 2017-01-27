@@ -122,7 +122,9 @@ if (window.AL === undefined){window.AL = {}; }
           <div className = "button">
            <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }>edit</ReactRouter.Link>
           </div>
-          <div className = "button" onClick={() => {console.log("This is item ID of ,",this.state.info.id)}}>view</div>
+          <div className = "button" onClick={() =>
+            {AL.ControlObject.mapOneItem(this.state.info.id)}}>view
+          </div>
         </div>
       </div>)
 

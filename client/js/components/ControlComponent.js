@@ -5,6 +5,9 @@ if (window.AL === undefined){window.AL = {}; }
   var sendData;
 
   window.AL.ControlObject = {
+    mapMarkers:[],
+    locationObjects:[],
+
     callbacks: [],
     registerCallback: function(cb){
       this.callbacks.push(cb);
@@ -32,6 +35,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log("found ", data);
         this.sendData = data;
         this.callbacksEdit();
+        console.log('control callbacks test ',this.callbacks);
       })
       .fail((req,stat,err)=>{
         console.log('failed to get req,', req);
@@ -130,6 +134,31 @@ if (window.AL === undefined){window.AL = {}; }
 
         })
       },//end of editor
+      mapOneItem: function(itemId){
+        AL.ControlObject.registerCallback(()=>{
+          console.log('geocoding');
+          // this.geoCode(this.sendData);
+        });
+
+        $.ajax({
+          url:'/api/sheds/' + itemId + '/view-map',
+          method:'GET',
+          dataType:'JSON',
+        })
+        .done((data)=>{
+          console.log("found ", data);
+          ReactRouter.hashHistory.push('/map/view-one/'+ itemId);
+          this.sendData = data;
+          this.callbacksEdit();
+        })
+        .fail((req,stat,err)=>{
+          console.log('failed to get req,', req);
+          this.sendData = (req,stat,err);
+          this.callbacksEdit();
+          //??
+        })
+
+      },//end of map one view
     } //end of control object
   }
 )();

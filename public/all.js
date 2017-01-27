@@ -393,6 +393,9 @@ if (window.AL === undefined) {
   var sendData;
 
   window.AL.ControlObject = {
+    mapMarkers: [],
+    locationObjects: [],
+
     callbacks: [],
     registerCallback: function registerCallback(cb) {
       this.callbacks.push(cb);
@@ -422,6 +425,7 @@ if (window.AL === undefined) {
         console.log("found ", data);
         _this2.sendData = data;
         _this2.callbacksEdit();
+        console.log('control callbacks test ', _this2.callbacks);
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
         _this2.sendData = (req, stat, err);
@@ -513,6 +517,30 @@ if (window.AL === undefined) {
         _this5.sendData = data;
         _this5.callbacksEdit();
       });
+    }, //end of editor
+    mapOneItem: function mapOneItem(itemId) {
+      var _this6 = this;
+
+      AL.ControlObject.registerCallback(function () {
+        console.log('geocoding');
+        // this.geoCode(this.sendData);
+      });
+
+      $.ajax({
+        url: '/api/sheds/' + itemId + '/view-map',
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function (data) {
+        console.log("found ", data);
+        ReactRouter.hashHistory.push('/map/view-one/' + itemId);
+        _this6.sendData = data;
+        _this6.callbacksEdit();
+      }).fail(function (req, stat, err) {
+        console.log('failed to get req,', req);
+        _this6.sendData = (req, stat, err);
+        _this6.callbacksEdit();
+        //??
+      });
     } };
 })();
 'use strict';
@@ -533,25 +561,93 @@ if (window.AL === undefined) {
   var MapComponent = function (_React$Component) {
     _inherits(MapComponent, _React$Component);
 
-    function MapComponent() {
+    function MapComponent(props) {
       _classCallCheck(this, MapComponent);
 
-      return _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).apply(this, arguments));
+      var _this = _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).call(this, props));
+
+      var defaultView = { lat: 32.779, lng: -96.802 };
+      var mapZoom = 10;
+      _this.state = {
+        focus: defaultView,
+        zoom: mapZoom
+      };
+      return _this;
     }
 
     _createClass(MapComponent, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        var _this2 = this;
+
+        console.log(AL.ControlObject.locationObjects);
+        console.log(this.props.params);
+        if (this.props.params.sId) {
+          console.log('registerCallback');
+          AL.ControlObject.registerCallback(function () {
+            _this2.addLocationObj(AL.ControlObject.locationObjects, AL.ControlObject.sendData);
+          });
+        }
+      }
+    }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
+        AL.ControlObject.getStructById(this.props.params.sId);
+
         console.log('this map', this.map);
         this.googleMap = new google.maps.Map(this.map, {
-          center: { lat: -34.397, lng: 150.644 },
-          zoom: 10
+          center: this.state.focus,
+          zoom: this.state.zoom
         });
       }
     }, {
+      key: 'addLocationObj',
+      value: function addLocationObj(arr, obj) {
+        console.log('adding location', obj);
+        arr.push(obj);
+        console.log('locations,', arr, 'last', arr[arr.length - 1]._id);
+        this.geoCode(arr.pop().street);
+      }
+    }, {
+      key: 'setFocus',
+      value: function setFocus(xy) {
+        this.setState({
+          focus: { xy: xy },
+          zoom: 2
+        });
+        console.log('set focus to,', this.state.focus);
+      }
+    }, {
+      key: 'geoCode',
+      value: function geoCode(locId) {
+        var map = this.googleMap;
+        var address = locId;
+        console.log(" address to geocoder", address);
+        // address = address.street;
+        var geoCoder = new google.maps.Geocoder();
+        geoCoder.geocode({ 'address': address }, function (results, status) {
+          if (status == 'OK') {
+            var marker = new google.maps.Marker({
+              map: this.googleMap,
+              position: results[0].geometry.location
+            });
+
+            var xy = results[0].geometry.location;
+            console.log('new focus @', xy);
+          } else {
+            alert('Geocode was not successful for the following reason: ' + status);
+          }
+        });
+
+        this.setFocus(xy);
+      }
+
+      //^^ Test Geocode
+
+    }, {
       key: 'render',
       value: function render() {
-        var _this2 = this;
+        var _this3 = this;
 
         return React.createElement(
           'div',
@@ -561,7 +657,7 @@ if (window.AL === undefined) {
             'div',
             null,
             React.createElement('div', { ref: function ref(map) {
-                _this2.map = map;
+                _this3.map = map;
               }, style: { width: '100%', height: '400px' } })
           )
         );
@@ -803,7 +899,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  console.log("This is item ID of ,", _this6.state.info.id);
+                  AL.ControlObject.mapOneItem(_this6.state.info.id);
                 } },
               'view'
             )
@@ -882,7 +978,11 @@ if (window.AL === undefined) {
       "ReactRouter.IndexRoute component=",
       AL.MapComponent,
       " />",
-      React.createElement(Route, { path: "/map", component: AL.MapComponent }),
+      React.createElement(
+        Route,
+        { path: "/map", component: AL.MapComponent },
+        React.createElement(Route, { path: "/map/view-one/:sId" })
+      ),
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
       React.createElement(Route, { path: "/test/asd", component: AL.AddEditComponent }),
       React.createElement(Route, { path: "/test/asd/:sId/edit", component: AL.AddEditComponent }),
