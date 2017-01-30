@@ -24,6 +24,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillMount(){
+      AL.ControlObject.resetControl();
       console.log(AL.ControlObject.locationObjects);
       console.log(this.props.params);
       if(this.props.params.sId){
@@ -50,23 +51,35 @@ if (window.AL === undefined){window.AL = {}; }
 
     }
 
+    componentWillUnmount(){
+      AL.ControlObject.resetControl();
+    }
+
 
     geoCode(address){
+
+      if (!this.map){
+        this.map = new google.maps.Map(this.map, {
+          center: this.state.focus,
+          zoom: this.state.zoom
+        });
+      }
+
       console.log('geocoding');
       this.geocoder.geocode({'address':address},function handleResults(results,status){
         if (status === google.maps.GeocoderStatus.OK){
-          this.map.setCenter(results[0].geometry.location);
 
           var marker = new google.maps.Marker({
               position: (results[0].geometry.location),
               title:"Hello World!"
           });
           marker.setMap(this.map);
-
+          this.map.setCenter(results[0].geometry.location);
 
           this.setState({
              focus: results[0].formatted_address,
-             isGeocodingError: false
+             isGeocodingError: false,
+             zoom:5
           });
          return;
         }

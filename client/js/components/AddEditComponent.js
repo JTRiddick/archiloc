@@ -1,10 +1,8 @@
 if (window.AL === undefined){window.AL = {}; }
 
-(function() {
-
+(() => {
 
   class AddEditComponent extends React.Component{
-
 
     constructor(){
       super();
@@ -191,4 +189,4 @@ if (window.AL === undefined){window.AL = {}; }
   }
   AL.ReviewData = ReviewData;
   AL.AddEditComponent = AddEditComponent;
-}());
+})();
