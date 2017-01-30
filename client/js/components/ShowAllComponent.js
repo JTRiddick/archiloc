@@ -12,11 +12,16 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentDidMount(){
-      AL.ControlObject.resetControl();
       AL.ControlObject.registerCallback(() => {
-        this.populateList();
+        this.setState({
+          sites:AL.ControlObject.sendData
+        });
       });
 
+    }
+
+    componentWillUnmount(){
+      AL.ControlObject.resetControl();
     }
 
     populateList(){
@@ -24,19 +29,8 @@ if (window.AL === undefined){window.AL = {}; }
       this.setState({
         sites:[]
       })
+      AL.ControlObject.getAll();
 
-      //api get all
-      $.ajax({
-        url: '/api/sheds',
-        method: 'GET',
-        dataType: 'JSON'
-      })
-      .done((data)=> {
-        console.log("done, recieved: \n ",data, "type of", typeof data);
-        this.setState({
-          sites:data.sheds
-        })
-      })
     }
 
     sendToNewEditor(){
@@ -44,13 +38,11 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     render(){
-
       var sitesList;
 
-      if (this.state.sites != []){
-        // sitesList = JSON.stringify(this.state.sites);
-        // ^ test
-        sitesList = this.state.sites.map((site,index) =>{
+      if (this.state.sites !== []){
+
+      sitesList = this.state.sites.map((site,index) =>{
           return <div className='site-info-box' key={index}>
                <SiteViewComponent key={site._id} info={site} del={this.deleteItem}/>
              </div>

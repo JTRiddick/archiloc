@@ -384,6 +384,8 @@ if (window.AL === undefined) {
 })();
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 if (window.AL === undefined) {
   window.AL = {};
 }
@@ -414,8 +416,25 @@ if (window.AL === undefined) {
       this.sendData = {};
     },
 
-    getStructById: function getStructById(itemId) {
+    getAll: function getAll() {
       var _this2 = this;
+
+      console.log('gettin everything');
+      //api get all
+      $.ajax({
+        url: '/api/sheds',
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function (data) {
+        console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
+        _this2.sendData = data.sheds;
+        _this2.callbacksEdit();
+        console.log('grabbd everything', data);
+      });
+    }, //end of get all
+
+    getStructById: function getStructById(itemId) {
+      var _this3 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId,
@@ -423,36 +442,36 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         console.log("found ", data);
-        _this2.sendData = data;
-        _this2.callbacksEdit();
-        console.log('control callbacks test ', _this2.callbacks);
+        _this3.sendData = data;
+        _this3.callbacksEdit();
+        console.log('control callbacks test ', _this3.callbacks);
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this2.sendData = (req, stat, err);
-        _this2.callbacksEdit();
+        _this3.sendData = (req, stat, err);
+        _this3.callbacksEdit();
         //??
       });
     },
     deleteItem: function deleteItem(itemId) {
-      var _this3 = this;
+      var _this4 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId + "/delete",
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
-        console.log('callbacksEdit', _this3.callbacksEdit);
+        console.log('callbacksEdit', _this4.callbacksEdit);
         console.log('deleted, ', data);
-        _this3.sendData = data;
-        _this3.callbacksEdit();
+        _this4.sendData = data;
+        _this4.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('delete failure');
-        _this3.sendData = (req, stat, err);
-        _this3.callbacksEdit();
+        _this4.sendData = (req, stat, err);
+        _this4.callbacksEdit();
       });
-    },
+    }, //end of delete
     addItem: function addItem(inputs) {
-      var _this4 = this;
+      var _this5 = this;
 
       //test
       console.log("sending...", inputs.name, inputs.type);
@@ -478,17 +497,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this4.sendData = (req, stat, error);
-        _this4.callbacksEdit();
+        _this5.sendData = (req, stat, error);
+        _this5.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this4.sendData = data;
-        _this4.callbacksEdit();
+        _this5.sendData = data;
+        _this5.callbacksEdit();
       });
     }, //end of addItem
     editItem: function editItem(itemId, inputs) {
-      var _this5 = this;
+      var _this6 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId + '/edit',
@@ -509,17 +528,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this5.sendData = (req, stat, err);
-        _this5.callbacksEdit();
+        _this6.sendData = (req, stat, err);
+        _this6.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this5.sendData = data;
-        _this5.callbacksEdit();
+        _this6.sendData = data;
+        _this6.callbacksEdit();
       });
     }, //end of editor
     mapOneItem: function mapOneItem(itemId) {
-      var _this6 = this;
+      var _this7 = this;
 
       AL.ControlObject.registerCallback(function () {
         console.log('geocoding');
@@ -533,12 +552,12 @@ if (window.AL === undefined) {
       }).done(function (data) {
         console.log("found ", data);
         ReactRouter.hashHistory.push('/map/view-one/' + itemId);
-        _this6.sendData = data;
-        _this6.callbacksEdit();
+        _this7.sendData = data;
+        _this7.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this6.sendData = (req, stat, err);
-        _this6.callbacksEdit();
+        _this7.sendData = (req, stat, err);
+        _this7.callbacksEdit();
         //??
       });
     } };
@@ -560,7 +579,8 @@ if (window.AL === undefined) {
 (function () {
   var mapData;
   window.AL.mapData = {
-    markers: []
+    markers: [],
+    locations: []
   };
 })();
 
@@ -587,20 +607,24 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
-        AL.ControlObject.resetControl();
-        console.log(AL.ControlObject.locationObjects);
-        console.log(this.props.params);
-        if (this.props.params.sId) {
-          console.log('registerCallback');
-          AL.ControlObject.registerCallback(function () {
-            _this2.addLocationObj(AL.ControlObject.sendData);
+        AL.ControlObject.registerCallback(function () {
+          _this2.addLocationObj(AL.mapData.locations);
+        });
+
+        AL.ControlObject.registerCallback(function () {
+          AL.ControlObject.sendData.forEach(function (item) {
+            console.log('hey its,', item);
+            AL.mapData.locations.push(item);
           });
-        }
+        });
+
+        // if(this.props.params.sId){
+        //   console.log('only,', this.props.params.sId);
+        // }
       }
     }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
-        console.log('this map', this.map);
         this.map = new google.maps.Map(this.map, {
           center: this.state.focus,
           zoom: this.state.zoom
@@ -611,7 +635,11 @@ if (window.AL === undefined) {
         });
         this.geocoder = new google.maps.Geocoder();
 
-        AL.ControlObject.getStructById(this.props.params.sId);
+        AL.ControlObject.getAll();
+
+        if (this.props.params.sId) {
+          // AL.ControlObject.getStructById(this.props.params.sId);
+        }
       }
     }, {
       key: 'componentWillUnmount',
@@ -639,11 +667,10 @@ if (window.AL === undefined) {
             });
             marker.setMap(this.map);
             this.map.setCenter(results[0].geometry.location);
-
             this.setState({
-              focus: results[0].formatted_address,
+              focus: results[0].geometry.location,
               isGeocodingError: false,
-              zoom: 5
+              zoom: 1
             });
             return;
           }
@@ -652,30 +679,34 @@ if (window.AL === undefined) {
     }, {
       key: 'addLocationObj',
       value: function addLocationObj(obj) {
+        var _this3 = this;
+
         var arr = AL.ControlObject.locationObjects;
         console.log('adding location', obj);
         arr.push(obj);
-        console.log('locations,', arr, 'last', arr[arr.length - 1]._id);
-        var address = obj.street + " " + obj.city + " " + obj.country;
 
-        this.geoCode(address);
-      }
-    }, {
-      key: 'setFocus',
-      value: function setFocus(xy) {
-        this.setState({
-          focus: { xy: xy },
-          zoom: 2
+        arr.forEach(function (obj) {
+          var address = obj.street + " " + obj.city + " " + obj.country;
+
+          _this3.geoCode(address);
         });
-        console.log('set focus to,', this.state.focus);
       }
+      //
+
 
       //^^ Test Geocode
 
     }, {
       key: 'render',
       value: function render() {
-        var _this3 = this;
+        var _this4 = this;
+
+        console.log('render state', this.state);
+        var mapOptions = {
+          focus: this.state.focus,
+          zoom: this.state.zoom
+        };
+        this.map = (this.map, mapOptions);
 
         return React.createElement(
           'div',
@@ -685,7 +716,7 @@ if (window.AL === undefined) {
             'div',
             null,
             React.createElement('div', { ref: function ref(map) {
-                _this3.map = map;
+                _this4.map = map;
               }, style: { width: '100%', height: '400px' } })
           )
         );
@@ -698,8 +729,6 @@ if (window.AL === undefined) {
   AL.MapComponent = MapComponent;
 })();
 'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -733,32 +762,25 @@ if (window.AL === undefined) {
       value: function componentDidMount() {
         var _this2 = this;
 
-        AL.ControlObject.resetControl();
         AL.ControlObject.registerCallback(function () {
-          _this2.populateList();
+          _this2.setState({
+            sites: AL.ControlObject.sendData
+          });
         });
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        AL.ControlObject.resetControl();
       }
     }, {
       key: 'populateList',
       value: function populateList() {
-        var _this3 = this;
-
         //reset
         this.setState({
           sites: []
         });
-
-        //api get all
-        $.ajax({
-          url: '/api/sheds',
-          method: 'GET',
-          dataType: 'JSON'
-        }).done(function (data) {
-          console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
-          _this3.setState({
-            sites: data.sheds
-          });
-        });
+        AL.ControlObject.getAll();
       }
     }, {
       key: 'sendToNewEditor',
@@ -768,18 +790,17 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this4 = this;
+        var _this3 = this;
 
         var sitesList;
 
-        if (this.state.sites != []) {
-          // sitesList = JSON.stringify(this.state.sites);
-          // ^ test
+        if (this.state.sites !== []) {
+
           sitesList = this.state.sites.map(function (site, index) {
             return React.createElement(
               'div',
               { className: 'site-info-box', key: index },
-              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this4.deleteItem })
+              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this3.deleteItem })
             );
           });
         }
@@ -790,14 +811,14 @@ if (window.AL === undefined) {
           React.createElement(
             'div',
             { className: 'button load', onClick: function onClick() {
-                _this4.populateList();
+                _this3.populateList();
               } },
             ' LOAD '
           ),
           React.createElement(
             'div',
             { className: 'button load new', onClick: function onClick() {
-                _this4.sendToNewEditor();
+                _this3.sendToNewEditor();
               } },
             ' ADD '
           ),
@@ -846,7 +867,7 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this6 = this;
+        var _this5 = this;
 
         var editLinkId;
 
@@ -911,7 +932,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.deleteItem(_this6.state.info.id);
+                  AL.ControlObject.deleteItem(_this5.state.info.id);
                 } },
               'delete'
             ),
@@ -927,7 +948,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.mapOneItem(_this6.state.info.id);
+                  AL.ControlObject.mapOneItem(_this5.state.info.id);
                 } },
               'view'
             )

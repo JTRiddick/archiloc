@@ -4,6 +4,7 @@ if (window.AL === undefined){window.AL = {}; }
   var mapData;
   window.AL.mapData = {
     markers:[],
+    locations:[]
   }
 })();
 
@@ -24,19 +25,26 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillMount(){
-      AL.ControlObject.resetControl();
-      console.log(AL.ControlObject.locationObjects);
-      console.log(this.props.params);
-      if(this.props.params.sId){
-        console.log('registerCallback');
-        AL.ControlObject.registerCallback(()=>{
-          this.addLocationObj(AL.ControlObject.sendData);
-        });
-      }
+      AL.ControlObject.registerCallback(()=>{
+        this.addLocationObj(AL.mapData.locations);
+      })
+
+      AL.ControlObject.registerCallback(()=>{
+        AL.ControlObject.sendData.forEach(item =>{
+          console.log('hey its,', item);
+          AL.mapData.locations.push(item);
+        })
+      })
+
+      // if(this.props.params.sId){
+      //   console.log('only,', this.props.params.sId);
+      // }
+
     }
 
+
+
     componentDidMount() {
-      console.log('this map', this.map);
       this.map = new google.maps.Map(this.map, {
         center: this.state.focus,
         zoom: this.state.zoom
@@ -47,13 +55,19 @@ if (window.AL === undefined){window.AL = {}; }
       });
       this.geocoder = new google.maps.Geocoder();
 
-      AL.ControlObject.getStructById(this.props.params.sId);
+      AL.ControlObject.getAll();
+
+      if(this.props.params.sId){
+        // AL.ControlObject.getStructById(this.props.params.sId);
+      }
+
 
     }
 
     componentWillUnmount(){
       AL.ControlObject.resetControl();
     }
+
 
 
     geoCode(address){
@@ -75,11 +89,10 @@ if (window.AL === undefined){window.AL = {}; }
           });
           marker.setMap(this.map);
           this.map.setCenter(results[0].geometry.location);
-
           this.setState({
-             focus: results[0].formatted_address,
+             focus: results[0].geometry.location,
              isGeocodingError: false,
-             zoom:5
+             zoom:1
           });
          return;
         }
@@ -90,24 +103,26 @@ if (window.AL === undefined){window.AL = {}; }
       var arr = AL.ControlObject.locationObjects;
       console.log('adding location',obj);
       arr.push(obj);
-      console.log('locations,',arr, 'last',arr[arr.length-1]._id);
-      var address = obj.street + " " + obj.city + " " + obj.country;
 
-      this.geoCode(address);
-    }
+      arr.forEach(obj =>{
+        let address = obj.street + " " + obj.city + " " + obj.country;
 
-    setFocus(xy){
-      this.setState({
-        focus:{xy},
-        zoom:2
-      });
-      console.log('set focus to,',this.state.focus);
+        this.geoCode(address);
+      })
+
     }
+    //
 
 
     //^^ Test Geocode
 
     render(){
+      console.log('render state', this.state);
+      var mapOptions = {
+        focus: this.state.focus,
+        zoom:this.state.zoom
+      }
+      this.map =(this.map,mapOptions);
 
       return (<div>Map Component
         <div>

@@ -24,6 +24,23 @@ if (window.AL === undefined){window.AL = {}; }
       this.sendData = {};
     },
 
+    getAll:function(){
+      console.log('gettin everything');
+      //api get all
+      $.ajax({
+        url: '/api/sheds',
+        method: 'GET',
+        dataType: 'JSON'
+      })
+      .done((data)=> {
+        console.log("done, recieved: \n ",data, "type of", typeof data);
+        this.sendData = data.sheds;
+        this.callbacksEdit();
+        console.log('grabbd everything',data);
+      })
+
+    },//end of get all
+
     getStructById: function(itemId){
 
       $.ajax({
@@ -63,7 +80,7 @@ if (window.AL === undefined){window.AL = {}; }
         this.sendData = (req,stat,err);
         this.callbacksEdit();
       });
-    },
+    },//end of delete
     addItem: function(inputs){
       //test
       console.log("sending...", inputs.name, inputs.type);
