@@ -559,10 +559,8 @@ if (window.AL === undefined) {
 
 (function () {
   var mapData;
-
   window.AL.mapData = {
     markers: []
-
   };
 })();
 
@@ -575,7 +573,7 @@ if (window.AL === undefined) {
 
       var _this = _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).call(this));
 
-      var defaultView = { lat: 32.779, lng: -96.802 };
+      var defaultView = { lat: 15, lng: -80 };
       var mapZoom = 10;
       _this.state = {
         focus: defaultView,
@@ -621,10 +619,15 @@ if (window.AL === undefined) {
         this.geocoder.geocode({ 'address': address }, function handleResults(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             this.map.setCenter(results[0].geometry.location);
-            this.marker.setPosition(results[0].geometry.location);
+
+            var marker = new google.maps.Marker({
+              position: results[0].geometry.location,
+              title: "Hello World!"
+            });
+            marker.setMap(this.map);
 
             this.setState({
-              center: results[0].formatted_address,
+              focus: results[0].formatted_address,
               isGeocodingError: false
             });
             return;

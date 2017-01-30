@@ -1,18 +1,13 @@
 if (window.AL === undefined){window.AL = {}; }
 
-  (()=>{
-    var mapData;
+(() => {
+  var mapData;
+  window.AL.mapData = {
+    markers:[],
+  }
+})();
 
-
-    window.AL.mapData = {
-      markers:[],
-
-
-    }
-
-  })();
-
-(function() {
+(() => {
 
 
   class MapComponent extends React.Component{
@@ -20,7 +15,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     constructor(){
       super();
-      var defaultView = {lat:32.779,lng:-96.802};
+      var defaultView = {lat:15,lng:-80};
       var mapZoom = 10;
       this.state = {
         focus: defaultView,
@@ -61,10 +56,16 @@ if (window.AL === undefined){window.AL = {}; }
       this.geocoder.geocode({'address':address},function handleResults(results,status){
         if (status === google.maps.GeocoderStatus.OK){
           this.map.setCenter(results[0].geometry.location);
-          this.marker.setPosition(results[0].geometry.location);
+
+          var marker = new google.maps.Marker({
+              position: (results[0].geometry.location),
+              title:"Hello World!"
+          });
+          marker.setMap(this.map);
+
 
           this.setState({
-             center: results[0].formatted_address,
+             focus: results[0].formatted_address,
              isGeocodingError: false
           });
          return;
@@ -107,4 +108,4 @@ if (window.AL === undefined){window.AL = {}; }
 
   AL.MapComponent = MapComponent;
 
-}());
+})();
