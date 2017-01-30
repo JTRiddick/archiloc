@@ -397,7 +397,7 @@ if (window.AL === undefined) {
   window.AL.ControlObject = {
     mapMarkers: [],
     locationObjects: [],
-
+    sendData: sendData,
     callbacks: [],
     registerCallback: function registerCallback(cb) {
       this.callbacks.push(cb);
@@ -427,9 +427,13 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
-        _this2.sendData = data.sheds;
+        _this2.sendData = data;
+        _this2.locationObjects = data;
+        console.log('get done.');
         _this2.callbacksEdit();
         console.log('grabbd everything', data);
+      }).fail(function () {
+        console.log('cant get');
       });
     }, //end of get all
 
@@ -579,8 +583,10 @@ if (window.AL === undefined) {
 (function () {
   var mapData;
   window.AL.mapData = {
+    locations: [],
     markers: [],
-    locations: []
+    defaultView: { lat: 15, lng: -80 },
+    mapZoom: 10
   };
 })();
 
@@ -593,12 +599,12 @@ if (window.AL === undefined) {
 
       var _this = _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).call(this));
 
-      var defaultView = { lat: 15, lng: -80 };
-      var mapZoom = 10;
       _this.state = {
-        focus: defaultView,
-        zoom: mapZoom
+        focus: AL.mapData.defaultView,
+        zoom: AL.mapData.mapZoom
       };
+      var locationToGeocoder;
+      var geoCode;
       return _this;
     }
 
@@ -607,20 +613,12 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
-        AL.ControlObject.registerCallback(function () {
-          _this2.addLocationObj(AL.mapData.locations);
-        });
-
-        AL.ControlObject.registerCallback(function () {
-          AL.ControlObject.sendData.forEach(function (item) {
-            console.log('hey its,', item);
-            AL.mapData.locations.push(item);
-          });
-        });
-
         // if(this.props.params.sId){
         //   console.log('only,', this.props.params.sId);
         // }
+        AL.ControlObject.registerCallback(function () {
+          return _this2.locationToGeocoder(AL.ControlObject.sendData);
+        });
       }
     }, {
       key: 'componentDidMount',
@@ -635,64 +633,47 @@ if (window.AL === undefined) {
         });
         this.geocoder = new google.maps.Geocoder();
 
-        AL.ControlObject.getAll();
-
-        if (this.props.params.sId) {
-          // AL.ControlObject.getStructById(this.props.params.sId);
-        }
+        AL.mapData.locations = AL.ControlObject.getAll();
+        console.log(this.map, this.geocoder);
       }
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         AL.ControlObject.resetControl();
       }
+
+      //
+
     }, {
       key: 'geoCode',
-      value: function geoCode(address) {
-
-        if (!this.map) {
-          this.map = new google.maps.Map(this.map, {
-            center: this.state.focus,
-            zoom: this.state.zoom
-          });
-        }
-
-        console.log('geocoding');
-        this.geocoder.geocode({ 'address': address }, function handleResults(results, status) {
+      value: function geoCode(itemId) {
+        //check for item id or obj
+        console.log('geocoding', itemId);
+        this.geocoder.geocode({ 'address': itemId.street }, function handleResults(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
 
             var marker = new google.maps.Marker({
               position: results[0].geometry.location,
-              title: "Hello World!"
+              title: itemId.title
             });
             marker.setMap(this.map);
             this.map.setCenter(results[0].geometry.location);
-            this.setState({
-              focus: results[0].geometry.location,
-              isGeocodingError: false,
-              zoom: 1
-            });
-            return;
+            //  return;
           }
         }.bind(this));
       }
     }, {
-      key: 'addLocationObj',
-      value: function addLocationObj(obj) {
+      key: 'locationToGeocoder',
+      value: function locationToGeocoder(addresses) {
         var _this3 = this;
 
-        var arr = AL.ControlObject.locationObjects;
-        console.log('adding location', obj);
-        arr.push(obj);
-
-        arr.forEach(function (obj) {
-          var address = obj.street + " " + obj.city + " " + obj.country;
-
-          _this3.geoCode(address);
+        console.log('locationToGeocoder says this is', this);
+        addresses.sheds.forEach(function (address) {
+          if (AL.mapData.markers.indexOf(address) < 0) {
+            _this3.geoCode(address);
+          }
         });
       }
-      //
-
 
       //^^ Test Geocode
 
@@ -776,11 +757,16 @@ if (window.AL === undefined) {
     }, {
       key: 'populateList',
       value: function populateList() {
+        var _this3 = this;
+
         //reset
-        this.setState({
-          sites: []
-        });
+
         AL.ControlObject.getAll();
+        AL.ControlObject.registerCallback(function () {
+          _this3.setState({
+            sites: AL.ControlObject.sendData
+          });
+        });
       }
     }, {
       key: 'sendToNewEditor',
@@ -790,17 +776,17 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this3 = this;
+        var _this4 = this;
 
         var sitesList;
 
-        if (this.state.sites !== []) {
+        if (this.state.sites && this.state.sites.length > 0) {
 
           sitesList = this.state.sites.map(function (site, index) {
             return React.createElement(
               'div',
               { className: 'site-info-box', key: index },
-              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this3.deleteItem })
+              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this4.deleteItem })
             );
           });
         }
@@ -811,14 +797,14 @@ if (window.AL === undefined) {
           React.createElement(
             'div',
             { className: 'button load', onClick: function onClick() {
-                _this3.populateList();
+                _this4.populateList();
               } },
             ' LOAD '
           ),
           React.createElement(
             'div',
             { className: 'button load new', onClick: function onClick() {
-                _this3.sendToNewEditor();
+                _this4.sendToNewEditor();
               } },
             ' ADD '
           ),
@@ -867,7 +853,7 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this5 = this;
+        var _this6 = this;
 
         var editLinkId;
 
@@ -932,7 +918,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.deleteItem(_this5.state.info.id);
+                  AL.ControlObject.deleteItem(_this6.state.info.id);
                 } },
               'delete'
             ),
@@ -948,7 +934,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.mapOneItem(_this5.state.info.id);
+                  AL.ControlObject.mapOneItem(_this6.state.info.id);
                 } },
               'view'
             )

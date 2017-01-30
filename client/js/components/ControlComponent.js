@@ -7,7 +7,7 @@ if (window.AL === undefined){window.AL = {}; }
   window.AL.ControlObject = {
     mapMarkers:[],
     locationObjects:[],
-
+    sendData: sendData,
     callbacks: [],
     registerCallback: function(cb){
       this.callbacks.push(cb);
@@ -34,11 +34,15 @@ if (window.AL === undefined){window.AL = {}; }
       })
       .done((data)=> {
         console.log("done, recieved: \n ",data, "type of", typeof data);
-        this.sendData = data.sheds;
+        this.sendData = data;
+        this.locationObjects = data;
+        console.log('get done.');
         this.callbacksEdit();
         console.log('grabbd everything',data);
       })
-
+      .fail(()=>{
+        console.log('cant get');
+      })
     },//end of get all
 
     getStructById: function(itemId){
@@ -176,6 +180,16 @@ if (window.AL === undefined){window.AL = {}; }
         })
 
       },//end of map one view
+
+      //end of geocode 1
+      // locationToList: function(data){
+      //   console.log('list/geo called',data);
+      //   data.forEach(item =>{
+      //     console.log('hey its,', item);
+      //     AL.MapComponent.locationToGeocoder(item);
+      //     this.locationObjects.push(item);
+      //   })
+      // }
     } //end of control object
   }
 )();

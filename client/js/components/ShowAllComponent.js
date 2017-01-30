@@ -26,11 +26,13 @@ if (window.AL === undefined){window.AL = {}; }
 
     populateList(){
       //reset
-      this.setState({
-        sites:[]
-      })
-      AL.ControlObject.getAll();
 
+      AL.ControlObject.getAll();
+      AL.ControlObject.registerCallback(() => {
+        this.setState({
+          sites:AL.ControlObject.sendData
+        });
+      });
     }
 
     sendToNewEditor(){
@@ -40,7 +42,7 @@ if (window.AL === undefined){window.AL = {}; }
     render(){
       var sitesList;
 
-      if (this.state.sites !== []){
+      if (this.state.sites && this.state.sites.length > 0){
 
       sitesList = this.state.sites.map((site,index) =>{
           return <div className='site-info-box' key={index}>
@@ -127,4 +129,4 @@ if (window.AL === undefined){window.AL = {}; }
 
   AL.SiteViewComponent = SiteViewComponent;
   AL.ShowAllComponent = ShowAllComponent;
-}());
+})();
