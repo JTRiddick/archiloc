@@ -50,7 +50,7 @@ table {
 /* RGB */
 .add-structure {
   max-width: 960px;
-  background-color: #0d1f2d;
+  background-color: #2b3341;
   color: #dbd83b;
   margin: 2em auto;
   padding: 12px; }
@@ -104,7 +104,7 @@ table {
 .sites-view {
   max-width: 1200px;
   margin: 0.5em auto;
-  background-color: #0d1f2d;
+  background-color: #2b3341;
   color: #546a7b;
   position: relative;
   overflow: auto; }
@@ -113,15 +113,17 @@ table {
     float: left;
     width: calc(33.333% - 0.75em);
     background-color: black;
-    margin: 0.5em 0.25em; }
+    margin: 0.5em 0.25em;
+    overflow: none; }
   .sites-view .site-info {
     background-color: #546a7b;
-    color: #0d1f2d; }
+    color: #2b3341;
+    height: 144px; }
   .sites-view .site-controls {
     margin: 0.2em 0; }
   .sites-view .button {
     border: #dbd83b;
-    background-color: #0d1f2d;
+    background-color: #2b3341;
     color: #546a7b;
     display: inline-block;
     width: 20%;

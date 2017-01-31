@@ -29,9 +29,9 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillMount(){
 
-      // if(this.props.params.sId){
-      //   console.log('only,', this.props.params.sId);
-      // }
+      if(this.props.params.sId){
+        console.log('only,', this.props.params.sId);
+      }
       AL.ControlObject.registerCallback(()=>this.locationToGeocoder(AL.ControlObject.sendData));
     }
 

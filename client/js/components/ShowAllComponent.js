@@ -14,7 +14,7 @@ if (window.AL === undefined){window.AL = {}; }
     componentDidMount(){
       AL.ControlObject.registerCallback(() => {
         this.setState({
-          sites:AL.ControlObject.sendData
+          sites:AL.ControlObject.sendData.sheds
         });
       });
 
@@ -28,11 +28,7 @@ if (window.AL === undefined){window.AL = {}; }
       //reset
 
       AL.ControlObject.getAll();
-      AL.ControlObject.registerCallback(() => {
-        this.setState({
-          sites:AL.ControlObject.sendData
-        });
-      });
+
     }
 
     sendToNewEditor(){
@@ -41,7 +37,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     render(){
       var sitesList;
-
+      console.log(this.state.sites);
       if (this.state.sites && this.state.sites.length > 0){
 
       sitesList = this.state.sites.map((site,index) =>{

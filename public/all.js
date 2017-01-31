@@ -613,9 +613,9 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
-        // if(this.props.params.sId){
-        //   console.log('only,', this.props.params.sId);
-        // }
+        if (this.props.params.sId) {
+          console.log('only,', this.props.params.sId);
+        }
         AL.ControlObject.registerCallback(function () {
           return _this2.locationToGeocoder(AL.ControlObject.sendData);
         });
@@ -745,7 +745,7 @@ if (window.AL === undefined) {
 
         AL.ControlObject.registerCallback(function () {
           _this2.setState({
-            sites: AL.ControlObject.sendData
+            sites: AL.ControlObject.sendData.sheds
           });
         });
       }
@@ -757,16 +757,9 @@ if (window.AL === undefined) {
     }, {
       key: 'populateList',
       value: function populateList() {
-        var _this3 = this;
-
         //reset
 
         AL.ControlObject.getAll();
-        AL.ControlObject.registerCallback(function () {
-          _this3.setState({
-            sites: AL.ControlObject.sendData
-          });
-        });
       }
     }, {
       key: 'sendToNewEditor',
@@ -776,17 +769,17 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this4 = this;
+        var _this3 = this;
 
         var sitesList;
-
+        console.log(this.state.sites);
         if (this.state.sites && this.state.sites.length > 0) {
 
           sitesList = this.state.sites.map(function (site, index) {
             return React.createElement(
               'div',
               { className: 'site-info-box', key: index },
-              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this4.deleteItem })
+              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this3.deleteItem })
             );
           });
         }
@@ -797,14 +790,14 @@ if (window.AL === undefined) {
           React.createElement(
             'div',
             { className: 'button load', onClick: function onClick() {
-                _this4.populateList();
+                _this3.populateList();
               } },
             ' LOAD '
           ),
           React.createElement(
             'div',
             { className: 'button load new', onClick: function onClick() {
-                _this4.sendToNewEditor();
+                _this3.sendToNewEditor();
               } },
             ' ADD '
           ),
@@ -853,7 +846,7 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this6 = this;
+        var _this5 = this;
 
         var editLinkId;
 
@@ -918,7 +911,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.deleteItem(_this6.state.info.id);
+                  AL.ControlObject.deleteItem(_this5.state.info.id);
                 } },
               'delete'
             ),
@@ -934,7 +927,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.mapOneItem(_this6.state.info.id);
+                  AL.ControlObject.mapOneItem(_this5.state.info.id);
                 } },
               'view'
             )
