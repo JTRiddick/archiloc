@@ -2,6 +2,7 @@
 
   background-color: $color3;
   position: absolute;
+  width:80%;
 
   .top-bar{
 
@@ -12,13 +13,19 @@
     float:left;
     clear:left;
     position: absolute;
-    
 
+
+  }
+
+  .map-pane{
+    min-width: 33%;
   }
 
   .info-pane{
     position: relative;
-
-
+    max-height: auto;
+    min-height:60px;
+    background-color: $color1;
+    color:$color2;
   }
 }

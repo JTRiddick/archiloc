@@ -151,6 +151,25 @@ table {
     text-decoration: none;
     color: #546a7b; }
 
+#map-component {
+  background-color: #3f5e5a;
+  position: absolute;
+  width: 80%; }
+  #map-component .top-bar {
+    overflow: auto; }
+  #map-component .left-bar {
+    float: left;
+    clear: left;
+    position: absolute; }
+  #map-component .map-pane {
+    min-width: 33%; }
+  #map-component .info-pane {
+    position: relative;
+    max-height: auto;
+    min-height: 60px;
+    background-color: #2b3341;
+    color: #546a7b; }
+
 body {
   background-color: #3f5e5a;
   max-width: 1200px;

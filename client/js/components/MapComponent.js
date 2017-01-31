@@ -28,6 +28,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillMount(){
+      AL.mapData.markers = sessionStorage.getItem("markers") || [];
 
       if(this.props.params.sId){
         console.log('only,', this.props.params.sId);
@@ -54,6 +55,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillUnmount(){
       AL.ControlObject.resetControl();
+      sessionStorage.setItem('markers', AL.mapData.markers);
     }
 
 
@@ -68,28 +70,38 @@ if (window.AL === undefined){window.AL = {}; }
               position: (results[0].geometry.location),
               title:itemId.title
           });
-          AL.mapData.markers.push(marker);
+
           marker.setMap(this.map);
-          this.map.setCenter(results[0].geometry.location);
-          var contentString = '<div id="content">'+
-            '<div class="infobox-title">'+
-            itemId.title + '</div>'+
-            '<div class="infobox-arch">' + itemId.arch + '</div>'+
-          '</div>';
 
-          var infowindow = new google.maps.InfoWindow({
-           content: contentString
-          });
+          AL.mapData.markers.push(marker);
+          sessionStorage.setItem('markers', AL.mapData.markers);
 
-         marker.addListener('click', function() {
-           infowindow.open(this.map, marker);
-         });
-         this.map.addListener('click',()=>{
-           infowindow.close(this.map,marker);
-         });
+          markMap(this.map,itemId);
           return;
         }
       }.bind(this))
+    }
+
+    markMap(mapRef,site){
+      var stored = AL.mapData.markers;
+
+      mapRef.setCenter(stored.results[0].geometry.location);
+      var contentString = '<div id="content">'+
+        '<div class="infobox-title">'+
+        itemId.title + '</div>'+
+        '<div class="infobox-arch">' + itemId.arch + '</div>'+
+      '</div>';
+
+      var infowindow = new google.maps.InfoWindow({
+       content: contentString
+      });
+
+     marker.addListener('click', function() {
+       infowindow.open(mapRef, marker);
+     });
+     this.map.addListener('click',()=>{
+       infowindow.close(mapRef,marker);
+     });
     }
 
     locationToGeocoder(addresses){
@@ -97,6 +109,10 @@ if (window.AL === undefined){window.AL = {}; }
       addresses.sheds.forEach(address => {
         if(AL.mapData.markers.indexOf(address)<0){
           this.geoCode(address);
+        }
+        else{
+          console.log('skipped geocoding,',address);
+          this.markMap(this.map,address);
         }
       })
     }
@@ -113,7 +129,7 @@ if (window.AL === undefined){window.AL = {}; }
 
       return (<div id="map-component">Map Component
         <div>
-          <div ref={(map) =>
+          <div className="map-pane" ref={(map) =>
             { this.map = map; }} style={{width: '100%', height: '400px'}}>
           </div>
           <div className="info-pane">
