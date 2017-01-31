@@ -601,7 +601,11 @@ if (window.AL === undefined) {
 
       _this.state = {
         focus: AL.mapData.defaultView,
-        zoom: AL.mapData.mapZoom
+        zoom: AL.mapData.mapZoom,
+        infoClass: 'oof',
+        controlClass: 'inactive center',
+        mapClass: 'center',
+        showSite: null
       };
       var locationToGeocoder;
       var geoCode;
@@ -627,10 +631,11 @@ if (window.AL === undefined) {
           center: this.state.focus,
           zoom: this.state.zoom
         });
-        this.marker = new google.maps.Marker({
-          lat: 0,
-          lng: 0
-        });
+
+        // this.marker = new google.maps.Marker({
+        //   lat: 0,
+        //   lng: 0
+        // });
         this.geocoder = new google.maps.Geocoder();
 
         AL.mapData.locations = AL.ControlObject.getAll();
@@ -650,29 +655,15 @@ if (window.AL === undefined) {
         //check for item id or obj
         console.log('geocoding', itemId);
         this.geocoder.geocode({ 'address': itemId.street }, function handleResults(results, status) {
-          var _this3 = this;
-
           if (status === google.maps.GeocoderStatus.OK) {
-
+            this.map.setCenter(results[0].geometry.location);
             var marker = new google.maps.Marker({
               position: results[0].geometry.location,
               title: itemId.title
             });
-            AL.mapData.markers.push(marker);
-            marker.setMap(this.map);
-            this.map.setCenter(results[0].geometry.location);
-            var contentString = '<div id="content">' + '<div class="infobox-title">' + itemId.title + '</div>' + '<div class="infobox-arch">' + itemId.arch + '</div>' + '</div>';
 
-            var infowindow = new google.maps.InfoWindow({
-              content: contentString
-            });
+            this.markMap(this.map, marker, itemId);
 
-            marker.addListener('click', function () {
-              infowindow.open(this.map, marker);
-            });
-            this.map.addListener('click', function () {
-              infowindow.close(_this3.map, marker);
-            });
             return;
           }
         }.bind(this));
@@ -680,12 +671,12 @@ if (window.AL === undefined) {
     }, {
       key: 'locationToGeocoder',
       value: function locationToGeocoder(addresses) {
-        var _this4 = this;
+        var _this3 = this;
 
         console.log('locationToGeocoder says this is', this);
         addresses.sheds.forEach(function (address) {
           if (AL.mapData.markers.indexOf(address) < 0) {
-            _this4.geoCode(address);
+            _this3.geoCode(address);
           }
         });
       }
@@ -693,16 +684,65 @@ if (window.AL === undefined) {
       //^^ Test Geocode
 
     }, {
+      key: 'markMap',
+      value: function markMap(mapRef, marker, item) {
+        var _this4 = this;
+
+        marker.setMap(mapRef);
+
+        var contentString = '<div id="content">' + '<div class="infobox-title">' + item.title + '</div>' + '<div class="infobox-arch">' + item.arch + '</div>' + '</div>';
+
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+        marker.addListener('click', function () {
+          infowindow.open(_this4.map, marker);
+          _this4.setState({
+            showSite: item,
+            infoClass: 'aif',
+            mapClass: 'right'
+          });
+          mapRef.setZoom(18);
+          mapRef.setCenter(marker.getPosition());
+        });
+        this.map.addListener('click', function () {
+          infowindow.close(_this4.map, marker);
+          _this4.setState({
+            showSite: null,
+            infoClass: 'oof',
+            mapClass: 'center'
+          });
+        });
+
+        AL.mapData.markers.push(marker);
+
+        return;
+      }
+    }, {
       key: 'render',
       value: function render() {
         var _this5 = this;
 
         console.log('render state', this.state);
+
+        var mapClass = "map-pane " + this.state.mapClass;
+        var infoClass = "info-pane " + this.state.infoClass;
+        var controlClass = "control-pane " + this.state.controlClass;
+
+        var info = '';
+        var controls = '';
+
+        if (this.state.showSite !== null) {
+          info = React.createElement(InfoComponent, { showSite: this.state.showSite });
+        }
+
         var mapOptions = {
           focus: this.state.focus,
           zoom: this.state.zoom
         };
         this.map = (this.map, mapOptions);
+        //^ DOES NOT WORK
 
         return React.createElement(
           'div',
@@ -710,17 +750,109 @@ if (window.AL === undefined) {
           'Map Component',
           React.createElement(
             'div',
-            null,
-            React.createElement('div', { ref: function ref(map) {
+            { className: 'component-inner' },
+            React.createElement('div', { className: mapClass, ref: function ref(map) {
                 _this5.map = map;
               }, style: { width: '100%', height: '400px' } }),
-            React.createElement('div', { className: 'info-pane' })
+            React.createElement(
+              'div',
+              { className: infoClass },
+              info
+            ),
+            React.createElement(
+              'div',
+              { className: controlClass },
+              controls
+            )
           )
         );
       }
     }]);
 
     return MapComponent;
+  }(React.Component);
+
+  var InfoComponent = function (_React$Component2) {
+    _inherits(InfoComponent, _React$Component2);
+
+    function InfoComponent() {
+      _classCallCheck(this, InfoComponent);
+
+      return _possibleConstructorReturn(this, (InfoComponent.__proto__ || Object.getPrototypeOf(InfoComponent)).call(this));
+    }
+
+    _createClass(InfoComponent, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.setState({
+          info: this.props.showSite
+        });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+
+        return React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'ol',
+            null,
+            React.createElement(
+              'li',
+              null,
+              'Name: ',
+              this.state.info.title,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Year: ',
+              this.state.info.year,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Arch: ',
+              this.state.info.arch,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Type: ',
+              this.state.info.type,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Street: ',
+              this.state.info.street,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'City: ',
+              this.state.info.city,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Country: ',
+              this.state.info.country,
+              ' '
+            )
+          )
+        );
+      }
+    }]);
+
+    return InfoComponent;
   }(React.Component);
 
   AL.MapComponent = MapComponent;
@@ -1022,11 +1154,8 @@ if (window.AL === undefined) {
       "ReactRouter.IndexRoute component=",
       AL.MapComponent,
       " />",
-      React.createElement(
-        Route,
-        { path: "/map", component: AL.MapComponent },
-        React.createElement(Route, { path: "/map/view-one/:sId" })
-      ),
+      React.createElement(Route, { path: "/map", component: AL.MapComponent }),
+      React.createElement(Route, { path: "/map/view-one/:sId", component: AL.MapComponent }),
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
       React.createElement(Route, { path: "/test/asd", component: AL.AddEditComponent }),
       React.createElement(Route, { path: "/test/asd/:sId/edit", component: AL.AddEditComponent }),

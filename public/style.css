@@ -151,6 +151,53 @@ table {
     text-decoration: none;
     color: #546a7b; }
 
+#map-component {
+  background-color: #3f5e5a;
+  position: absolute;
+  width: 100%; }
+  #map-component .component-inner {
+    overflow: auto;
+    margin: 0 auto;
+    position: absolute;
+    min-height: 960px;
+    max-height: 100%;
+    width: 100%; }
+  #map-component .top-bar {
+    overflow: auto; }
+  #map-component .left-bar {
+    float: left;
+    clear: left;
+    position: absolute; }
+  #map-component .right {
+    clear: right;
+    float: right; }
+  #map-component .control-pane {
+    position: absolute;
+    max-height: 300px;
+    width: 100%;
+    background-color: #2b3341;
+    color: #546a7b;
+    min-height: 60px;
+    bottom: 0px; }
+  #map-component .map-pane {
+    min-width: 33%;
+    max-width: 66%;
+    position: relative; }
+  #map-component .center {
+    width: 100%;
+    margin: 0 auto; }
+  #map-component .info-pane {
+    float: left;
+    position: relative;
+    width: 33%;
+    min-height: 60px;
+    background-color: #2b3341;
+    color: #546a7b; }
+  #map-component .aif {
+    right: 0px; }
+  #map-component .oof {
+    right: 5500px; }
+
 body {
   background-color: #3f5e5a;
   max-width: 1200px;
