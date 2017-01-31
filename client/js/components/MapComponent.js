@@ -25,17 +25,25 @@ if (window.AL === undefined){window.AL = {}; }
         infoClass:'oof',
         controlClass:'inactive center',
         mapClass:'center',
-        showSite:null
+        showSite:null,
+        findingOne:false
       }
       var locationToGeocoder;
       var geoCode;
     }
 
-    componentWillMount(){
 
+
+    componentWillMount(){
       if(this.props.params.sId){
         console.log('only,', this.props.params.sId);
+        this.setState({
+          findingOne:true
+        })
+      }else{
+        console.log('showing maximum stuff');
       }
+
       AL.ControlObject.registerCallback(()=>this.locationToGeocoder(AL.ControlObject.sendData));
     }
 
@@ -47,14 +55,16 @@ if (window.AL === undefined){window.AL = {}; }
         zoom: this.state.zoom
       });
 
-      // this.marker = new google.maps.Marker({
-      //   lat: 0,
-      //   lng: 0
-      // });
+      this.marker = new google.maps.Marker({
+        lat: 0,
+        lng: 0
+      });
+
       this.geocoder = new google.maps.Geocoder();
 
       AL.mapData.locations = AL.ControlObject.getAll();
       console.log(this.map,this.geocoder);
+
     }
 
     componentWillUnmount(){
@@ -84,9 +94,14 @@ if (window.AL === undefined){window.AL = {}; }
     locationToGeocoder(addresses){
       console.log('locationToGeocoder says this is',this);
       addresses.sheds.forEach(address => {
-        if(AL.mapData.markers.indexOf(address)<0){
+        if(this.state.findingOne && (address.id === this.props.params.sId)){
+          this.geoCode(address);
+          return;
+        }
+        else if(!this.state.findingOne && AL.mapData.markers.indexOf(address)<0){
           this.geoCode(address);
         }
+
       })
     }
 
@@ -118,21 +133,42 @@ if (window.AL === undefined){window.AL = {}; }
        mapRef.setZoom(18);
        mapRef.setCenter(marker.getPosition());
      });
-     this.map.addListener('click',()=>{
+     mapRef.addListener('click',()=>{
        infowindow.close(this.map,marker);
        this.setState({
          showSite:null,
          infoClass:'oof',
          mapClass:'center'
        })
+       mapRef.setZoom(AL.mapData.mapZoom)
      });
-
-  
 
      AL.mapData.markers.push(marker);
 
+
+     if(this.state.findingOne){
+       console.log('and its..,', this.props.params.sId);
+       if (item.id === this.props.params.sId){
+         infowindow.open(this.map,marker);
+         this.setState({
+           showSite:item,
+           infoClass:'aif',
+           mapClass:'right'
+         })
+          mapRef.setCenter(marker.getPosition());
+         return;
+       }
+
+     }
+
      return;
 
+    }
+
+    selectFocus(sId){
+      console.log(AL.mapData.markers);
+
+      //test^
     }
 
     render(){
