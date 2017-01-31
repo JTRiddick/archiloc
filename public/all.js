@@ -99,7 +99,7 @@ if (window.AL === undefined) {
         var arch = "Architect/Firm";
         var type = "Cultural";
         var street = "Street";
-        var city = "City";
+        var city = "City, State";
         var country = "Country";
 
         if (this.state) {
@@ -650,27 +650,42 @@ if (window.AL === undefined) {
         //check for item id or obj
         console.log('geocoding', itemId);
         this.geocoder.geocode({ 'address': itemId.street }, function handleResults(results, status) {
+          var _this3 = this;
+
           if (status === google.maps.GeocoderStatus.OK) {
 
             var marker = new google.maps.Marker({
               position: results[0].geometry.location,
               title: itemId.title
             });
+            AL.mapData.markers.push(marker);
             marker.setMap(this.map);
             this.map.setCenter(results[0].geometry.location);
-            //  return;
+            var contentString = '<div id="content">' + '<div class="infobox-title">' + itemId.title + '</div>' + '<div class="infobox-arch">' + itemId.arch + '</div>' + '</div>';
+
+            var infowindow = new google.maps.InfoWindow({
+              content: contentString
+            });
+
+            marker.addListener('click', function () {
+              infowindow.open(this.map, marker);
+            });
+            this.map.addListener('click', function () {
+              infowindow.close(_this3.map, marker);
+            });
+            return;
           }
         }.bind(this));
       }
     }, {
       key: 'locationToGeocoder',
       value: function locationToGeocoder(addresses) {
-        var _this3 = this;
+        var _this4 = this;
 
         console.log('locationToGeocoder says this is', this);
         addresses.sheds.forEach(function (address) {
           if (AL.mapData.markers.indexOf(address) < 0) {
-            _this3.geoCode(address);
+            _this4.geoCode(address);
           }
         });
       }
@@ -680,7 +695,7 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this4 = this;
+        var _this5 = this;
 
         console.log('render state', this.state);
         var mapOptions = {
@@ -691,14 +706,15 @@ if (window.AL === undefined) {
 
         return React.createElement(
           'div',
-          null,
+          { id: 'map-component' },
           'Map Component',
           React.createElement(
             'div',
             null,
             React.createElement('div', { ref: function ref(map) {
-                _this4.map = map;
-              }, style: { width: '100%', height: '400px' } })
+                _this5.map = map;
+              }, style: { width: '100%', height: '400px' } }),
+            React.createElement('div', { className: 'info-pane' })
           )
         );
       }

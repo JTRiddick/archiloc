@@ -79,7 +79,7 @@ if (window.AL === undefined){window.AL = {}; }
       var arch = "Architect/Firm";
       var type = "Cultural";
       var street = "Street";
-      var city = "City";
+      var city = "City, State";
       var country = "Country";
 
 

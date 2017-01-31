@@ -68,9 +68,26 @@ if (window.AL === undefined){window.AL = {}; }
               position: (results[0].geometry.location),
               title:itemId.title
           });
+          AL.mapData.markers.push(marker);
           marker.setMap(this.map);
           this.map.setCenter(results[0].geometry.location);
-        //  return;
+          var contentString = '<div id="content">'+
+            '<div class="infobox-title">'+
+            itemId.title + '</div>'+
+            '<div class="infobox-arch">' + itemId.arch + '</div>'+
+          '</div>';
+
+          var infowindow = new google.maps.InfoWindow({
+           content: contentString
+          });
+
+         marker.addListener('click', function() {
+           infowindow.open(this.map, marker);
+         });
+         this.map.addListener('click',()=>{
+           infowindow.close(this.map,marker);
+         });
+          return;
         }
       }.bind(this))
     }
@@ -94,10 +111,12 @@ if (window.AL === undefined){window.AL = {}; }
       }
       this.map = (this.map,mapOptions);
 
-      return (<div>Map Component
+      return (<div id="map-component">Map Component
         <div>
           <div ref={(map) =>
             { this.map = map; }} style={{width: '100%', height: '400px'}}>
+          </div>
+          <div className="info-pane">
           </div>
         </div>
       </div>);
