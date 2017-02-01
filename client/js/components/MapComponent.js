@@ -40,11 +40,23 @@ if (window.AL === undefined){window.AL = {}; }
         this.setState({
           findingOne:true
         })
+        AL.ControlObject.registerCallback(()=>{
+          AL.mapData.locations.push(AL.ControlObject.sendData);
+        })
       }else{
         console.log('showing maximum stuff');
+        console.log('fill mapdata locations list with',AL.ControlObject.sendData);
+        AL.ControlObject.registerCallback(()=>
+         AL.ControlObject.sendData.sheds.forEach(item => {
+          AL.mapData.locations.push(item);
+        }))
       }
 
-      AL.ControlObject.registerCallback(()=>this.locationToGeocoder(AL.ControlObject.sendData));
+
+
+      //moves control data to list
+      AL.ControlObject.registerCallback(()=>this.locationToGeocoder(AL.mapData.locations));
+      //registers callback to geocode (then locate and mark) points of interest
     }
 
 
@@ -56,13 +68,19 @@ if (window.AL === undefined){window.AL = {}; }
       });
 
       this.marker = new google.maps.Marker({
-        lat: 0,
-        lng: 0
+        lat: 30,
+        lng: 30
       });
 
       this.geocoder = new google.maps.Geocoder();
 
-      AL.mapData.locations = AL.ControlObject.getAll();
+      if(!this.state.findingOne){
+        AL.ControlObject.getAll();
+      }else{
+        AL.ControlObject.getStructById(this.props.params.sId)
+      }
+
+      //sets mapdata locations and triggers callback to run geo+location
       console.log(this.map,this.geocoder);
 
     }
@@ -75,7 +93,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     geoCode(itemId){
       //check for item id or obj
-      console.log('geocoding',itemId);
+      console.log('GEOCODE',itemId);
       this.geocoder.geocode({'address':itemId.street},function handleResults(results,status){
         if (status === google.maps.GeocoderStatus.OK){
           this.map.setCenter(results[0].geometry.location);
@@ -92,17 +110,13 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     locationToGeocoder(addresses){
-      console.log('locationToGeocoder says this is',this);
-      addresses.sheds.forEach(address => {
-        if(this.state.findingOne && (address.id === this.props.params.sId)){
-          this.geoCode(address);
-          return;
-        }
-        else if(!this.state.findingOne && AL.mapData.markers.indexOf(address)<0){
-          this.geoCode(address);
-        }
+      console.log('locationToGeocoder says this is',addresses);
+        addresses.forEach(address => {
+           if( AL.mapData.markers.indexOf(address)<0){
+            this.geoCode(address);
+          }
+        })
 
-      })
     }
 
     //^^ Test Geocode
@@ -128,7 +142,7 @@ if (window.AL === undefined){window.AL = {}; }
        this.setState({
          showSite:item,
          infoClass:'aif',
-         mapClass:'right'
+         mapClass:'two-thirds-map'
        })
        mapRef.setZoom(18);
        mapRef.setCenter(marker.getPosition());
@@ -146,23 +160,19 @@ if (window.AL === undefined){window.AL = {}; }
      AL.mapData.markers.push(marker);
 
 
-     if(this.state.findingOne){
+     if(this.state.findingOne ===true){
        console.log('and its..,', this.props.params.sId);
-       if (item.id === this.props.params.sId){
-         infowindow.open(this.map,marker);
-         this.setState({
-           showSite:item,
-           infoClass:'aif',
-           mapClass:'right'
-         })
-          mapRef.setCenter(marker.getPosition());
-         return;
-       }
+
+       mapRef.setCenter(marker.getPosition());
+       infowindow.open(this.map,marker);
+       this.setState({
+         showSite:item,
+         infoClass:'aif',
+         mapClass:'two-thirds-map'
+       })
 
      }
-
      return;
-
     }
 
     selectFocus(sId){
@@ -194,12 +204,13 @@ if (window.AL === undefined){window.AL = {}; }
 
       return (<div id="map-component">Map Component
         <div className="component-inner">
-          <div className={mapClass} ref={(map) =>
-            { this.map = map; }} style={{width: '100%', height: '400px'}}>
-          </div>
           <div className={infoClass}>
           {info}
           </div>
+          <div className={mapClass} ref={(map) =>
+            { this.map = map; }} style={{height: '640px'}}>
+          </div>
+
           <div className={controlClass}>
           {controls}
           </div>
@@ -221,7 +232,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     render(){
 
-      return (<div>
+      return (<div className="info-box-text">
         <ol>
          <li>Name: {this.state.info.title} </li>
          <li>Year: {this.state.info.year} </li>

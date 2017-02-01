@@ -15,7 +15,7 @@ if (window.AL === undefined){window.AL = {}; }
     callbacksEdit: function(){
       this.callbacks.forEach((cb) => {
         console.log("this.sendData",this.sendData);
-        cb(this.sendData);
+        cb();
         console.log('callback');
       })
     },
@@ -56,7 +56,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log("found ", data);
         this.sendData = data;
         this.callbacksEdit();
-        console.log('control callbacks test ',this.callbacks);
+        console.log('control callbacks test, callbacks are done ',this.callbacks);
       })
       .fail((req,stat,err)=>{
         console.log('failed to get req,', req);
@@ -156,10 +156,10 @@ if (window.AL === undefined){window.AL = {}; }
         })
       },//end of editor
       mapOneItem: function(itemId){
-        AL.ControlObject.registerCallback(()=>{
-          console.log('geocoding');
-          // this.geoCode(this.sendData);
-        });
+        // AL.ControlObject.registerCallback(()=>{
+        //   console.log('geocoding');
+        //   // this.geoCode(this.sendData);
+        // });
 
         $.ajax({
           url:'/api/sheds/' + itemId + '/view-map',

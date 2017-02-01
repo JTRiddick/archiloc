@@ -407,7 +407,7 @@ if (window.AL === undefined) {
 
       this.callbacks.forEach(function (cb) {
         console.log("this.sendData", _this.sendData);
-        cb(_this.sendData);
+        cb();
         console.log('callback');
       });
     },
@@ -448,7 +448,7 @@ if (window.AL === undefined) {
         console.log("found ", data);
         _this3.sendData = data;
         _this3.callbacksEdit();
-        console.log('control callbacks test ', _this3.callbacks);
+        console.log('control callbacks test, callbacks are done ', _this3.callbacks);
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
         _this3.sendData = (req, stat, err);
@@ -544,10 +544,10 @@ if (window.AL === undefined) {
     mapOneItem: function mapOneItem(itemId) {
       var _this7 = this;
 
-      AL.ControlObject.registerCallback(function () {
-        console.log('geocoding');
-        // this.geoCode(this.sendData);
-      });
+      // AL.ControlObject.registerCallback(()=>{
+      //   console.log('geocoding');
+      //   // this.geoCode(this.sendData);
+      // });
 
       $.ajax({
         url: '/api/sheds/' + itemId + '/view-map',
@@ -623,13 +623,24 @@ if (window.AL === undefined) {
           this.setState({
             findingOne: true
           });
+          AL.ControlObject.registerCallback(function () {
+            AL.mapData.locations.push(AL.ControlObject.sendData);
+          });
         } else {
           console.log('showing maximum stuff');
+          console.log('fill mapdata locations list with', AL.ControlObject.sendData);
+          AL.ControlObject.registerCallback(function () {
+            return AL.ControlObject.sendData.sheds.forEach(function (item) {
+              AL.mapData.locations.push(item);
+            });
+          });
         }
 
+        //moves control data to list
         AL.ControlObject.registerCallback(function () {
-          return _this2.locationToGeocoder(AL.ControlObject.sendData);
+          return _this2.locationToGeocoder(AL.mapData.locations);
         });
+        //registers callback to geocode (then locate and mark) points of interest
       }
     }, {
       key: 'componentDidMount',
@@ -640,13 +651,19 @@ if (window.AL === undefined) {
         });
 
         this.marker = new google.maps.Marker({
-          lat: 0,
-          lng: 0
+          lat: 30,
+          lng: 30
         });
 
         this.geocoder = new google.maps.Geocoder();
 
-        AL.mapData.locations = AL.ControlObject.getAll();
+        if (!this.state.findingOne) {
+          AL.ControlObject.getAll();
+        } else {
+          AL.ControlObject.getStructById(this.props.params.sId);
+        }
+
+        //sets mapdata locations and triggers callback to run geo+location
         console.log(this.map, this.geocoder);
       }
     }, {
@@ -661,7 +678,7 @@ if (window.AL === undefined) {
       key: 'geoCode',
       value: function geoCode(itemId) {
         //check for item id or obj
-        console.log('geocoding', itemId);
+        console.log('GEOCODE', itemId);
         this.geocoder.geocode({ 'address': itemId.street }, function handleResults(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             this.map.setCenter(results[0].geometry.location);
@@ -681,12 +698,9 @@ if (window.AL === undefined) {
       value: function locationToGeocoder(addresses) {
         var _this3 = this;
 
-        console.log('locationToGeocoder says this is', this);
-        addresses.sheds.forEach(function (address) {
-          if (_this3.state.findingOne && address.id === _this3.props.params.sId) {
-            _this3.geoCode(address);
-            return;
-          } else if (!_this3.state.findingOne && AL.mapData.markers.indexOf(address) < 0) {
+        console.log('locationToGeocoder says this is', addresses);
+        addresses.forEach(function (address) {
+          if (AL.mapData.markers.indexOf(address) < 0) {
             _this3.geoCode(address);
           }
         });
@@ -712,7 +726,7 @@ if (window.AL === undefined) {
           _this4.setState({
             showSite: item,
             infoClass: 'aif',
-            mapClass: 'right'
+            mapClass: 'two-thirds-map'
           });
           mapRef.setZoom(18);
           mapRef.setCenter(marker.getPosition());
@@ -729,20 +743,17 @@ if (window.AL === undefined) {
 
         AL.mapData.markers.push(marker);
 
-        if (this.state.findingOne) {
+        if (this.state.findingOne === true) {
           console.log('and its..,', this.props.params.sId);
-          if (item.id === this.props.params.sId) {
-            infowindow.open(this.map, marker);
-            this.setState({
-              showSite: item,
-              infoClass: 'aif',
-              mapClass: 'right'
-            });
-            mapRef.setCenter(marker.getPosition());
-            return;
-          }
-        }
 
+          mapRef.setCenter(marker.getPosition());
+          infowindow.open(this.map, marker);
+          this.setState({
+            showSite: item,
+            infoClass: 'aif',
+            mapClass: 'two-thirds-map'
+          });
+        }
         return;
       }
     }, {
@@ -784,14 +795,14 @@ if (window.AL === undefined) {
           React.createElement(
             'div',
             { className: 'component-inner' },
-            React.createElement('div', { className: mapClass, ref: function ref(map) {
-                _this5.map = map;
-              }, style: { width: '100%', height: '400px' } }),
             React.createElement(
               'div',
               { className: infoClass },
               info
             ),
+            React.createElement('div', { className: mapClass, ref: function ref(map) {
+                _this5.map = map;
+              }, style: { height: '640px' } }),
             React.createElement(
               'div',
               { className: controlClass },
@@ -827,7 +838,7 @@ if (window.AL === undefined) {
 
         return React.createElement(
           'div',
-          null,
+          { className: 'info-box-text' },
           React.createElement(
             'ol',
             null,

@@ -11,6 +11,8 @@
     min-height: 960px;
     max-height: 100%;
     width: 100%;
+
+
   }
 
   .top-bar{
@@ -22,10 +24,12 @@
     float:left;
     clear:left;
     position: absolute;
+
   }
-  .right{
-    clear:right;
-    float: right;
+  .two-thirds-map{
+    clear: right;
+    float: left;
+    width: 66.666%;
   }
 
   .control-pane{
@@ -34,16 +38,20 @@
     width: 100%;
     background-color: $color1;
     color:$color2;
-    min-height:60px;
+    min-height:128px;
     bottom:0px;
+
+
   }
 
   .map-pane{
+    padding: 0;
+    margin:0;
     min-width: 33%;
-
-    max-width: 66%;
     position: relative;
 
+    transition: all 0.25s ease;
+    //animtest
   }
 
   .center{
@@ -54,18 +62,24 @@
   .info-pane{
     float:left;
     position: relative;
-    width:33%;
+    width:33.333%;
     min-height:60px;
     background-color: $color1;
     color:$color2;
-
+    transition: all 1.5s ease;
+    //animtest
   }
 
   .aif{
     right:0px;
+    height:640px;
   }
 
   .oof{
-    right:5500px;
+    right:600px;
+    height:64px;
   }
+
+
+  //animtest
 }
