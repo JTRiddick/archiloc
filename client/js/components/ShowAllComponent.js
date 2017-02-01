@@ -12,31 +12,23 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentDidMount(){
-      AL.ControlObject.resetControl();
       AL.ControlObject.registerCallback(() => {
-        this.populateList();
+        this.setState({
+          sites:AL.ControlObject.sendData.sheds
+        });
       });
 
     }
 
+    componentWillUnmount(){
+      AL.ControlObject.resetControl();
+    }
+
     populateList(){
       //reset
-      this.setState({
-        sites:[]
-      })
 
-      //api get all
-      $.ajax({
-        url: '/api/sheds',
-        method: 'GET',
-        dataType: 'JSON'
-      })
-      .done((data)=> {
-        console.log("done, recieved: \n ",data, "type of", typeof data);
-        this.setState({
-          sites:data.sheds
-        })
-      })
+      AL.ControlObject.getAll();
+
     }
 
     sendToNewEditor(){
@@ -44,13 +36,11 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     render(){
-
       var sitesList;
+      console.log(this.state.sites);
+      if (this.state.sites && this.state.sites.length > 0){
 
-      if (this.state.sites != []){
-        // sitesList = JSON.stringify(this.state.sites);
-        // ^ test
-        sitesList = this.state.sites.map((site,index) =>{
+      sitesList = this.state.sites.map((site,index) =>{
           return <div className='site-info-box' key={index}>
                <SiteViewComponent key={site._id} info={site} del={this.deleteItem}/>
              </div>
@@ -122,7 +112,9 @@ if (window.AL === undefined){window.AL = {}; }
           <div className = "button">
            <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }>edit</ReactRouter.Link>
           </div>
-          <div className = "button" onClick={() => {console.log("This is item ID of ,",this.state.info.id)}}>view</div>
+          <div className = "button" onClick={() =>
+            {AL.ControlObject.mapOneItem(this.state.info.id)}}>view
+          </div>
         </div>
       </div>)
 
@@ -133,4 +125,4 @@ if (window.AL === undefined){window.AL = {}; }
 
   AL.SiteViewComponent = SiteViewComponent;
   AL.ShowAllComponent = ShowAllComponent;
-}());
+})();

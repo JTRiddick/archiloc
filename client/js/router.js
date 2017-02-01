@@ -12,6 +12,7 @@ if (window.AL === undefined) {window.AL = {};}
       <Route path="/" component={AL.AppComponent}>
         ReactRouter.IndexRoute component={AL.MapComponent} />
         <Route path="/map" component={AL.MapComponent} />
+        <Route path="/map/view-one/:sId" component={AL.MapComponent}/>
         <Route path="/test" component={AL.TestComponent} />
         <Route path="/test/asd" component={AL.AddEditComponent} />
         <Route path="/test/asd/:sId/edit" component={AL.AddEditComponent} />

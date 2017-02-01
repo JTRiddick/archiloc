@@ -8,16 +8,19 @@
   overflow: auto;
 
 
+
   .site-info-box{
     position: relative;
     float:left;
     width: calc(33.333% - 0.75em);
     background-color: black;
     margin: 0.5em 0.25em;
+    overflow: none;
   }
   .site-info{
     background-color: $color2;
     color: $color1;
+    height:144px;
   }
   .site-controls{
 

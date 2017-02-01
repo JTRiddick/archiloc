@@ -5,6 +5,9 @@ if (window.AL === undefined){window.AL = {}; }
   var sendData;
 
   window.AL.ControlObject = {
+    mapMarkers:[],
+    locationObjects:[],
+    sendData: sendData,
     callbacks: [],
     registerCallback: function(cb){
       this.callbacks.push(cb);
@@ -21,6 +24,27 @@ if (window.AL === undefined){window.AL = {}; }
       this.sendData = {};
     },
 
+    getAll:function(){
+      console.log('gettin everything');
+      //api get all
+      $.ajax({
+        url: '/api/sheds',
+        method: 'GET',
+        dataType: 'JSON'
+      })
+      .done((data)=> {
+        console.log("done, recieved: \n ",data, "type of", typeof data);
+        this.sendData = data;
+        this.locationObjects = data;
+        console.log('get done.');
+        this.callbacksEdit();
+        console.log('grabbd everything',data);
+      })
+      .fail(()=>{
+        console.log('cant get');
+      })
+    },//end of get all
+
     getStructById: function(itemId){
 
       $.ajax({
@@ -32,6 +56,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log("found ", data);
         this.sendData = data;
         this.callbacksEdit();
+        console.log('control callbacks test ',this.callbacks);
       })
       .fail((req,stat,err)=>{
         console.log('failed to get req,', req);
@@ -59,7 +84,7 @@ if (window.AL === undefined){window.AL = {}; }
         this.sendData = (req,stat,err);
         this.callbacksEdit();
       });
-    },
+    },//end of delete
     addItem: function(inputs){
       //test
       console.log("sending...", inputs.name, inputs.type);
@@ -130,6 +155,41 @@ if (window.AL === undefined){window.AL = {}; }
 
         })
       },//end of editor
+      mapOneItem: function(itemId){
+        AL.ControlObject.registerCallback(()=>{
+          console.log('geocoding');
+          // this.geoCode(this.sendData);
+        });
+
+        $.ajax({
+          url:'/api/sheds/' + itemId + '/view-map',
+          method:'GET',
+          dataType:'JSON',
+        })
+        .done((data)=>{
+          console.log("found ", data);
+          ReactRouter.hashHistory.push('/map/view-one/'+ itemId);
+          this.sendData = data;
+          this.callbacksEdit();
+        })
+        .fail((req,stat,err)=>{
+          console.log('failed to get req,', req);
+          this.sendData = (req,stat,err);
+          this.callbacksEdit();
+          //??
+        })
+
+      },//end of map one view
+
+      //end of geocode 1
+      // locationToList: function(data){
+      //   console.log('list/geo called',data);
+      //   data.forEach(item =>{
+      //     console.log('hey its,', item);
+      //     AL.MapComponent.locationToGeocoder(item);
+      //     this.locationObjects.push(item);
+      //   })
+      // }
     } //end of control object
   }
 )();

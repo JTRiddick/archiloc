@@ -99,7 +99,7 @@ if (window.AL === undefined) {
         var arch = "Architect/Firm";
         var type = "Cultural";
         var street = "Street";
-        var city = "City";
+        var city = "City, State";
         var country = "Country";
 
         if (this.state) {
@@ -384,6 +384,8 @@ if (window.AL === undefined) {
 })();
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 if (window.AL === undefined) {
   window.AL = {};
 }
@@ -393,6 +395,9 @@ if (window.AL === undefined) {
   var sendData;
 
   window.AL.ControlObject = {
+    mapMarkers: [],
+    locationObjects: [],
+    sendData: sendData,
     callbacks: [],
     registerCallback: function registerCallback(cb) {
       this.callbacks.push(cb);
@@ -411,8 +416,29 @@ if (window.AL === undefined) {
       this.sendData = {};
     },
 
-    getStructById: function getStructById(itemId) {
+    getAll: function getAll() {
       var _this2 = this;
+
+      console.log('gettin everything');
+      //api get all
+      $.ajax({
+        url: '/api/sheds',
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function (data) {
+        console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
+        _this2.sendData = data;
+        _this2.locationObjects = data;
+        console.log('get done.');
+        _this2.callbacksEdit();
+        console.log('grabbd everything', data);
+      }).fail(function () {
+        console.log('cant get');
+      });
+    }, //end of get all
+
+    getStructById: function getStructById(itemId) {
+      var _this3 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId,
@@ -420,35 +446,36 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         console.log("found ", data);
-        _this2.sendData = data;
-        _this2.callbacksEdit();
+        _this3.sendData = data;
+        _this3.callbacksEdit();
+        console.log('control callbacks test ', _this3.callbacks);
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this2.sendData = (req, stat, err);
-        _this2.callbacksEdit();
+        _this3.sendData = (req, stat, err);
+        _this3.callbacksEdit();
         //??
       });
     },
     deleteItem: function deleteItem(itemId) {
-      var _this3 = this;
+      var _this4 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId + "/delete",
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
-        console.log('callbacksEdit', _this3.callbacksEdit);
+        console.log('callbacksEdit', _this4.callbacksEdit);
         console.log('deleted, ', data);
-        _this3.sendData = data;
-        _this3.callbacksEdit();
+        _this4.sendData = data;
+        _this4.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('delete failure');
-        _this3.sendData = (req, stat, err);
-        _this3.callbacksEdit();
+        _this4.sendData = (req, stat, err);
+        _this4.callbacksEdit();
       });
-    },
+    }, //end of delete
     addItem: function addItem(inputs) {
-      var _this4 = this;
+      var _this5 = this;
 
       //test
       console.log("sending...", inputs.name, inputs.type);
@@ -474,17 +501,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this4.sendData = (req, stat, error);
-        _this4.callbacksEdit();
+        _this5.sendData = (req, stat, error);
+        _this5.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this4.sendData = data;
-        _this4.callbacksEdit();
+        _this5.sendData = data;
+        _this5.callbacksEdit();
       });
     }, //end of addItem
     editItem: function editItem(itemId, inputs) {
-      var _this5 = this;
+      var _this6 = this;
 
       $.ajax({
         url: '/api/sheds/' + itemId + '/edit',
@@ -505,17 +532,41 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this5.sendData = (req, stat, err);
-        _this5.callbacksEdit();
+        _this6.sendData = (req, stat, err);
+        _this6.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this5.sendData = data;
-        _this5.callbacksEdit();
+        _this6.sendData = data;
+        _this6.callbacksEdit();
+      });
+    }, //end of editor
+    mapOneItem: function mapOneItem(itemId) {
+      var _this7 = this;
+
+      AL.ControlObject.registerCallback(function () {
+        console.log('geocoding');
+        // this.geoCode(this.sendData);
+      });
+
+      $.ajax({
+        url: '/api/sheds/' + itemId + '/view-map',
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function (data) {
+        console.log("found ", data);
+        ReactRouter.hashHistory.push('/map/view-one/' + itemId);
+        _this7.sendData = data;
+        _this7.callbacksEdit();
+      }).fail(function (req, stat, err) {
+        console.log('failed to get req,', req);
+        _this7.sendData = (req, stat, err);
+        _this7.callbacksEdit();
+        //??
       });
     } };
 })();
-"use strict";
+'use strict';
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -530,23 +581,223 @@ if (window.AL === undefined) {
 }
 
 (function () {
+  var mapData;
+  window.AL.mapData = {
+    locations: [],
+    markers: [],
+    defaultView: { lat: 15, lng: -80 },
+    mapZoom: 10
+  };
+})();
+
+(function () {
   var MapComponent = function (_React$Component) {
     _inherits(MapComponent, _React$Component);
 
     function MapComponent() {
       _classCallCheck(this, MapComponent);
 
-      return _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).apply(this, arguments));
+      var _this = _possibleConstructorReturn(this, (MapComponent.__proto__ || Object.getPrototypeOf(MapComponent)).call(this));
+
+      _this.state = {
+        focus: AL.mapData.defaultView,
+        zoom: AL.mapData.mapZoom,
+        infoClass: 'oof',
+        controlClass: 'inactive center',
+        mapClass: 'center',
+        showSite: null,
+        findingOne: false
+      };
+      var locationToGeocoder;
+      var geoCode;
+      return _this;
     }
 
     _createClass(MapComponent, [{
-      key: "render",
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        var _this2 = this;
+
+        if (this.props.params.sId) {
+          console.log('only,', this.props.params.sId);
+          this.setState({
+            findingOne: true
+          });
+        } else {
+          console.log('showing maximum stuff');
+        }
+
+        AL.ControlObject.registerCallback(function () {
+          return _this2.locationToGeocoder(AL.ControlObject.sendData);
+        });
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        this.map = new google.maps.Map(this.map, {
+          center: this.state.focus,
+          zoom: this.state.zoom
+        });
+
+        this.marker = new google.maps.Marker({
+          lat: 0,
+          lng: 0
+        });
+
+        this.geocoder = new google.maps.Geocoder();
+
+        AL.mapData.locations = AL.ControlObject.getAll();
+        console.log(this.map, this.geocoder);
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        AL.ControlObject.resetControl();
+      }
+
+      //
+
+    }, {
+      key: 'geoCode',
+      value: function geoCode(itemId) {
+        //check for item id or obj
+        console.log('geocoding', itemId);
+        this.geocoder.geocode({ 'address': itemId.street }, function handleResults(results, status) {
+          if (status === google.maps.GeocoderStatus.OK) {
+            this.map.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              position: results[0].geometry.location,
+              title: itemId.title
+            });
+
+            this.markMap(this.map, marker, itemId);
+
+            return;
+          }
+        }.bind(this));
+      }
+    }, {
+      key: 'locationToGeocoder',
+      value: function locationToGeocoder(addresses) {
+        var _this3 = this;
+
+        console.log('locationToGeocoder says this is', this);
+        addresses.sheds.forEach(function (address) {
+          if (_this3.state.findingOne && address.id === _this3.props.params.sId) {
+            _this3.geoCode(address);
+            return;
+          } else if (!_this3.state.findingOne && AL.mapData.markers.indexOf(address) < 0) {
+            _this3.geoCode(address);
+          }
+        });
+      }
+
+      //^^ Test Geocode
+
+    }, {
+      key: 'markMap',
+      value: function markMap(mapRef, marker, item) {
+        var _this4 = this;
+
+        marker.setMap(mapRef);
+
+        var contentString = '<div id="content">' + '<div class="infobox-title">' + item.title + '</div>' + '<div class="infobox-arch">' + item.arch + '</div>' + '</div>';
+
+        var infowindow = new google.maps.InfoWindow({
+          content: contentString
+        });
+
+        marker.addListener('click', function () {
+          infowindow.open(_this4.map, marker);
+          _this4.setState({
+            showSite: item,
+            infoClass: 'aif',
+            mapClass: 'right'
+          });
+          mapRef.setZoom(18);
+          mapRef.setCenter(marker.getPosition());
+        });
+        mapRef.addListener('click', function () {
+          infowindow.close(_this4.map, marker);
+          _this4.setState({
+            showSite: null,
+            infoClass: 'oof',
+            mapClass: 'center'
+          });
+          mapRef.setZoom(AL.mapData.mapZoom);
+        });
+
+        AL.mapData.markers.push(marker);
+
+        if (this.state.findingOne) {
+          console.log('and its..,', this.props.params.sId);
+          if (item.id === this.props.params.sId) {
+            infowindow.open(this.map, marker);
+            this.setState({
+              showSite: item,
+              infoClass: 'aif',
+              mapClass: 'right'
+            });
+            mapRef.setCenter(marker.getPosition());
+            return;
+          }
+        }
+
+        return;
+      }
+    }, {
+      key: 'selectFocus',
+      value: function selectFocus(sId) {
+        console.log(AL.mapData.markers);
+
+        //test^
+      }
+    }, {
+      key: 'render',
       value: function render() {
+        var _this5 = this;
+
+        console.log('render state', this.state);
+
+        var mapClass = "map-pane " + this.state.mapClass;
+        var infoClass = "info-pane " + this.state.infoClass;
+        var controlClass = "control-pane " + this.state.controlClass;
+
+        var info = '';
+        var controls = '';
+
+        if (this.state.showSite !== null) {
+          info = React.createElement(InfoComponent, { showSite: this.state.showSite });
+        }
+
+        var mapOptions = {
+          focus: this.state.focus,
+          zoom: this.state.zoom
+        };
+        this.map = (this.map, mapOptions);
+        //^ DOES NOT WORK
 
         return React.createElement(
-          "div",
-          null,
-          "Map Component"
+          'div',
+          { id: 'map-component' },
+          'Map Component',
+          React.createElement(
+            'div',
+            { className: 'component-inner' },
+            React.createElement('div', { className: mapClass, ref: function ref(map) {
+                _this5.map = map;
+              }, style: { width: '100%', height: '400px' } }),
+            React.createElement(
+              'div',
+              { className: infoClass },
+              info
+            ),
+            React.createElement(
+              'div',
+              { className: controlClass },
+              controls
+            )
+          )
         );
       }
     }]);
@@ -554,11 +805,92 @@ if (window.AL === undefined) {
     return MapComponent;
   }(React.Component);
 
+  var InfoComponent = function (_React$Component2) {
+    _inherits(InfoComponent, _React$Component2);
+
+    function InfoComponent() {
+      _classCallCheck(this, InfoComponent);
+
+      return _possibleConstructorReturn(this, (InfoComponent.__proto__ || Object.getPrototypeOf(InfoComponent)).call(this));
+    }
+
+    _createClass(InfoComponent, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        this.setState({
+          info: this.props.showSite
+        });
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+
+        return React.createElement(
+          'div',
+          null,
+          React.createElement(
+            'ol',
+            null,
+            React.createElement(
+              'li',
+              null,
+              'Name: ',
+              this.state.info.title,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Year: ',
+              this.state.info.year,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Arch: ',
+              this.state.info.arch,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Type: ',
+              this.state.info.type,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Street: ',
+              this.state.info.street,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'City: ',
+              this.state.info.city,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Country: ',
+              this.state.info.country,
+              ' '
+            )
+          )
+        );
+      }
+    }]);
+
+    return InfoComponent;
+  }(React.Component);
+
   AL.MapComponent = MapComponent;
 })();
 'use strict';
-
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -592,32 +924,23 @@ if (window.AL === undefined) {
       value: function componentDidMount() {
         var _this2 = this;
 
-        AL.ControlObject.resetControl();
         AL.ControlObject.registerCallback(function () {
-          _this2.populateList();
+          _this2.setState({
+            sites: AL.ControlObject.sendData.sheds
+          });
         });
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        AL.ControlObject.resetControl();
       }
     }, {
       key: 'populateList',
       value: function populateList() {
-        var _this3 = this;
-
         //reset
-        this.setState({
-          sites: []
-        });
 
-        //api get all
-        $.ajax({
-          url: '/api/sheds',
-          method: 'GET',
-          dataType: 'JSON'
-        }).done(function (data) {
-          console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
-          _this3.setState({
-            sites: data.sheds
-          });
-        });
+        AL.ControlObject.getAll();
       }
     }, {
       key: 'sendToNewEditor',
@@ -627,18 +950,17 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this4 = this;
+        var _this3 = this;
 
         var sitesList;
+        console.log(this.state.sites);
+        if (this.state.sites && this.state.sites.length > 0) {
 
-        if (this.state.sites != []) {
-          // sitesList = JSON.stringify(this.state.sites);
-          // ^ test
           sitesList = this.state.sites.map(function (site, index) {
             return React.createElement(
               'div',
               { className: 'site-info-box', key: index },
-              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this4.deleteItem })
+              React.createElement(SiteViewComponent, { key: site._id, info: site, del: _this3.deleteItem })
             );
           });
         }
@@ -649,14 +971,14 @@ if (window.AL === undefined) {
           React.createElement(
             'div',
             { className: 'button load', onClick: function onClick() {
-                _this4.populateList();
+                _this3.populateList();
               } },
             ' LOAD '
           ),
           React.createElement(
             'div',
             { className: 'button load new', onClick: function onClick() {
-                _this4.sendToNewEditor();
+                _this3.sendToNewEditor();
               } },
             ' ADD '
           ),
@@ -705,7 +1027,7 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this6 = this;
+        var _this5 = this;
 
         var editLinkId;
 
@@ -770,7 +1092,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  AL.ControlObject.deleteItem(_this6.state.info.id);
+                  AL.ControlObject.deleteItem(_this5.state.info.id);
                 } },
               'delete'
             ),
@@ -786,7 +1108,7 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: 'button', onClick: function onClick() {
-                  console.log("This is item ID of ,", _this6.state.info.id);
+                  AL.ControlObject.mapOneItem(_this5.state.info.id);
                 } },
               'view'
             )
@@ -866,6 +1188,7 @@ if (window.AL === undefined) {
       AL.MapComponent,
       " />",
       React.createElement(Route, { path: "/map", component: AL.MapComponent }),
+      React.createElement(Route, { path: "/map/view-one/:sId", component: AL.MapComponent }),
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
       React.createElement(Route, { path: "/test/asd", component: AL.AddEditComponent }),
       React.createElement(Route, { path: "/test/asd/:sId/edit", component: AL.AddEditComponent }),

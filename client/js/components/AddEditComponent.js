@@ -1,10 +1,8 @@
 if (window.AL === undefined){window.AL = {}; }
 
-(function() {
-
+(() => {
 
   class AddEditComponent extends React.Component{
-
 
     constructor(){
       super();
@@ -81,7 +79,7 @@ if (window.AL === undefined){window.AL = {}; }
       var arch = "Architect/Firm";
       var type = "Cultural";
       var street = "Street";
-      var city = "City";
+      var city = "City, State";
       var country = "Country";
 
 
@@ -191,4 +189,4 @@ if (window.AL === undefined){window.AL = {}; }
   }
   AL.ReviewData = ReviewData;
   AL.AddEditComponent = AddEditComponent;
-}());
+})();

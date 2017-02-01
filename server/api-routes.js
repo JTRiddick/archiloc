@@ -66,7 +66,21 @@ module.exports = function(){
       console.log('data in get api to cb', data);
       cb(err,data);
     })
-  })
+  });
+
+  router.get('/api/sheds/:shedId/view-map',(req,res) => {
+    //
+    var cb = (err,data) => {
+      console.log('i forund something!');
+      if (err) throw err;
+      res.send(data);
+    }
+    Shed.findById(req.params.shedId)
+    .exec((err,data)=>{
+      //
+      cb(err,data);
+    })
+  });
 
   router.get('/api/sheds',(req,res) => {
     Shed.find({
