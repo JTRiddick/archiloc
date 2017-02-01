@@ -2,6 +2,7 @@
    v2.0 | 20110126
    License: none (public domain)
 */
+@import url("https://fonts.googleapis.com/css?family=Josefin+Sans|Josefin+Slab");
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -49,16 +50,17 @@ table {
 /* HSL */
 /* RGB */
 .add-structure {
+  font-family: "Andale mono", "Menlo", "Monaco", monospace;
   max-width: 960px;
   background-color: #2b3341;
-  color: #dbd83b;
+  color: #fedc97;
   margin: 2em auto;
   padding: 12px; }
   .add-structure h1, .add-structure h2, .add-structure h3, .add-structure h4 {
     padding: 6px;
     margin: 0.25em; }
   .add-structure form {
-    border: 1px solid #dbd83b;
+    border: 1px solid #fedc97;
     text-align: center;
     position: relative;
     padding: 4px; }
@@ -74,7 +76,7 @@ table {
     border: none; }
   .add-structure .nav-button {
     background-color: #546a7b;
-    color: #dbd83b;
+    color: #fedc97;
     margin: 0.5em;
     padding: 0.5em;
     min-width: 1em;
@@ -85,10 +87,10 @@ table {
     cursor: default;
     user-select: none; }
   .add-structure .nav-button:hover {
-    background-color: #dbd83b;
+    background-color: #fedc97;
     color: #35ad1a; }
   .add-structure .nav-button:hover {
-    background-color: #dbd83b;
+    background-color: #fedc97;
     color: black; }
   .add-structure .nav-button:active {
     background-color: firebrick;
@@ -102,12 +104,17 @@ table {
   margin: 1em auto; }
 
 .sites-view {
+  font-family: "Andale mono", "Menlo", "Monaco", monospace;
   max-width: 1200px;
   margin: 0.5em auto;
   background-color: #2b3341;
   color: #546a7b;
   position: relative;
-  overflow: auto; }
+  overflow: auto;
+  border: 4px solid #2b3341; }
+  .sites-view .info-boxes-container {
+    overflow: auto;
+    background-color: #3f5e5a; }
   .sites-view .site-info-box {
     position: relative;
     float: left;
@@ -122,7 +129,7 @@ table {
   .sites-view .site-controls {
     margin: 0.2em 0; }
   .sites-view .button {
-    border: #dbd83b;
+    border: #fedc97;
     background-color: #2b3341;
     color: #546a7b;
     display: inline-block;
@@ -133,16 +140,16 @@ table {
     user-select: none; }
   .sites-view .load {
     background-color: #546a7b;
-    color: #dbd83b;
+    color: #fedc97;
     margin: 1em;
     padding: 0.25em;
     min-width: 1em;
     height: 1em; }
   .sites-view .button:hover {
-    background-color: #dbd83b;
+    background-color: #fedc97;
     color: #35ad1a; }
   .sites-view .load:hover {
-    background-color: #dbd83b;
+    background-color: #fedc97;
     color: black; }
   .sites-view .button:active {
     background-color: firebrick;
@@ -152,16 +159,21 @@ table {
     color: #546a7b; }
 
 #map-component {
-  background-color: #3f5e5a;
   position: absolute;
-  width: 100%; }
+  width: 1400px;
+  min-height: 960px;
+  overflow: auto; }
+  #map-component .component-header {
+    margin: 1em 0;
+    clear: both; }
   #map-component .component-inner {
-    overflow: auto;
-    margin: 0 auto;
-    position: absolute;
+    margin: 0;
+    padding: 0;
+    position: relative;
     min-height: 960px;
     max-height: 100%;
-    width: 100%; }
+    width: 100%;
+    background-color: #2b3341; }
   #map-component .top-bar {
     overflow: auto; }
   #map-component .left-bar {
@@ -173,41 +185,56 @@ table {
     float: left;
     width: 66.666%; }
   #map-component .control-pane {
-    position: absolute;
+    display: inline-block;
+    position: relative;
     max-height: 300px;
     width: 100%;
-    background-color: #2b3341;
+    background-color: #3f5e5a;
     color: #546a7b;
-    min-height: 128px;
-    bottom: 0px; }
+    min-height: 96px; }
   #map-component .map-pane {
     padding: 0;
     margin: 0;
-    min-width: 33%;
+    width: 48%;
     position: relative;
     transition: all 0.25s ease; }
+  #map-component .map-pane:after {
+    content: '';
+    float: none;
+    clear: both; }
   #map-component .center {
-    width: 100%;
+    width: 80%;
     margin: 0 auto; }
   #map-component .info-pane {
     float: left;
     position: relative;
-    width: 33.333%;
+    width: 48%;
     min-height: 60px;
     background-color: #2b3341;
     color: #546a7b;
-    transition: all 1.5s ease; }
+    transition: all 1s ease; }
+    #map-component .info-pane .info-box-text {
+      background-color: #FEDC97;
+      font-size: 1.2em;
+      text-align: left;
+      padding: 1em; }
+      #map-component .info-pane .info-box-text .info-type {
+        text-transform: capitalize; }
+  #map-component .control-pane-left {
+    float: left;
+    position: relative;
+    width: 33.333%;
+    transition: all 1s ease; }
   #map-component .aif {
     right: 0px;
-    height: 640px; }
+    height: 440px; }
   #map-component .oof {
-    right: 600px;
+    left: -660px;
     height: 64px; }
 
 body {
-  background-color: #3f5e5a;
-  max-width: 1200px;
-  font-family: "Andale mono", "Menlo", "Monaco", monospace; }
+  background-color: #2b3341;
+  font-family: "Josefin Sans", sans-serif; }
 
 h1 {
   font-size: 2.33em; }
@@ -221,6 +248,9 @@ h3 {
 h4 {
   font-size: 1.5em; }
 
+i {
+  font-style: italic; }
+
 .left {
   float: left;
   clear: none; }
@@ -228,5 +258,13 @@ h4 {
 .right {
   float: right;
   clear: none; }
+
+.app-component {
+  background-color: #2b3341;
+  color: #546a7b;
+  padding: 1em;
+  clear: both;
+  width: 100%;
+  height: 96px; }
 
 /*# sourceMappingURL=style.css.map */

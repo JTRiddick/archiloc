@@ -1,12 +1,18 @@
 
 .sites-view{
+  font-family: $stack-one;
   max-width: 1200px;
   margin:0.5em auto;
   background-color: $color1;
   color:$color2;
   position: relative;
   overflow: auto;
+  border: 4px solid $color1;
 
+  .info-boxes-container{
+    overflow: auto;
+    background-color: $color3;
+  }
 
 
   .site-info-box{

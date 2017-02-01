@@ -366,12 +366,7 @@ if (window.AL === undefined) {
 
         return React.createElement(
           'div',
-          null,
-          React.createElement(
-            'p',
-            null,
-            'This is the React AppComponent'
-          ),
+          { className: 'app-component' },
           this.props.children
         );
       }
@@ -556,8 +551,8 @@ if (window.AL === undefined) {
       }).done(function (data) {
         console.log("found ", data);
         ReactRouter.hashHistory.push('/map/view-one/' + itemId);
-        _this7.sendData = data;
-        _this7.callbacksEdit();
+        // this.sendData = data;
+        // this.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
         _this7.sendData = (req, stat, err);
@@ -791,7 +786,24 @@ if (window.AL === undefined) {
         return React.createElement(
           'div',
           { id: 'map-component' },
-          'Map Component',
+          React.createElement(
+            'div',
+            { className: 'component-header' },
+            React.createElement(
+              'h1',
+              null,
+              'ArchiLocator \'97'
+            ),
+            React.createElement(
+              'p',
+              null,
+              React.createElement(
+                'i',
+                null,
+                'How Much does your Building Weigh?'
+              )
+            )
+          ),
           React.createElement(
             'div',
             { className: 'component-inner' },
@@ -802,7 +814,7 @@ if (window.AL === undefined) {
             ),
             React.createElement('div', { className: mapClass, ref: function ref(map) {
                 _this5.map = map;
-              }, style: { height: '640px' } }),
+              }, style: { height: '440px' } }),
             React.createElement(
               'div',
               { className: controlClass },
@@ -845,50 +857,39 @@ if (window.AL === undefined) {
             React.createElement(
               'li',
               null,
-              'Name: ',
-              this.state.info.title,
+              React.createElement(
+                'h4',
+                null,
+                this.state.info.title
+              ),
               ' '
             ),
             React.createElement(
               'li',
               null,
-              'Year: ',
-              this.state.info.year,
-              ' '
+              this.state.info.street,
+              ', ',
+              this.state.info.city,
+              ',',
+              this.state.info.country,
+              ', '
             ),
             React.createElement(
               'li',
-              null,
-              'Arch: ',
-              this.state.info.arch,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Type: ',
+              { className: 'info-type' },
               this.state.info.type,
               ' '
             ),
             React.createElement(
               'li',
               null,
-              'Street: ',
-              this.state.info.street,
+              this.state.info.year,
               ' '
             ),
             React.createElement(
               'li',
               null,
-              'City: ',
-              this.state.info.city,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              'Country: ',
-              this.state.info.country,
+              this.state.info.arch,
               ' '
             )
           )
@@ -995,7 +996,7 @@ if (window.AL === undefined) {
           ),
           React.createElement(
             'div',
-            null,
+            { className: 'info-boxes-container' },
             React.createElement(
               'ol',
               null,

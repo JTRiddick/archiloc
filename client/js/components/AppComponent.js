@@ -7,8 +7,7 @@ if (window.AL === undefined) {window.AL = { }; }
     render() {
       console.log('rendering app component');
 
-      return( <div>
-        <p>This is the React AppComponent</p>
+      return( <div className='app-component'>
         {this.props.children}
       </div>);
     }

@@ -1,17 +1,23 @@
 #map-component{
 
-  background-color: $color3;
   position: absolute;
-  width: 100%;
+  width: 1400px;
+  min-height: 960px;
+  overflow: auto;
+
+  .component-header{
+    margin:1em 0;
+    clear: both;
+  }
 
   .component-inner{
-    overflow: auto;
-    margin: 0 auto;
-    position: absolute;
+    margin: 0;
+    padding: 0;
+    position: relative;
     min-height: 960px;
     max-height: 100%;
     width: 100%;
-
+    background-color: $color1;
 
   }
 
@@ -33,50 +39,73 @@
   }
 
   .control-pane{
-    position: absolute;
+    display: inline-block;
+    position: relative;
     max-height: 300px;
     width: 100%;
-    background-color: $color1;
+    background-color: $color3;
     color:$color2;
-    min-height:128px;
-    bottom:0px;
-
+    min-height:96px;
 
   }
 
   .map-pane{
     padding: 0;
     margin:0;
-    min-width: 33%;
+    width: 48%;
     position: relative;
 
     transition: all 0.25s ease;
     //animtest
   }
+  .map-pane:after{
+    content:'';
+    float: none;
+    clear: both;
+  }
 
   .center{
-    width:100%;
+    width:80%;
     margin:0 auto;
   }
 
   .info-pane{
     float:left;
     position: relative;
-    width:33.333%;
+    width:48%;
     min-height:60px;
     background-color: $color1;
     color:$color2;
-    transition: all 1.5s ease;
-    //animtest
+    transition: all 1s ease;
+    //animtest ^
+
+    .info-box-text{
+      background-color: #FEDC97;
+      font-size: 1.2em;
+      text-align: left;
+      padding: 1em;
+
+      .info-type{
+        text-transform: capitalize;
+      }
+    }
+  }
+
+  .control-pane-left{
+    float:left;
+    position: relative;
+    width:33.333%;
+
+    transition:all 1s ease;
   }
 
   .aif{
     right:0px;
-    height:640px;
+    height:440px;
   }
 
   .oof{
-    right:600px;
+    left:-660px;
     height:64px;
   }
 

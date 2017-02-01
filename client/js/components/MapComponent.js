@@ -202,15 +202,19 @@ if (window.AL === undefined){window.AL = {}; }
       this.map = (this.map,mapOptions);
       //^ DOES NOT WORK
 
-      return (<div id="map-component">Map Component
+      return (<div id="map-component">
+        <div className="component-header">
+          <h1>ArchiLocator &apos;97</h1>
+          <p><i>How Much does your Building Weigh?</i></p>
+        </div>
         <div className="component-inner">
           <div className={infoClass}>
           {info}
           </div>
-          <div className={mapClass} ref={(map) =>
-            { this.map = map; }} style={{height: '640px'}}>
-          </div>
 
+          <div className={mapClass} ref={(map) =>
+            { this.map = map; }} style={{height: '440px'}}>
+          </div>
           <div className={controlClass}>
           {controls}
           </div>
@@ -234,13 +238,13 @@ if (window.AL === undefined){window.AL = {}; }
 
       return (<div className="info-box-text">
         <ol>
-         <li>Name: {this.state.info.title} </li>
-         <li>Year: {this.state.info.year} </li>
-         <li>Arch: {this.state.info.arch} </li>
-         <li>Type: {this.state.info.type} </li>
-         <li>Street: {this.state.info.street} </li>
-         <li>City: {this.state.info.city} </li>
-         <li>Country: {this.state.info.country} </li>
+         <li><h4>{this.state.info.title}</h4> </li>
+         <li>{this.state.info.street}, {this.state.info.city},
+            {this.state.info.country}, </li>
+         <li className='info-type'>{this.state.info.type} </li>
+         <li>{this.state.info.year} </li>
+         <li>{this.state.info.arch} </li>
+
        </ol>
       </div>)
     }

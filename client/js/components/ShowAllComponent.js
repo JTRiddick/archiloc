@@ -52,7 +52,7 @@ if (window.AL === undefined){window.AL = {}; }
         <div className = 'sites-view'>
           <div className = "button load" onClick={() => {this.populateList()}}> LOAD </div>
           <div className = "button load new" onClick={() => {this.sendToNewEditor()}}> ADD </div>
-          <div>
+          <div className = "info-boxes-container">
             <ol>
               {sitesList}
             </ol>

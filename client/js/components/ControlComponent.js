@@ -169,8 +169,8 @@ if (window.AL === undefined){window.AL = {}; }
         .done((data)=>{
           console.log("found ", data);
           ReactRouter.hashHistory.push('/map/view-one/'+ itemId);
-          this.sendData = data;
-          this.callbacksEdit();
+          // this.sendData = data;
+          // this.callbacksEdit();
         })
         .fail((req,stat,err)=>{
           console.log('failed to get req,', req);
