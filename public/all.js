@@ -1022,7 +1022,12 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log(this, 'viewbox unmount');
-        AL.ControlObject.resetControl();
+        //removed cb reset
+      }
+    }, {
+      key: 'sendToEdit',
+      value: function sendToEdit(sId) {
+        ReactRouter.hashHistory.push('/test/asd/' + sId + '/edit');
       }
     }, {
       key: 'render',
@@ -1098,12 +1103,10 @@ if (window.AL === undefined) {
             ),
             React.createElement(
               'div',
-              { className: 'button' },
-              React.createElement(
-                ReactRouter.Link,
-                { className: 'link', to: "/test/asd/" + editLinkId + "/edit" },
-                'edit'
-              )
+              { className: 'button', onClick: function onClick() {
+                  _this5.sendToEdit(editLinkId);
+                } },
+              'edit'
             ),
             React.createElement(
               'div',

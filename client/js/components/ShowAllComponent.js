@@ -82,7 +82,11 @@ if (window.AL === undefined){window.AL = {}; }
     }
     componentWillUnmount(){
       console.log(this,'viewbox unmount');
-      AL.ControlObject.resetControl();
+      //removed cb reset
+    }
+
+    sendToEdit(sId){
+      ReactRouter.hashHistory.push('/test/asd/'+sId+'/edit');
     }
 
     render(){
@@ -109,8 +113,9 @@ if (window.AL === undefined){window.AL = {}; }
         <div className = "site-controls">
           <div className = "button" onClick={() =>
             {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
-          <div className = "button">
-           <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }>edit</ReactRouter.Link>
+          <div className = "button" onClick={() => {
+            this.sendToEdit(editLinkId)
+          }}>edit
           </div>
           <div className = "button" onClick={() =>
             {AL.ControlObject.mapOneItem(this.state.info.id)}}>view
