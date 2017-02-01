@@ -605,6 +605,7 @@ if (window.AL === undefined) {
       };
       var locationToGeocoder;
       var geoCode;
+
       return _this;
     }
 
@@ -671,32 +672,35 @@ if (window.AL === undefined) {
 
     }, {
       key: 'geoCode',
-      value: function geoCode(itemId) {
+      value: function geoCode(itemId, map) {
+        var _this3 = this;
+
+        var handleResults;
         //check for item id or obj
         console.log('GEOCODE', itemId);
-        this.geocoder.geocode({ 'address': itemId.street }, function handleResults(results, status) {
+        this.geocoder.geocode({ 'address': itemId.street }, handleResults = function handleResults(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
-            this.map.setCenter(results[0].geometry.location);
+            _this3.map.setCenter(results[0].geometry.location);
             var marker = new google.maps.Marker({
               position: results[0].geometry.location,
               title: itemId.title
             });
 
-            this.markMap(this.map, marker, itemId);
-
+            _this3.markMap(_this3.map, marker, itemId);
             return;
           }
-        }.bind(this));
+          return;
+        });
       }
     }, {
       key: 'locationToGeocoder',
       value: function locationToGeocoder(addresses) {
-        var _this3 = this;
+        var _this4 = this;
 
         console.log('locationToGeocoder says this is', addresses);
         addresses.forEach(function (address) {
           if (AL.mapData.markers.indexOf(address) < 0) {
-            _this3.geoCode(address);
+            _this4.geoCode(address, _this4.map);
           }
         });
       }
@@ -706,7 +710,7 @@ if (window.AL === undefined) {
     }, {
       key: 'markMap',
       value: function markMap(mapRef, marker, item) {
-        var _this4 = this;
+        var _this5 = this;
 
         marker.setMap(mapRef);
 
@@ -717,8 +721,8 @@ if (window.AL === undefined) {
         });
 
         marker.addListener('click', function () {
-          infowindow.open(_this4.map, marker);
-          _this4.setState({
+          infowindow.open(_this5.map, marker);
+          _this5.setState({
             showSite: item,
             infoClass: 'aif',
             mapClass: 'two-thirds-map'
@@ -727,8 +731,8 @@ if (window.AL === undefined) {
           mapRef.setCenter(marker.getPosition());
         });
         mapRef.addListener('click', function () {
-          infowindow.close(_this4.map, marker);
-          _this4.setState({
+          infowindow.close(_this5.map, marker);
+          _this5.setState({
             showSite: null,
             infoClass: 'oof',
             mapClass: 'center'
@@ -761,7 +765,7 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this5 = this;
+        var _this6 = this;
 
         console.log('render state', this.state);
 
@@ -813,7 +817,7 @@ if (window.AL === undefined) {
               info
             ),
             React.createElement('div', { className: mapClass, ref: function ref(map) {
-                _this5.map = map;
+                _this6.map = map;
               }, style: { height: '440px' } }),
             React.createElement(
               'div',

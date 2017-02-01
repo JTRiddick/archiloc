@@ -30,6 +30,7 @@ if (window.AL === undefined){window.AL = {}; }
       }
       var locationToGeocoder;
       var geoCode;
+
     }
 
 
@@ -91,10 +92,11 @@ if (window.AL === undefined){window.AL = {}; }
 
     //
 
-    geoCode(itemId){
+    geoCode(itemId,map){
+      var handleResults;
       //check for item id or obj
       console.log('GEOCODE',itemId);
-      this.geocoder.geocode({'address':itemId.street},function handleResults(results,status){
+      this.geocoder.geocode({'address':itemId.street}, handleResults = (results,status)=>{
         if (status === google.maps.GeocoderStatus.OK){
           this.map.setCenter(results[0].geometry.location);
           var marker = new google.maps.Marker({
@@ -103,17 +105,17 @@ if (window.AL === undefined){window.AL = {}; }
           });
 
           this.markMap(this.map,marker,itemId);
-
           return;
         }
-      }.bind(this))
+        return;
+      })
     }
 
     locationToGeocoder(addresses){
       console.log('locationToGeocoder says this is',addresses);
         addresses.forEach(address => {
            if( AL.mapData.markers.indexOf(address)<0){
-            this.geoCode(address);
+            this.geoCode(address,this.map);
           }
         })
 
