@@ -27,8 +27,10 @@ app.use(require('./api-routes.js')());
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 
-app.get('/', (req, res) => { res.render('index.ejs'); });
-app.get('/#', (req, res) => { res.render('app.ejs'); });
+app.get('/', (req, res) => { res.render('app.ejs'); });
+// app.get('/'),(req, res) => {res.render('index.ejs');});
+// app.get('/map', (req, res) => { res.render('app.ejs'); });
+
 
 var port = process.env.PORT || 5056;
 
