@@ -1,9 +1,14 @@
+var path = require('path');
 var express = require('express');
+var session = require('express-session')
 var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
+
+
 var app = express();
 
 var router = express.Router();
+app.use(express.static('public'));
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -19,9 +24,11 @@ db.once('open',function(){
 
 app.use(require('./api-routes.js')());
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, '/views'));
 
-
-app.use(express.static('public'));
+app.get('/', (req, res) => { res.render('index.ejs'); });
+app.get('/#', (req, res) => { res.render('app.ejs'); });
 
 var port = process.env.PORT || 5056;
 
