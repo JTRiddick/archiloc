@@ -160,7 +160,7 @@ table {
 
 #map-component {
   position: absolute;
-  width: 1400px;
+  width: 1360px;
   min-height: 960px;
   overflow: auto; }
   #map-component .component-header {
@@ -225,6 +225,14 @@ table {
     position: relative;
     width: 33.333%;
     transition: all 1s ease; }
+  #map-component .control-pane-low {
+    display: inline-block;
+    position: relative;
+    max-height: 300px;
+    width: 100%;
+    background-color: #3f5e5a;
+    color: #546a7b;
+    min-height: 96px; }
   #map-component .aif {
     right: 0px;
     height: 440px; }

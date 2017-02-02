@@ -23,7 +23,7 @@ if (window.AL === undefined){window.AL = {}; }
         focus: AL.mapData.defaultView,
         zoom: AL.mapData.mapZoom,
         infoClass:'oof',
-        controlClass:'inactive center',
+        controlClass:'low inactive',
         mapClass:'center',
         showSite:null,
         findingOne:false
@@ -63,7 +63,7 @@ if (window.AL === undefined){window.AL = {}; }
 
 
     componentDidMount() {
-      this.map = new google.maps.Map(this.map, {
+      this.googleMap = new google.maps.Map(this.map, {
         center: this.state.focus,
         zoom: this.state.zoom
       });
@@ -98,13 +98,14 @@ if (window.AL === undefined){window.AL = {}; }
       console.log('GEOCODE',itemId);
       this.geocoder.geocode({'address':itemId.street}, handleResults = (results,status)=>{
         if (status === google.maps.GeocoderStatus.OK){
-          this.map.setCenter(results[0].geometry.location);
+          console.log('geo code this check',this.map);
+          this.googleMap.setCenter(results[0].geometry.location);
           var marker = new google.maps.Marker({
               position: (results[0].geometry.location),
               title:itemId.title
           });
 
-          this.markMap(this.map,marker,itemId);
+          this.markMap(this.googleMap,marker,itemId);
           return;
         }
         return;
@@ -188,7 +189,7 @@ if (window.AL === undefined){window.AL = {}; }
 
       var mapClass = "map-pane " + this.state.mapClass
       var infoClass = "info-pane " + this.state.infoClass;
-      var controlClass = "control-pane " + this.state.controlClass;
+      var controlClass = "control-pane-" + this.state.controlClass;
 
       var info = '';
       var controls = '';
@@ -197,12 +198,7 @@ if (window.AL === undefined){window.AL = {}; }
         info= <InfoComponent showSite={this.state.showSite}/>
       }
 
-      var mapOptions = {
-        focus: this.state.focus,
-        zoom:this.state.zoom
-      }
-      this.map = (this.map,mapOptions);
-      //^ DOES NOT WORK
+
 
       return (<div id="map-component">
         <div className="component-header">
