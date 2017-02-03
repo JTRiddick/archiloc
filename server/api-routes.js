@@ -1,5 +1,6 @@
 var express = require('express');
 var Shed = require('./models/shed.js');
+var Site = require('./models/site.js');
 
 module.exports = function(){
 
@@ -85,6 +86,35 @@ module.exports = function(){
   router.get('/api/sheds',(req,res) => {
     Shed.find({
       //all of them?
+    })
+    .exec((err,data)=>{
+      var shedArray = [];
+      data.forEach((item) =>{
+          shed = {
+            id:item._id,
+            title: item.title,
+            type:item.type,
+            year:item.year,
+            arch:item.arch,
+            street:item.street,
+            city:item.city,
+            country:item.country
+          };
+        shedArray.push(shed);
+      })
+
+      res.send({
+        sheds: shedArray
+      });
+
+    });
+  });
+
+  router.get('/api/arch/:query',(req,res) => {
+    console.log(req);
+    Shed.find({
+      //all of them by arch
+      arch:'query'
     })
     .exec((err,data)=>{
       var shedArray = [];

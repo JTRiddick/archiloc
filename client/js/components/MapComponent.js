@@ -6,7 +6,10 @@ if (window.AL === undefined){window.AL = {}; }
     locations:[],
     markers:[],
     defaultView: {lat:15,lng:-80},
-    mapZoom: 14
+    mapZoom: 14,
+    arch:null,
+    style:null,
+    type:null,
   }
 })();
 
@@ -26,7 +29,8 @@ if (window.AL === undefined){window.AL = {}; }
         controlClass:'low inactive',
         mapClass:'center',
         showSite:null,
-        findingOne:false
+        findingOne:false,
+        filter:false
       }
       var locationToGeocoder;
       var geoCode;
@@ -36,6 +40,14 @@ if (window.AL === undefined){window.AL = {}; }
 
 
     componentWillMount(){
+
+      if(AL.mapData.arch || AL.mapData.style || AL.mapData.type ){
+        this.setState({
+          filter:true
+        })
+      }
+      //filter?
+
       if(this.props.params.sId){
         console.log('only,', this.props.params.sId);
         this.setState({
@@ -46,7 +58,7 @@ if (window.AL === undefined){window.AL = {}; }
         })
       }else{
         console.log('showing maximum stuff');
-        console.log('fill mapdata locations list with',AL.ControlObject.sendData);
+        console.log('fill mapdata locations list with',AL.ControlObject.locationObjects);
         AL.ControlObject.registerCallback(()=>
          AL.ControlObject.sendData.sheds.forEach(item => {
           AL.mapData.locations.push(item);
@@ -113,6 +125,39 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     locationToGeocoder(addresses){
+
+
+      if(AL.mapData.arch || AL.mapData.style || AL.mapData.type ){
+        this.setState({
+          filter:true
+        })
+      }
+
+      if(this.state.filter === true){
+        var fArch = AL.mapData.arch;
+        var fStyle = AL.mapData.style;
+        var fType = AL.mapData.type;
+
+
+        if(fArch){
+          addresses.filter((address)=>{
+            address => address.includes(fArch);
+          })
+        }
+        if(fStyle){
+          addresses.filter((address)=>{
+            address => address.includes(fStyle);
+          })
+        }
+        if(fType){
+          addresses.filter((address)=>{
+            address => address.includes(fType);
+          })
+        }
+
+
+      }
+
       console.log('locationToGeocoder says this is',addresses);
         addresses.forEach(address => {
            if( AL.mapData.markers.indexOf(address)<0){
@@ -243,7 +288,9 @@ if (window.AL === undefined){window.AL = {}; }
             {this.state.info.country}, </li>
          <li className='info-type'>{this.state.info.type} </li>
          <li>{this.state.info.year} </li>
-         <li>{this.state.info.arch} </li>
+         <li><div className='button' onClick={() =>{
+           AL.mapData.arch = this.state.info.type;
+         }}>{this.state.info.arch} </div> </li>
 
        </ol>
       </div>)

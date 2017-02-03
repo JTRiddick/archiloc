@@ -45,6 +45,27 @@ if (window.AL === undefined){window.AL = {}; }
       })
     },//end of get all
 
+    getArch:function(queryArch){
+      console.log('gettin everything');
+      //api get all
+      $.ajax({
+        url: '/api/arch/' + queryArch,
+        method: 'GET',
+        dataType: 'JSON'
+      })
+      .done((data)=> {
+        console.log("done, recieved: \n ",data, "type of", typeof data);
+        this.sendData = data;
+        this.locationObjects = data;
+        console.log('get done.');
+        this.callbacksEdit();
+        console.log('grabbd by arch',data);
+      })
+      .fail(()=>{
+        console.log('cant get');
+      })
+    },//end of get all by arch
+
     getStructById: function(itemId){
 
       $.ajax({
