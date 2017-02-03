@@ -41,4 +41,29 @@ i{
   clear:both;
   width: 100%;
   height:96px;
+
+  .title{
+    display: inline-block;
+    float:left;
+  }
+}
+
+.component-header{
+  margin:-0.1em 0 1em 0;
+  clear: both;
+  overflow: auto;
+  height:54px;
+}
+
+.top-bar{
+  background-color: $color5;
+  overflow: auto;
+}
+
+.nav{
+    position: relative;
+    float:right;
+    display: inline-block;
+    width:20%;
+    height: 100%;
 }

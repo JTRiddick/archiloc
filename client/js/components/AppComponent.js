@@ -7,7 +7,21 @@ if (window.AL === undefined) {window.AL = { }; }
     render() {
       console.log('rendering app component');
 
+      var testBar = (<div className = "top-bar nav">
+        <ul>
+          <li><ReactRouter.Link className="link" to={"/map" }>Map</ReactRouter.Link></li>
+        </ul>
+      </div>)
+
       return( <div className='app-component'>
+
+        <div className="component-header">
+          <div className="title">
+            <h1>ArchiLocator &apos;97</h1>
+            <p><i>How Much does your Building Weigh?</i></p>
+          </div>
+          {testBar}
+        </div>
         {this.props.children}
       </div>);
     }

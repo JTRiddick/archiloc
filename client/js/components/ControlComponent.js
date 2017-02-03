@@ -155,6 +155,11 @@ if (window.AL === undefined){window.AL = {}; }
 
         })
       },//end of editor
+      mapFilterResults: function(query,type){
+
+
+
+      },//end of typefilter
       mapOneItem: function(itemId){
         // AL.ControlObject.registerCallback(()=>{
         //   console.log('geocoding');

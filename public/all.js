@@ -335,7 +335,7 @@ if (window.AL === undefined) {
   AL.ReviewData = ReviewData;
   AL.AddEditComponent = AddEditComponent;
 })();
-'use strict';
+"use strict";
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -360,13 +360,54 @@ if (window.AL === undefined) {
     }
 
     _createClass(AppComponent, [{
-      key: 'render',
+      key: "render",
       value: function render() {
         console.log('rendering app component');
 
+        var testBar = React.createElement(
+          "div",
+          { className: "top-bar nav" },
+          React.createElement(
+            "ul",
+            null,
+            React.createElement(
+              "li",
+              null,
+              React.createElement(
+                ReactRouter.Link,
+                { className: "link", to: "/map" },
+                "Map"
+              )
+            )
+          )
+        );
+
         return React.createElement(
-          'div',
-          { className: 'app-component' },
+          "div",
+          { className: "app-component" },
+          React.createElement(
+            "div",
+            { className: "component-header" },
+            React.createElement(
+              "div",
+              { className: "title" },
+              React.createElement(
+                "h1",
+                null,
+                "ArchiLocator '97"
+              ),
+              React.createElement(
+                "p",
+                null,
+                React.createElement(
+                  "i",
+                  null,
+                  "How Much does your Building Weigh?"
+                )
+              )
+            ),
+            testBar
+          ),
           this.props.children
         );
       }
@@ -536,6 +577,7 @@ if (window.AL === undefined) {
         _this6.callbacksEdit();
       });
     }, //end of editor
+    mapFilterResults: function mapFilterResults(query, type) {}, //end of typefilter
     mapOneItem: function mapOneItem(itemId) {
       var _this7 = this;
 
@@ -581,7 +623,7 @@ if (window.AL === undefined) {
     locations: [],
     markers: [],
     defaultView: { lat: 15, lng: -80 },
-    mapZoom: 10
+    mapZoom: 14
   };
 })();
 
@@ -720,6 +762,11 @@ if (window.AL === undefined) {
         var infowindow = new google.maps.InfoWindow({
           content: contentString
         });
+        console.log(infowindow, "infowindow");
+        //make infowindow
+
+
+        //Check for service
 
         marker.addListener('click', function () {
           infowindow.open(_this5.map, marker);
@@ -784,24 +831,6 @@ if (window.AL === undefined) {
         return React.createElement(
           'div',
           { id: 'map-component' },
-          React.createElement(
-            'div',
-            { className: 'component-header' },
-            React.createElement(
-              'h1',
-              null,
-              'ArchiLocator \'97'
-            ),
-            React.createElement(
-              'p',
-              null,
-              React.createElement(
-                'i',
-                null,
-                'How Much does your Building Weigh?'
-              )
-            )
-          ),
           React.createElement(
             'div',
             { className: 'component-inner' },

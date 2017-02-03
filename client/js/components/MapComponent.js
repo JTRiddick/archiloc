@@ -6,7 +6,7 @@ if (window.AL === undefined){window.AL = {}; }
     locations:[],
     markers:[],
     defaultView: {lat:15,lng:-80},
-    mapZoom: 10
+    mapZoom: 14
   }
 })();
 
@@ -138,7 +138,12 @@ if (window.AL === undefined){window.AL = {}; }
       var infowindow = new google.maps.InfoWindow({
        content: contentString
       });
+      console.log(infowindow, "infowindow");
+      //make infowindow
 
+
+
+      //Check for service
 
      marker.addListener('click', () => {
        infowindow.open(this.map, marker);
@@ -201,10 +206,7 @@ if (window.AL === undefined){window.AL = {}; }
 
 
       return (<div id="map-component">
-        <div className="component-header">
-          <h1>ArchiLocator &apos;97</h1>
-          <p><i>How Much does your Building Weigh?</i></p>
-        </div>
+
         <div className="component-inner">
           <div className={infoClass}>
           {info}
