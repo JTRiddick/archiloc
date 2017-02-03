@@ -61,9 +61,21 @@ i{
 }
 
 .nav{
-    position: relative;
-    float:right;
-    display: inline-block;
-    width:20%;
-    height: 100%;
+  position: relative;
+  float:right;
+  display: inline-block;
+  width:20%;
+  height: 100%;
+
+  li{
+    padding: 2px 0 2px 6px;
+    border-bottom: 1px solid $color1;
+    border-right:1px solid $color1; 
+  }
+  a{
+    text-decoration: none;
+  }
+  a:visited{
+    color:$color3;
+  }
 }

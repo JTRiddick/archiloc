@@ -5,6 +5,18 @@
   min-height: 960px;
   overflow: auto;
 
+  .button{
+    border:$color4;
+    background-color: $color1;
+    color:$color5;
+    display: inline-block;
+    width: 20%;
+    text-align: center;
+    padding: 2px 3px;
+    cursor: default;
+    user-select: none;
+  }
+
 
   .component-inner{
     margin: 0;
