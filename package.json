@@ -1,10 +1,11 @@
 {
   "name": "archiloc",
-  "version": "1.0.0",
+  "version": "0.19.97",
   "description": "A Map with neat things to Look at",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
