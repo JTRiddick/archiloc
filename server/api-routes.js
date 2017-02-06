@@ -1,49 +1,50 @@
 var express = require('express');
-var Shed = require('./models/shed.js');
+var Site = require('./models/site.js');
 
 module.exports = function(){
 
   var router = express.Router();
 
 
-  // console.log('shed is',Shed);
+  // console.log('site is',Site);
 
-  router.post('/api/sheds',(req,res) => {
+  router.post('/api/sites',(req,res) => {
     console.log('request', req.data);
     var cb = (err,data) => {
-      console.log('i saved a shed :', err, data);
+      console.log('i saved a site :', err, data);
       res.send(data);
     };
     console.log('req body', req.body);
-    var shed = new Shed();
-    shed.title = req.body.title;
-    shed.type = req.body.type;
-    shed.year = req.body.year;
-    shed.arch = req.body.arch;
-    shed.street = req.body.street;
-    shed.city = req.body.city;
-    shed.country = req.body.country;
-    shed.save(cb);
+    var site = new Site();
+    site.title = req.body.title;
+    site.type = req.body.type;
+    site.year = req.body.year;
+    site.arch = req.body.arch;
+    site.address.street = req.body.street;
+    site.address.city = req.body.city;
+    site.address.country = req.body.country;
+    site.imageLink = req.body.image;
+    site.save(cb);
   });
 
-  router.delete('/api/sheds/:shedId/delete', (req,res) => {
+  router.delete('/api/sites/:siteId/delete', (req,res) => {
     var cb = (err,data) => {
       console.log('delete cb ,',err,data);
       res.send(data);
     }
     console.log('delete params :', req.params);
-    Shed.findByIdAndRemove(req.params.shedId,cb);
+    Site.findByIdAndRemove(req.params.siteId,cb);
   });
 
-  router.put('/api/sheds/:shedId/edit', (req,res) => {
-    console.log('req params', req.params.shedId);
+  router.put('/api/sites/:siteId/edit', (req,res) => {
+    console.log('req params', req.params.siteId);
     var cb = (err,data) => {
-      console.log('i updated a shed :',err,data);
+      console.log('i updated a site :',err,data);
       if (err){throw err};
       res.send(data);
     }
     console.log('edit req body',req.body);
-    Shed.findByIdAndUpdate(req.params.shedId, {
+    Site.findByIdAndUpdate(req.params.siteId, {
       title: req.body.title,
       type: req.body.type,
       year: req.body.year,
@@ -54,42 +55,42 @@ module.exports = function(){
     },{safe:true,upsert:true,new:true,runValidators:true},cb)
   });
 
-  router.get('/api/sheds/:shedId',(req,res) => {
-    console.log('find req params', req.params.shedId);
+  router.get('/api/sites/:siteId',(req,res) => {
+    console.log('find req params', req.params.siteId);
     var cb = (err,data) => {
       console.log('i found something!');
       if (err){throw err};
       res.send(data);
     }
-    Shed.findById(req.params.shedId)
+    Site.findById(req.params.siteId)
     .exec((err,data)=>{
       console.log('data in get api to cb', data);
       cb(err,data);
     })
   });
 
-  router.get('/api/sheds/:shedId/view-map',(req,res) => {
+  router.get('/api/sites/:siteId/view-map',(req,res) => {
     //
     var cb = (err,data) => {
       console.log('i forund something!');
       if (err) throw err;
       res.send(data);
     }
-    Shed.findById(req.params.shedId)
+    Site.findById(req.params.siteId)
     .exec((err,data)=>{
       //
       cb(err,data);
     })
   });
 
-  router.get('/api/sheds',(req,res) => {
-    Shed.find({
+  router.get('/api/sites',(req,res) => {
+    Site.find({
       //all of them?
     })
     .exec((err,data)=>{
-      var shedArray = [];
+      var siteArray = [];
       data.forEach((item) =>{
-          shed = {
+          site = {
             id:item._id,
             title: item.title,
             type:item.type,
@@ -99,11 +100,11 @@ module.exports = function(){
             city:item.city,
             country:item.country
           };
-        shedArray.push(shed);
+        siteArray.push(site);
       })
 
       res.send({
-        sheds: shedArray
+        sites: siteArray
       });
 
     });

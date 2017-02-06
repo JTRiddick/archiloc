@@ -14,7 +14,7 @@ if (window.AL === undefined){window.AL = {}; }
     componentDidMount(){
       AL.ControlObject.registerCallback(() => {
         this.setState({
-          sites:AL.ControlObject.sendData.sheds
+          sites:AL.ControlObject.sendData.sites
         });
       });
 

@@ -48,7 +48,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log('showing maximum stuff');
         console.log('fill mapdata locations list with',AL.ControlObject.sendData);
         AL.ControlObject.registerCallback(()=>
-         AL.ControlObject.sendData.sheds.forEach(item => {
+         AL.ControlObject.sendData.sites.forEach(item => {
           AL.mapData.locations.push(item);
         }))
       }

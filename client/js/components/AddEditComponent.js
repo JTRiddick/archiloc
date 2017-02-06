@@ -55,6 +55,7 @@ if (window.AL === undefined){window.AL = {}; }
         street:this.streetInput.value,
         city:this.cityInput.value,
         country:this.countryInput.value,
+        image:this.imageURLInput
       }
 
       //edit?
@@ -126,6 +127,7 @@ if (window.AL === undefined){window.AL = {}; }
             <h4>Categories</h4>
             <select defaultValue={type} ref={(input) => {this.typeInput = input}}>
               <option value="cultural">Cultural</option>
+              <option value="civic">Civic</option>
               <option value="residential">Residential</option>
               <option value="industrial">Industrial</option>
               <option value="commercial">Commercial</option>
@@ -137,6 +139,13 @@ if (window.AL === undefined){window.AL = {}; }
             <input placeholder={street} ref={(input) => {this.streetInput = input}}/>
             <input placeholder={city} ref={(input) => {this.cityInput = input}}/>
             <input placeholder={country} ref={(input) => {this.countryInput = input}}/>
+
+            <hr/>
+
+            <h4>Image</h4>
+            <input placeholder="add a URL" ref={(input)=>{
+              this.imageURLInput = input
+            }}/>
 
             <button>Add</button>
           </form>

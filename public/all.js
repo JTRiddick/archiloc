@@ -73,7 +73,8 @@ if (window.AL === undefined) {
           arch: this.archInput.value,
           street: this.streetInput.value,
           city: this.cityInput.value,
-          country: this.countryInput.value
+          country: this.countryInput.value,
+          image: this.imageURLInput
         };
 
         //edit?
@@ -183,6 +184,11 @@ if (window.AL === undefined) {
                 ),
                 React.createElement(
                   'option',
+                  { value: 'civic' },
+                  'Civic'
+                ),
+                React.createElement(
+                  'option',
                   { value: 'residential' },
                   'Residential'
                 ),
@@ -216,6 +222,15 @@ if (window.AL === undefined) {
                 } }),
               React.createElement('input', { placeholder: country, ref: function ref(input) {
                   _this2.countryInput = input;
+                } }),
+              React.createElement('hr', null),
+              React.createElement(
+                'h4',
+                null,
+                'Image'
+              ),
+              React.createElement('input', { placeholder: 'add a URL', ref: function ref(input) {
+                  _this2.imageURLInput = input;
                 } }),
               React.createElement(
                 'button',
@@ -458,7 +473,7 @@ if (window.AL === undefined) {
       console.log('gettin everything');
       //api get all
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'GET',
         dataType: 'JSON'
       }).done(function (data) {
@@ -477,7 +492,7 @@ if (window.AL === undefined) {
       var _this3 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId,
+        url: '/api/sites/' + itemId,
         method: 'GET',
         dataType: 'JSON'
       }).done(function (data) {
@@ -496,7 +511,7 @@ if (window.AL === undefined) {
       var _this4 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId + "/delete",
+        url: '/api/sites/' + itemId + "/delete",
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
@@ -518,7 +533,7 @@ if (window.AL === undefined) {
 
       //api POST NEW
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'POST',
         dataType: 'JSON',
         data: {
@@ -526,9 +541,12 @@ if (window.AL === undefined) {
           type: inputs.type,
           year: inputs.year,
           arch: inputs.arch,
-          street: inputs.street,
-          city: inputs.city,
-          country: inputs.country
+          address: {
+            street: inputs.street,
+            city: inputs.city,
+            country: inputs.country
+          },
+          imageLink: inputs.image
         }
 
       }).fail(function (req, stat, error) {
@@ -550,7 +568,7 @@ if (window.AL === undefined) {
       var _this6 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId + '/edit',
+        url: '/api/sites/' + itemId + '/edit',
         method: 'PUT',
         dataType: 'JSON',
         data: {
@@ -558,9 +576,12 @@ if (window.AL === undefined) {
           type: inputs.type,
           year: inputs.year,
           arch: inputs.arch,
-          street: inputs.street,
-          city: inputs.city,
-          country: inputs.country
+          address: {
+            street: inputs.street,
+            city: inputs.city,
+            country: inputs.country
+          },
+          imageLink: inputs.image
         }
       }).fail(function (req, stat, error) {
         // window.alert('no');
@@ -587,7 +608,7 @@ if (window.AL === undefined) {
       // });
 
       $.ajax({
-        url: '/api/sheds/' + itemId + '/view-map',
+        url: '/api/sites/' + itemId + '/view-map',
         method: 'GET',
         dataType: 'JSON'
       }).done(function (data) {
@@ -668,7 +689,7 @@ if (window.AL === undefined) {
           console.log('showing maximum stuff');
           console.log('fill mapdata locations list with', AL.ControlObject.sendData);
           AL.ControlObject.registerCallback(function () {
-            return AL.ControlObject.sendData.sheds.forEach(function (item) {
+            return AL.ControlObject.sendData.sites.forEach(function (item) {
               AL.mapData.locations.push(item);
             });
           });
@@ -965,7 +986,7 @@ if (window.AL === undefined) {
 
         AL.ControlObject.registerCallback(function () {
           _this2.setState({
-            sites: AL.ControlObject.sendData.sheds
+            sites: AL.ControlObject.sendData.sites
           });
         });
       }

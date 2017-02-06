@@ -28,7 +28,7 @@ if (window.AL === undefined){window.AL = {}; }
       console.log('gettin everything');
       //api get all
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'GET',
         dataType: 'JSON'
       })
@@ -48,7 +48,7 @@ if (window.AL === undefined){window.AL = {}; }
     getStructById: function(itemId){
 
       $.ajax({
-        url:'/api/sheds/' + itemId,
+        url:'/api/sites/' + itemId,
         method:'GET',
         dataType:'JSON',
       })
@@ -68,7 +68,7 @@ if (window.AL === undefined){window.AL = {}; }
     deleteItem: function(itemId){
 
       $.ajax({
-        url:'/api/sheds/' + itemId +"/delete",
+        url:'/api/sites/' + itemId +"/delete",
         method: 'DELETE',
         dataType:'JSON'
       })
@@ -91,7 +91,7 @@ if (window.AL === undefined){window.AL = {}; }
 
       //api POST NEW
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'POST',
         dataType: 'JSON',
         data:{
@@ -99,9 +99,12 @@ if (window.AL === undefined){window.AL = {}; }
           type:inputs.type,
           year:inputs.year,
           arch:inputs.arch,
-          street:inputs.street,
-          city:inputs.city,
-          country:inputs.country
+          address:{
+            street:inputs.street,
+            city:inputs.city,
+            country:inputs.country
+          },
+          imageLink:inputs.image
         }
 
       })
@@ -125,7 +128,7 @@ if (window.AL === undefined){window.AL = {}; }
       editItem: function(itemId,inputs){
 
         $.ajax({
-          url: '/api/sheds/' + itemId + '/edit',
+          url: '/api/sites/' + itemId + '/edit',
           method:'PUT',
           dataType:'JSON',
           data:{
@@ -133,9 +136,12 @@ if (window.AL === undefined){window.AL = {}; }
             type:inputs.type,
             year:inputs.year,
             arch:inputs.arch,
-            street:inputs.street,
-            city:inputs.city,
-            country:inputs.country
+            address:{
+              street:inputs.street,
+              city:inputs.city,
+              country:inputs.country
+            },
+            imageLink:inputs.image
           }
         })
         .fail((req,stat,error)=>{
@@ -167,7 +173,7 @@ if (window.AL === undefined){window.AL = {}; }
         // });
 
         $.ajax({
-          url:'/api/sheds/' + itemId + '/view-map',
+          url:'/api/sites/' + itemId + '/view-map',
           method:'GET',
           dataType:'JSON',
         })
