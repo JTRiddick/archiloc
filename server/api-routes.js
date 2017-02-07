@@ -20,10 +20,11 @@ module.exports = function(){
     site.type = req.body.type;
     site.year = req.body.year;
     site.arch = req.body.arch;
-    site.address.street = req.body.street;
-    site.address.city = req.body.city;
-    site.address.country = req.body.country;
-    site.imageLink = req.body.image;
+    site.street = req.body.street;
+    site.cityState = req.body.cityState;
+    site.country = req.body.country
+    site.pic = req.body.pic;
+    site.styles = req.body.styles;
     site.save(cb);
   });
 
@@ -50,9 +51,11 @@ module.exports = function(){
       year: req.body.year,
       arch: req.body.arch,
       street: req.body.street,
-      city: req.body.city,
-      country: req.body.country
-    },{safe:true,upsert:true,new:true,runValidators:true},cb)
+      cityState: req.body.cityState,
+      country:req.body.country,
+      pic: req.body.pic,
+      styles:req.body.styles,
+    },{safe:true,upsert:true,new:true,runValidators:false},cb)
   });
 
   router.get('/api/sites/:siteId',(req,res) => {
@@ -97,8 +100,12 @@ module.exports = function(){
             year:item.year,
             arch:item.arch,
             street:item.street,
-            city:item.city,
-            country:item.country
+            cityState:item.cityState,
+            country:item.country,
+            coordinate:item.coordinate,
+            pic:item.pic,
+            styles:item.styles,
+            updated:item.updated
           };
         siteArray.push(site);
       })

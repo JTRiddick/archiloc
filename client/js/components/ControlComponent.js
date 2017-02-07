@@ -87,7 +87,7 @@ if (window.AL === undefined){window.AL = {}; }
     },//end of delete
     addItem: function(inputs){
       //test
-      console.log("sending...", inputs.name, inputs.type);
+      console.log("sending...", inputs);
 
       //api POST NEW
       $.ajax({
@@ -99,12 +99,10 @@ if (window.AL === undefined){window.AL = {}; }
           type:inputs.type,
           year:inputs.year,
           arch:inputs.arch,
-          address:{
-            street:inputs.street,
-            city:inputs.city,
-            country:inputs.country
-          },
-          imageLink:inputs.image
+          street:inputs.street,
+          cityState:inputs.cityState,
+          country:inputs.country,
+          pic:inputs.pic,
         }
 
       })
@@ -136,12 +134,10 @@ if (window.AL === undefined){window.AL = {}; }
             type:inputs.type,
             year:inputs.year,
             arch:inputs.arch,
-            address:{
-              street:inputs.street,
-              city:inputs.city,
-              country:inputs.country
-            },
-            imageLink:inputs.image
+            street:inputs.street,
+            cityState:inputs.cityState,
+            country:inputs.country,
+            pic:inputs.pic,
           }
         })
         .fail((req,stat,error)=>{

@@ -96,7 +96,8 @@ if (window.AL === undefined){window.AL = {}; }
       var handleResults;
       //check for item id or obj
       console.log('GEOCODE',itemId);
-      this.geocoder.geocode({'address':itemId.street}, handleResults = (results,status)=>{
+      var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
+      this.geocoder.geocode({'address':address}, handleResults = (results,status)=>{
         if (status === google.maps.GeocoderStatus.OK){
           console.log('geo code this check',this.map);
           this.googleMap.setCenter(results[0].geometry.location);
@@ -239,7 +240,7 @@ if (window.AL === undefined){window.AL = {}; }
       return (<div className="info-box-text">
         <ol>
          <li><h4>{this.state.info.title}</h4> </li>
-         <li>{this.state.info.street}, {this.state.info.city},
+         <li>{this.state.info.street}, {this.state.info.cityState},
             {this.state.info.country}, </li>
          <li className='info-type'>{this.state.info.type} </li>
          <li>{this.state.info.year} </li>

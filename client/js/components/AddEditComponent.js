@@ -53,9 +53,9 @@ if (window.AL === undefined){window.AL = {}; }
         year:this.yearInput.value,
         arch:this.archInput.value,
         street:this.streetInput.value,
-        city:this.cityInput.value,
+        cityState:this.cityInput.value,
         country:this.countryInput.value,
-        image:this.imageURLInput
+        pic:this.imageURLInput
       }
 
       //edit?
@@ -63,6 +63,7 @@ if (window.AL === undefined){window.AL = {}; }
       if (this.state.editMode){
         AL.ControlObject.editItem(this.props.params.sId,inputs);
       }else{
+        console.log('adding',inputs);
         AL.ControlObject.addItem(inputs);
       }
 
@@ -94,9 +95,7 @@ if (window.AL === undefined){window.AL = {}; }
             year = this.state.lastAdded.year || 'Add Year';
             arch = this.state.lastAdded.arch;
             type = this.state.lastAdded.type;
-            street = this.state.lastAdded.street;
-            city = this.state.lastAdded.city;
-            country = this.state.lastAdded.country;
+
           }
 
 
@@ -143,9 +142,7 @@ if (window.AL === undefined){window.AL = {}; }
             <hr/>
 
             <h4>Image</h4>
-            <input placeholder="add a URL" ref={(input)=>{
-              this.imageURLInput = input
-            }}/>
+            <input placeholder="add a URL" ref={(input)=>{this.picInput = input}}/>
 
             <button>Add</button>
           </form>
@@ -183,7 +180,7 @@ if (window.AL === undefined){window.AL = {}; }
           <li>Arch: {this.props.info.arch} </li>
           <li>Type: {this.props.info.type} </li>
           <li>Street: {this.props.info.street} </li>
-          <li>City: {this.props.info.city} </li>
+          <li>City: {this.props.info.cityState} </li>
           <li>Country: {this.props.info.country} </li>
         </ol>
 

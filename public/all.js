@@ -72,9 +72,9 @@ if (window.AL === undefined) {
           year: this.yearInput.value,
           arch: this.archInput.value,
           street: this.streetInput.value,
-          city: this.cityInput.value,
+          cityState: this.cityInput.value,
           country: this.countryInput.value,
-          image: this.imageURLInput
+          pic: this.imageURLInput
         };
 
         //edit?
@@ -82,6 +82,7 @@ if (window.AL === undefined) {
         if (this.state.editMode) {
           AL.ControlObject.editItem(this.props.params.sId, inputs);
         } else {
+          console.log('adding', inputs);
           AL.ControlObject.addItem(inputs);
         }
       }
@@ -112,9 +113,6 @@ if (window.AL === undefined) {
               year = this.state.lastAdded.year || 'Add Year';
               arch = this.state.lastAdded.arch;
               type = this.state.lastAdded.type;
-              street = this.state.lastAdded.street;
-              city = this.state.lastAdded.city;
-              country = this.state.lastAdded.country;
             }
 
             console.log('returned data in state', this.state.lastAdded);
@@ -230,7 +228,7 @@ if (window.AL === undefined) {
                 'Image'
               ),
               React.createElement('input', { placeholder: 'add a URL', ref: function ref(input) {
-                  _this2.imageURLInput = input;
+                  _this2.picInput = input;
                 } }),
               React.createElement(
                 'button',
@@ -318,7 +316,7 @@ if (window.AL === undefined) {
               'li',
               null,
               'City: ',
-              this.props.info.city,
+              this.props.info.cityState,
               ' '
             ),
             React.createElement(
@@ -529,7 +527,7 @@ if (window.AL === undefined) {
       var _this5 = this;
 
       //test
-      console.log("sending...", inputs.name, inputs.type);
+      console.log("sending...", inputs);
 
       //api POST NEW
       $.ajax({
@@ -541,12 +539,10 @@ if (window.AL === undefined) {
           type: inputs.type,
           year: inputs.year,
           arch: inputs.arch,
-          address: {
-            street: inputs.street,
-            city: inputs.city,
-            country: inputs.country
-          },
-          imageLink: inputs.image
+          street: inputs.street,
+          cityState: inputs.cityState,
+          country: inputs.country,
+          pic: inputs.pic
         }
 
       }).fail(function (req, stat, error) {
@@ -576,12 +572,10 @@ if (window.AL === undefined) {
           type: inputs.type,
           year: inputs.year,
           arch: inputs.arch,
-          address: {
-            street: inputs.street,
-            city: inputs.city,
-            country: inputs.country
-          },
-          imageLink: inputs.image
+          street: inputs.street,
+          cityState: inputs.cityState,
+          country: inputs.country,
+          pic: inputs.pic
         }
       }).fail(function (req, stat, error) {
         // window.alert('no');
@@ -741,7 +735,8 @@ if (window.AL === undefined) {
         var handleResults;
         //check for item id or obj
         console.log('GEOCODE', itemId);
-        this.geocoder.geocode({ 'address': itemId.street }, handleResults = function handleResults(results, status) {
+        var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
+        this.geocoder.geocode({ 'address': address }, handleResults = function handleResults(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
             console.log('geo code this check', _this3.map);
             _this3.googleMap.setCenter(results[0].geometry.location);
@@ -917,7 +912,7 @@ if (window.AL === undefined) {
               null,
               this.state.info.street,
               ', ',
-              this.state.info.city,
+              this.state.info.cityState,
               ',',
               this.state.info.country,
               ', '

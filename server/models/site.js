@@ -9,16 +9,14 @@ var siteSchema = new Schema({
   year:{type: String},
   arch:{type: String},
   styles:[],
-  address:{
-    street:{type: String, unique:true},
-    cityState:{type: String},
-    country:{type: String}
-  },
+  street:{type: String, required:true, unique:true},
+  cityState:{type: String, required:true},
+  country:{type:String, required:true},
   coordinate:{
     lat:{type: Number},
     long:{type: Number}
   },
- imagelink:{type:String},
+ pic:{type:String},
  updated: { type: Date, default: Date.now }
 
 })

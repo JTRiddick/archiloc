@@ -13,8 +13,7 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-//process.env.MONGODB_URI
-//should be mongodb:<jtr>:<dmc12prv>@ds011902.mlab.com:11902/heroku_x2r8tl0m'|| 'mongodb://localhost:28019/test
+
 var dbLocation = process.env.MONGODB_URI || 'mongodb://localhost:28019/test';
 mongoose.connect(dbLocation);
 
