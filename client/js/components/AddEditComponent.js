@@ -40,7 +40,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     addStyleTag(tag){
       this.setState({
-        styles:this.state.styles.concat(tag)
+        styles:this.state.styles.concat(tag.value)
       })
       console.log('ui added tag ',tag, 'to state,',this.state );
     }

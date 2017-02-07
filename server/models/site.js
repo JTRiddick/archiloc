@@ -16,7 +16,7 @@ var siteSchema = new Schema({
     lat:{type: Number},
     long:{type: Number}
   },
- pic:{data:Buffer,contentType:String},
+ pic:{type:String},
  updated: { type: Date, default: Date.now }
 
 })
