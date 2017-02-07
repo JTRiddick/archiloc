@@ -7,7 +7,7 @@ if (window.AL === undefined){window.AL = {}; }
     constructor(){
       super();
 
-      this.state = {editMode:false,styles:[]};
+      this.state = {editMode:false,styles:[],tagMode:false};
 
       AL.ControlObject.registerCallback(() => {
         this.setState({
@@ -19,8 +19,14 @@ if (window.AL === undefined){window.AL = {}; }
 
     }
     componentWillMount(){
-      console.log('mounting with params, ',this.props.params);
-      if(this.props.params.sId && !this.state.editMode){
+      console.log('mounting with props, ',this.props);
+      if(this.props.location.pathname.includes('tag')){
+        this.setState({
+          tagMode:true
+        })
+        AL.ControlObject.getStructById(this.props.params.sId);
+      }
+      if(this.props.params.sId && !this.state.editMode && !this.state.tagMode){
         this.setState({
           editMode:true
         })
@@ -39,10 +45,14 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     addStyleTag(tag){
-      this.setState({
-        styles:this.state.styles.concat(tag.value)
-      })
-      console.log('ui added tag ',tag, 'to state,',this.state );
+      console.log("tag is", tag.value, 'sId is ',this.props.params.sId);
+      if(tag.value.length > 0){
+        AL.ControlObject.setStyleTags(this.props.params.sId,tag.value);
+        console.log('tagged');
+      }else{
+        console.log('tag failed');
+      }
+
     }
 
     validateStructure(evt){
@@ -82,6 +92,47 @@ if (window.AL === undefined){window.AL = {}; }
       console.log('@render, state set to ', this.state);
       var review;
       var fields;
+
+
+      if(this.state.tagMode){
+        fields = <div><hr/>
+                  <h4>Styles</h4>
+                  <div className="styletags">Adding StyleTags {this.state.styles}</div>
+                  <input ref={(input)=>{this.styleInput = input}} />
+                  <div className="nav-button" onClick={() => {this.addStyleTag(this.styleInput)}}>Add</div>
+                </div>
+      }else{
+       fields = (
+        <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
+          <h4>Details</h4>
+          <input placeholder={name} ref={(input) => {this.nameInput = input}}/>
+          <input placeholder={year} ref={(input) => {this.yearInput = input}}/>
+          <input placeholder={arch} ref={(input) => {this.archInput = input}}/>
+
+          <hr/>
+          <h4>Categories</h4>
+          <select defaultValue={type} ref={(input) => {this.typeInput = input}}>
+            <option value="cultural">Cultural</option>
+            <option value="civic">Civic</option>
+            <option value="residential">Residential</option>
+            <option value="industrial">Industrial</option>
+            <option value="commercial">Commercial</option>
+            <option value="infrastructural">Infrastructural</option>
+          </select>
+          <hr/>
+
+          <h4>Location</h4>
+          <input placeholder={street} ref={(input) => {this.streetInput = input}}/>
+          <input placeholder={city} ref={(input) => {this.cityInput = input}}/>
+          <input placeholder={country} ref={(input) => {this.countryInput = input}}/>
+
+          <hr/>
+          <h4>Image</h4>
+          <input placeholder="add a URL" ref={(input)=>{this.picInput = input}}/>
+
+          <button>Add</button>
+        </form>);
+      }
 
       //field placeholders
       var name = "Name";
@@ -125,41 +176,7 @@ if (window.AL === undefined){window.AL = {}; }
             <h3 className= "left">Add Structure</h3>
             <div className = "nav-button view right" onClick={() => {this.sendToViewer()}}> Show All </div>
           </div>
-          <hr />
-
-          <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
-            <h4>Details</h4>
-            <input placeholder={name} ref={(input) => {this.nameInput = input}}/>
-            <input placeholder={year} ref={(input) => {this.yearInput = input}}/>
-            <input placeholder={arch} ref={(input) => {this.archInput = input}}/>
-
-            <hr/>
-            <h4>Categories</h4>
-            <select defaultValue={type} ref={(input) => {this.typeInput = input}}>
-              <option value="cultural">Cultural</option>
-              <option value="civic">Civic</option>
-              <option value="residential">Residential</option>
-              <option value="industrial">Industrial</option>
-              <option value="commercial">Commercial</option>
-              <option value="infrastructural">Infrastructural</option>
-            </select>
-            <hr/>
-
-            <h4>Location</h4>
-            <input placeholder={street} ref={(input) => {this.streetInput = input}}/>
-            <input placeholder={city} ref={(input) => {this.cityInput = input}}/>
-            <input placeholder={country} ref={(input) => {this.countryInput = input}}/>
-            <hr/>
-            <h4>Styles</h4>
-            <div className="styletags">Adding StyleTags {this.state.styletags}</div>
-            <input ref={(input)=>{this.styleInput = input}} />
-            <div className="nav-button" onClick={() => {this.addStyleTag(this.styleInput)}}>Add</div>
-            <hr/>
-            <h4>Image</h4>
-            <input placeholder="add a URL" ref={(input)=>{this.picInput = input}}/>
-
-            <button>Add</button>
-          </form>
+          {fields}
 
         </div>
       {review}
@@ -187,7 +204,7 @@ if (window.AL === undefined){window.AL = {}; }
         info = "Error " + JSON.stringify(this.props.warning);
       }
 
-      if (this.props.info){
+      if (this.props.info && !this.props.warning){
         info = <ol>
           <li>Name: {this.props.info.title} </li>
           <li>Year: {this.props.info.year} </li>
@@ -196,7 +213,7 @@ if (window.AL === undefined){window.AL = {}; }
           <li>Street: {this.props.info.street} </li>
           <li>City: {this.props.info.cityState} </li>
           <li>Country: {this.props.info.country} </li>
-          <li>Styles: {this.props.info.styles} </li>
+          <li>Styles: {JSON.stringify(this.props.info.styles)} </li>
         </ol>
 
       }

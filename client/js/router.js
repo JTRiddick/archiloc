@@ -16,6 +16,7 @@ if (window.AL === undefined) {window.AL = {};}
         <Route path="/test" component={AL.TestComponent} />
         <Route path="/test/asd" component={AL.AddEditComponent} />
         <Route path="/test/asd/:sId/edit" component={AL.AddEditComponent} />
+        <Route path="/test/asd/:sId/tag" component={AL.AddEditComponent}/>
         <Route path="/test/all" component={AL.ShowAllComponent} />
       </Route>
     </Router>;

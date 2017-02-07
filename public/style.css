@@ -235,15 +235,21 @@ table {
     position: relative;
     max-height: 300px;
     width: 100%;
-    background-color: #3f5e5a;
+    background-color: #35ad1a;
     color: #546a7b;
-    min-height: 96px; }
+    min-height: 96px;
+    overflow: auto; }
   #map-component .aif {
     right: 0px;
     height: 440px; }
   #map-component .oof {
     left: -660px;
     height: 64px; }
+  #map-component .mapview-image {
+    position: relative; }
+    #map-component .mapview-image img {
+      width: 640px;
+      height: 440px; }
 
 body {
   background-color: #2b3341;

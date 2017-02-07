@@ -159,6 +159,33 @@ if (window.AL === undefined){window.AL = {}; }
 
         })
       },//end of editor
+      setStyleTags: function(itemId,tags){
+        console.log('set tags of ',itemId,' to ',tags)
+        $.ajax({
+          url:'/api/sites/'+itemId+'/tag',
+          method:'PUT',
+          dataType:'JSON',
+          data:{
+            styles:tags
+          }
+        })
+        .fail((req,stat,error)=>{
+          // window.alert('no');
+          console.log('request unsucessful');
+          console.log("req",req);
+          console.log("stat",stat);
+          console.log("err",error);
+          this.sendData = (req,stat,err);
+          this.callbacksEdit();
+        })
+        .done((data)=>{
+          console.log('request successful');
+          console.log('data: ',data);
+          this.sendData = data;
+          this.callbacksEdit();
+
+        })
+      },
       mapFilterResults: function(query,type){
 
 

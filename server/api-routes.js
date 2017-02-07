@@ -24,9 +24,10 @@ module.exports = function(){
     site.cityState = req.body.cityState;
     site.country = req.body.country
     site.pic = req.body.pic;
-    site.styles = req.body.styles;
+    site.styles.set(req.body.styles);
     site.save(cb);
   });
+  //added new
 
   router.delete('/api/sites/:siteId/delete', (req,res) => {
     var cb = (err,data) => {
@@ -55,8 +56,20 @@ module.exports = function(){
       country:req.body.country,
       pic: req.body.pic,
       styles:req.body.styles,
-    },{safe:true,upsert:true,new:true,runValidators:false},cb)
+    },{safe:false,upsert:true,new:true,runValidators:false},cb)
   });
+
+  router.put('/api/sites/:siteId/tag', (req,res) => {
+    console.log('tag api route req params', req.params);
+    var cb = (err,data) => {
+      console.log('i tagged a site :',err,data);
+      res.send(data);
+    }
+    console.log('tag edit req body',req.body.styles,typeof(req.body.styles));
+    Site.findByIdAndUpdate(req.params.siteId, {$push:{styles:req.body.styles}}
+      ,{safe:true,upsert:true,runValidators:false},cb)
+  });
+  //^ Add style tag array to style[] property of object
 
   router.get('/api/sites/:siteId',(req,res) => {
     console.log('find req params', req.params.siteId);

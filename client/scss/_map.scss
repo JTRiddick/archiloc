@@ -108,9 +108,10 @@
     position: relative;
     max-height: 300px;
     width: 100%;
-    background-color: $color3;
+    background-color: $color4;
     color:$color2;
     min-height:96px;
+    overflow: auto;
   }
 
   .aif{
@@ -121,6 +122,15 @@
   .oof{
     left:-660px;
     height:64px;
+  }
+
+  .mapview-image{
+    position: relative;
+
+    img{
+      width: 640px;
+      height: 440px;
+    }
   }
 
 

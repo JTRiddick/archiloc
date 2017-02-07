@@ -202,6 +202,7 @@ if (window.AL === undefined){window.AL = {}; }
 
       if(this.state.showSite !== null){
         info= <InfoComponent showSite={this.state.showSite}/>
+        controls = <MapControlComponent showSite={this.state.showSite}/>
       }
 
 
@@ -228,6 +229,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     constructor(){
       super();
+
     }
     componentWillMount(){
       this.setState({
@@ -236,20 +238,44 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     render(){
-
-      return (<div className="info-box-text">
-        <ol>
-         <li><h4>{this.state.info.title}</h4> </li>
-         <li>{this.state.info.street}, {this.state.info.cityState},
-            {this.state.info.country}, </li>
-         <li className='info-type'>{this.state.info.type} </li>
-         <li>{this.state.info.year} </li>
-         <li>{this.state.info.arch} </li>
-
-       </ol>
+      console.log("InfoComponent showing ", this.state.info);
+      return (<div className="info-box">
+        <div className="info-box-text">
+          <ol>
+           <li><h4>{this.state.info.title}</h4> </li>
+           <li>{this.state.info.street}, {this.state.info.cityState},
+              {this.state.info.country}, </li>
+           <li className='info-type'>{this.state.info.type} </li>
+           <li>{this.state.info.year} </li>
+           <li>{this.state.info.arch} </li>
+         </ol>
+        </div>
       </div>)
     }
 
+  }
+
+  class MapControlComponent extends React.Component{
+    constructor(){
+      super();
+    }
+    componentWillMount(){
+      if (this.props.showSite){
+        this.setState({
+          info:this.props.showSite,
+        })
+      }
+
+    }
+
+    render(){
+      console.log('controbox state: ',this.state,' img ',this.state.info.pic);
+      return(<div>
+         <div className="mapview-image">
+           <img src={decodeURIComponent(this.state.info.pic)}/>
+        </div>
+      </div>)
+    }
   }
 
   AL.MapComponent = MapComponent;
