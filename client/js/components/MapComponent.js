@@ -151,6 +151,7 @@ if (window.AL === undefined){window.AL = {}; }
        this.setState({
          showSite:item,
          infoClass:'aif',
+         controlClass:'low',
          mapClass:'two-thirds-map'
        })
        mapRef.setZoom(18);
@@ -161,6 +162,7 @@ if (window.AL === undefined){window.AL = {}; }
        this.setState({
          showSite:null,
          infoClass:'oof',
+         controlClass:'low inactive',
          mapClass:'center'
        })
        mapRef.setZoom(AL.mapData.mapZoom)
@@ -249,6 +251,7 @@ if (window.AL === undefined){window.AL = {}; }
            <li>{this.state.info.year} </li>
            <li>{this.state.info.arch} </li>
          </ol>
+  
         </div>
       </div>)
     }

@@ -7,7 +7,7 @@
 
 
 body{
-  background-color: $color1;
+  background-color: $wit;
   font-family: $stack-two-sans;
   font-weight: 100;
 }
@@ -36,8 +36,8 @@ i{
 }
 
 .app-component{
-  background-color: $color1;
-  color:$color2;
+  background-color: $wit;
+  color:#000;
   padding:1em;
   clear:both;
   width: 100%;
@@ -57,7 +57,7 @@ i{
 }
 
 .top-bar{
-  background-color: $color5;
+  background-color: $deepred;
   overflow: auto;
 }
 
@@ -70,13 +70,13 @@ i{
 
   li{
     padding: 2px 0 2px 6px;
-    border-bottom: 1px solid $color1;
-    border-right:1px solid $color1;
+    border-bottom: 1px solid $wit;
+    border-right:1px solid $wit;
   }
   a{
     text-decoration: none;
   }
   a:visited{
-    color:$color3;
+    color:$teel;
   }
 }

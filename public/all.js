@@ -878,6 +878,7 @@ if (window.AL === undefined) {
           _this5.setState({
             showSite: item,
             infoClass: 'aif',
+            controlClass: 'low',
             mapClass: 'two-thirds-map'
           });
           mapRef.setZoom(18);
@@ -888,6 +889,7 @@ if (window.AL === undefined) {
           _this5.setState({
             showSite: null,
             infoClass: 'oof',
+            controlClass: 'low inactive',
             mapClass: 'center'
           });
           mapRef.setZoom(AL.mapData.mapZoom);
