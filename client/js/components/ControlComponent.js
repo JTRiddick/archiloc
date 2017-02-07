@@ -103,6 +103,7 @@ if (window.AL === undefined){window.AL = {}; }
           cityState:inputs.cityState,
           country:inputs.country,
           pic:inputs.pic,
+          styles:inputs.styles
         }
 
       })
@@ -138,6 +139,7 @@ if (window.AL === undefined){window.AL = {}; }
             cityState:inputs.cityState,
             country:inputs.country,
             pic:inputs.pic,
+            styles:inputs.styles
           }
         })
         .fail((req,stat,error)=>{

@@ -21,7 +21,7 @@ if (window.AL === undefined) {
 
       var _this = _possibleConstructorReturn(this, (AddEditComponent.__proto__ || Object.getPrototypeOf(AddEditComponent)).call(this));
 
-      _this.state = { editMode: false };
+      _this.state = { editMode: false, styles: [] };
 
       AL.ControlObject.registerCallback(function () {
         _this.setState({
@@ -57,6 +57,14 @@ if (window.AL === undefined) {
         ReactRouter.hashHistory.push('/test/all');
       }
     }, {
+      key: 'addStyleTag',
+      value: function addStyleTag(tag) {
+        this.setState({
+          styles: this.state.styles.concat(tag)
+        });
+        console.log('ui added tag ', tag, 'to state,', this.state);
+      }
+    }, {
       key: 'validateStructure',
       value: function validateStructure(evt) {
         evt.preventDefault();
@@ -66,6 +74,7 @@ if (window.AL === undefined) {
         // this.submitStructure(evt);
 
         // input to control object
+        var encodePic = encodeURIComponent(this.picInput.value);
         var inputs = {
           title: this.nameInput.value,
           type: this.typeInput.value,
@@ -74,7 +83,8 @@ if (window.AL === undefined) {
           street: this.streetInput.value,
           cityState: this.cityInput.value,
           country: this.countryInput.value,
-          pic: this.imageURLInput
+          pic: encodePic,
+          styles: this.state.styles
         };
 
         //edit?
@@ -103,6 +113,7 @@ if (window.AL === undefined) {
         var street = "Street";
         var city = "City, State";
         var country = "Country";
+        var styles = "Styles";
 
         if (this.state) {
           console.log('last added/edit', this.state.lastAdded);
@@ -113,6 +124,10 @@ if (window.AL === undefined) {
               year = this.state.lastAdded.year || 'Add Year';
               arch = this.state.lastAdded.arch;
               type = this.state.lastAdded.type;
+              city = this.state.lastAdded.cityState;
+              street = this.state.lastAdded.street;
+              country = this.state.lastAdded.country;
+              styles = this.state.lastAdded.styles || "no style";
             }
 
             console.log('returned data in state', this.state.lastAdded);
@@ -225,6 +240,28 @@ if (window.AL === undefined) {
               React.createElement(
                 'h4',
                 null,
+                'Styles'
+              ),
+              React.createElement(
+                'div',
+                { className: 'styletags' },
+                'Adding StyleTags ',
+                this.state.styletags
+              ),
+              React.createElement('input', { ref: function ref(input) {
+                  _this2.styleInput = input;
+                } }),
+              React.createElement(
+                'div',
+                { className: 'nav-button', onClick: function onClick() {
+                    _this2.addStyleTag(_this2.styleInput);
+                  } },
+                'Add'
+              ),
+              React.createElement('hr', null),
+              React.createElement(
+                'h4',
+                null,
                 'Image'
               ),
               React.createElement('input', { placeholder: 'add a URL', ref: function ref(input) {
@@ -324,6 +361,13 @@ if (window.AL === undefined) {
               null,
               'Country: ',
               this.props.info.country,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Styles: ',
+              this.props.info.styles,
               ' '
             )
           );
@@ -542,7 +586,8 @@ if (window.AL === undefined) {
           street: inputs.street,
           cityState: inputs.cityState,
           country: inputs.country,
-          pic: inputs.pic
+          pic: inputs.pic,
+          styles: inputs.styles
         }
 
       }).fail(function (req, stat, error) {
@@ -575,7 +620,8 @@ if (window.AL === undefined) {
           street: inputs.street,
           cityState: inputs.cityState,
           country: inputs.country,
-          pic: inputs.pic
+          pic: inputs.pic,
+          styles: inputs.styles
         }
       }).fail(function (req, stat, error) {
         // window.alert('no');

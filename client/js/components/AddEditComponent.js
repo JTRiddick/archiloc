@@ -7,7 +7,7 @@ if (window.AL === undefined){window.AL = {}; }
     constructor(){
       super();
 
-      this.state = {editMode:false};
+      this.state = {editMode:false,styles:[]};
 
       AL.ControlObject.registerCallback(() => {
         this.setState({
@@ -36,7 +36,13 @@ if (window.AL === undefined){window.AL = {}; }
 
     sendToViewer(){
       ReactRouter.hashHistory.push('/test/all');
+    }
 
+    addStyleTag(tag){
+      this.setState({
+        styles:this.state.styles.concat(tag)
+      })
+      console.log('ui added tag ',tag, 'to state,',this.state );
     }
 
     validateStructure(evt){
@@ -47,6 +53,7 @@ if (window.AL === undefined){window.AL = {}; }
       // this.submitStructure(evt);
 
       // input to control object
+      var encodePic = encodeURIComponent(this.picInput.value);
       var inputs = {
         title:this.nameInput.value,
         type:this.typeInput.value,
@@ -55,7 +62,8 @@ if (window.AL === undefined){window.AL = {}; }
         street:this.streetInput.value,
         cityState:this.cityInput.value,
         country:this.countryInput.value,
-        pic:this.imageURLInput
+        pic:encodePic,
+        styles:this.state.styles
       }
 
       //edit?
@@ -83,7 +91,7 @@ if (window.AL === undefined){window.AL = {}; }
       var street = "Street";
       var city = "City, State";
       var country = "Country";
-
+      var styles = "Styles";
 
 
       if(this.state){
@@ -95,7 +103,10 @@ if (window.AL === undefined){window.AL = {}; }
             year = this.state.lastAdded.year || 'Add Year';
             arch = this.state.lastAdded.arch;
             type = this.state.lastAdded.type;
-
+            city = this.state.lastAdded.cityState;
+            street = this.state.lastAdded.street;
+            country = this.state.lastAdded.country;
+            styles = this.state.lastAdded.styles || "no style";
           }
 
 
@@ -138,9 +149,12 @@ if (window.AL === undefined){window.AL = {}; }
             <input placeholder={street} ref={(input) => {this.streetInput = input}}/>
             <input placeholder={city} ref={(input) => {this.cityInput = input}}/>
             <input placeholder={country} ref={(input) => {this.countryInput = input}}/>
-
             <hr/>
-
+            <h4>Styles</h4>
+            <div className="styletags">Adding StyleTags {this.state.styletags}</div>
+            <input ref={(input)=>{this.styleInput = input}} />
+            <div className="nav-button" onClick={() => {this.addStyleTag(this.styleInput)}}>Add</div>
+            <hr/>
             <h4>Image</h4>
             <input placeholder="add a URL" ref={(input)=>{this.picInput = input}}/>
 
@@ -182,6 +196,7 @@ if (window.AL === undefined){window.AL = {}; }
           <li>Street: {this.props.info.street} </li>
           <li>City: {this.props.info.cityState} </li>
           <li>Country: {this.props.info.country} </li>
+          <li>Styles: {this.props.info.styles} </li>
         </ol>
 
       }
