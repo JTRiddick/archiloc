@@ -90,7 +90,18 @@ if (window.AL === undefined){window.AL = {}; }
       AL.ControlObject.resetControl();
     }
 
-    //
+    //defaults
+
+    deselectSite(evt,ele){
+      console.log('evt ',evt,' ele ',ele);
+      this.setState({
+        showSite:null,
+        infoClass:'oof',
+        controlClass:'low inactive',
+        mapClass:'center'
+      })
+    }
+    //master close
 
     geoCode(itemId,map){
       var handleResults;
@@ -102,8 +113,8 @@ if (window.AL === undefined){window.AL = {}; }
           console.log('geo code this check',this.map);
           this.googleMap.setCenter(results[0].geometry.location);
           var marker = new google.maps.Marker({
-              position: (results[0].geometry.location),
-              title:itemId.title
+            position: (results[0].geometry.location),
+            title:itemId.title
           });
 
           this.markMap(this.googleMap,marker,itemId);
@@ -213,6 +224,7 @@ if (window.AL === undefined){window.AL = {}; }
 
         <div className="component-inner">
           <div className={infoClass}>
+            <div className = "close" onClick={(evt)=>{this.deselectSite(evt)}}>X</div>
           {info}
           </div>
 
@@ -238,20 +250,24 @@ if (window.AL === undefined){window.AL = {}; }
         info:this.props.showSite
       })
     }
+    componentDidMount(){
+
+    }
 
     render(){
       console.log("InfoComponent showing ", this.state.info);
       return (<div className="info-box">
+
         <div className="info-box-text">
           <ol>
            <li><h4>{this.state.info.title}</h4> </li>
-           <li>{this.state.info.street}, {this.state.info.cityState},
+           <li>{this.state.info.street}," ", {this.state.info.cityState}," ",
               {this.state.info.country}, </li>
            <li className='info-type'>{this.state.info.type} </li>
            <li>{this.state.info.year} </li>
            <li>{this.state.info.arch} </li>
          </ol>
-  
+
         </div>
       </div>)
     }
@@ -274,8 +290,12 @@ if (window.AL === undefined){window.AL = {}; }
     render(){
       console.log('controbox state: ',this.state,' img ',this.state.info.pic);
       return(<div>
+
          <div className="mapview-image">
            <img src={decodeURIComponent(this.state.info.pic)}/>
+        </div>
+        <div className="mapview-desc">
+          <p>{this.state.info.description || "Stuff here"}</p>
         </div>
       </div>)
     }

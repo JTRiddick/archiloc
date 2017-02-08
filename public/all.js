@@ -80,7 +80,6 @@ if (window.AL === undefined) {
         console.log("state check", this.state);
         //validate conditions here
 
-        // this.submitStructure(evt);
 
         // input to control object
         var encodePic = encodeURIComponent(this.picInput.value);
@@ -93,7 +92,8 @@ if (window.AL === undefined) {
           cityState: this.cityInput.value,
           country: this.countryInput.value,
           pic: encodePic,
-          styles: this.state.styles
+          styles: this.state.styles,
+          description: this.descriptionInput.value
         };
 
         //edit?
@@ -152,13 +152,13 @@ if (window.AL === undefined) {
               null,
               'Details'
             ),
-            React.createElement('input', { placeholder: name, ref: function ref(input) {
+            React.createElement('input', { defaultValue: name, placeholder: name, ref: function ref(input) {
                 _this2.nameInput = input;
               } }),
-            React.createElement('input', { placeholder: year, ref: function ref(input) {
+            React.createElement('input', { defaultValue: year, placeholder: year, ref: function ref(input) {
                 _this2.yearInput = input;
               } }),
-            React.createElement('input', { placeholder: arch, ref: function ref(input) {
+            React.createElement('input', { defaultValue: arch, placeholder: arch, ref: function ref(input) {
                 _this2.archInput = input;
               } }),
             React.createElement('hr', null),
@@ -209,14 +209,23 @@ if (window.AL === undefined) {
               null,
               'Location'
             ),
-            React.createElement('input', { placeholder: street, ref: function ref(input) {
+            React.createElement('input', { defaultValue: street, placeholder: street, ref: function ref(input) {
                 _this2.streetInput = input;
               } }),
-            React.createElement('input', { placeholder: city, ref: function ref(input) {
+            React.createElement('input', { defaultValue: city, placeholder: city, ref: function ref(input) {
                 _this2.cityInput = input;
               } }),
-            React.createElement('input', { placeholder: country, ref: function ref(input) {
+            React.createElement('input', { defaultValue: country, placeholder: country, ref: function ref(input) {
                 _this2.countryInput = input;
+              } }),
+            React.createElement('hr', null),
+            React.createElement(
+              'h4',
+              null,
+              'Description'
+            ),
+            React.createElement('input', { type: 'text', placeholder: description, defaultValue: description, ref: function ref(input) {
+                _this2.descriptionInput = input;
               } }),
             React.createElement('hr', null),
             React.createElement(
@@ -224,7 +233,7 @@ if (window.AL === undefined) {
               null,
               'Image'
             ),
-            React.createElement('input', { placeholder: 'add a URL', ref: function ref(input) {
+            React.createElement('input', { defaultValue: 'add a URL', ref: function ref(input) {
                 _this2.picInput = input;
               } }),
             React.createElement(
@@ -244,7 +253,10 @@ if (window.AL === undefined) {
         var city = "City, State";
         var country = "Country";
         var styles = "Styles";
+        var description = "This is a Building, probably";
+        var picUrl = "add a URL";
 
+        //set placeholders and defaults if editing
         if (this.state) {
           console.log('last added/edit', this.state.lastAdded);
           if (this.state.lastAdded) {
@@ -258,12 +270,14 @@ if (window.AL === undefined) {
               street = this.state.lastAdded.street;
               country = this.state.lastAdded.country;
               styles = this.state.lastAdded.styles || "no style";
+              picUrl = this.state.lastAdded.pic;
+              description = this.state.lastAdded.description;
             }
 
             console.log('returned data in state', this.state.lastAdded);
           }
           if (this.state.error) {
-            review = React.createElement(ReviewData, { warning: this.state.error });
+            review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
           }
         }
 
@@ -452,6 +466,15 @@ if (window.AL === undefined) {
                 { className: "link", to: "/map" },
                 "Map"
               )
+            ),
+            React.createElement(
+              "li",
+              null,
+              React.createElement(
+                ReactRouter.Link,
+                { className: "link", to: '/test' },
+                "Admin/Testing"
+              )
             )
           )
         );
@@ -604,7 +627,8 @@ if (window.AL === undefined) {
           cityState: inputs.cityState,
           country: inputs.country,
           pic: inputs.pic,
-          styles: inputs.styles
+          styles: inputs.styles,
+          description: inputs.description
         }
 
       }).fail(function (req, stat, error) {
@@ -638,7 +662,8 @@ if (window.AL === undefined) {
           cityState: inputs.cityState,
           country: inputs.country,
           pic: inputs.pic,
-          styles: inputs.styles
+          styles: inputs.styles,
+          description: inputs.description
         }
       }).fail(function (req, stat, error) {
         // window.alert('no');
@@ -684,11 +709,6 @@ if (window.AL === undefined) {
     mapFilterResults: function mapFilterResults(query, type) {}, //end of typefilter
     mapOneItem: function mapOneItem(itemId) {
       var _this8 = this;
-
-      // AL.ControlObject.registerCallback(()=>{
-      //   console.log('geocoding');
-      //   // this.geoCode(this.sendData);
-      // });
 
       $.ajax({
         url: '/api/sites/' + itemId + '/view-map',
@@ -814,7 +834,20 @@ if (window.AL === undefined) {
         AL.ControlObject.resetControl();
       }
 
-      //
+      //defaults
+
+    }, {
+      key: 'deselectSite',
+      value: function deselectSite(evt, ele) {
+        console.log('evt ', evt, ' ele ', ele);
+        this.setState({
+          showSite: null,
+          infoClass: 'oof',
+          controlClass: 'low inactive',
+          mapClass: 'center'
+        });
+      }
+      //master close
 
     }, {
       key: 'geoCode',
@@ -945,6 +978,13 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: infoClass },
+              React.createElement(
+                'div',
+                { className: 'close', onClick: function onClick(evt) {
+                    _this6.deselectSite(evt);
+                  } },
+                'X'
+              ),
               info
             ),
             React.createElement('div', { className: mapClass, ref: function ref(map) {
@@ -980,6 +1020,9 @@ if (window.AL === undefined) {
         });
       }
     }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {}
+    }, {
       key: 'render',
       value: function render() {
         console.log("InfoComponent showing ", this.state.info);
@@ -1006,9 +1049,9 @@ if (window.AL === undefined) {
                 'li',
                 null,
                 this.state.info.street,
-                ', ',
+                '," ", ',
                 this.state.info.cityState,
-                ',',
+                '," ",',
                 this.state.info.country,
                 ', '
               ),
@@ -1068,6 +1111,15 @@ if (window.AL === undefined) {
             'div',
             { className: 'mapview-image' },
             React.createElement('img', { src: decodeURIComponent(this.state.info.pic) })
+          ),
+          React.createElement(
+            'div',
+            { className: 'mapview-desc' },
+            React.createElement(
+              'p',
+              null,
+              this.state.info.description || "Stuff here"
+            )
           )
         );
       }
@@ -1350,17 +1402,46 @@ if (window.AL === undefined) {
     function TestComponent() {
       _classCallCheck(this, TestComponent);
 
-      return _possibleConstructorReturn(this, (TestComponent.__proto__ || Object.getPrototypeOf(TestComponent)).apply(this, arguments));
+      return _possibleConstructorReturn(this, (TestComponent.__proto__ || Object.getPrototypeOf(TestComponent)).call(this));
     }
 
     _createClass(TestComponent, [{
+      key: "onComponentMount",
+      value: function onComponentMount() {}
+    }, {
       key: "render",
       value: function render() {
-
+        var links = React.createElement(
+          "ol",
+          null,
+          React.createElement(
+            "li",
+            null,
+            React.createElement(
+              ReactRouter.Link,
+              { className: "link", to: "/test/asd" },
+              "Add"
+            )
+          ),
+          React.createElement(
+            "li",
+            null,
+            React.createElement(
+              ReactRouter.Link,
+              { className: "link", to: '/test/all' },
+              "Show Collection"
+            )
+          )
+        );
         return React.createElement(
           "div",
-          null,
-          "Test Component"
+          { className: "admin-test" },
+          React.createElement(
+            "h3",
+            null,
+            "This is the place where you can break everything"
+          ),
+          links
         );
       }
     }]);

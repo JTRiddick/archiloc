@@ -5,18 +5,6 @@
   min-height: 960px;
   overflow: auto;
 
-  .button{
-    border:$grau;
-    background-color: $deepred;
-    color:$wit;
-    display: inline-block;
-    width: 20%;
-    text-align: center;
-    padding: 2px 3px;
-    cursor: default;
-    user-select: none;
-  }
-
 
   .component-inner{
     margin: 0;
@@ -59,7 +47,7 @@
     width: 48%;
     position: relative;
 
-    transition: all 0.25s ease;
+    transition: all 0.55s ease;
     //animtest
   }
   // .map-pane:after{
@@ -110,7 +98,7 @@
     position: relative;
     width:33.333%;
 
-    transition:all 1s ease;
+    transition:all .33s ease;
   }
 
   .control-pane-low{

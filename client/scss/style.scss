@@ -10,18 +10,24 @@ body{
   background-color: $wit;
   font-family: $stack-two-sans;
   font-weight: 100;
+  max-width: 1400px;
 }
 h1{
   font-size: 2.33em;
+  letter-spacing: 3px;
+  font-weight: 100;
 }
 h2{
   font-size: 2em;
+  letter-spacing: 2px;
 }
 h3{
   font-size: 1.75em;
 }
 h4{
   font-size: 1.5em;
+  letter-spacing: 1px;
+  font-weight: 200;
 }
 i{
   font-style: italic;
@@ -35,12 +41,17 @@ i{
   clear:none;
 }
 
+.main-content{
+  height: auto;
+}
+
 .app-component{
   background-color: $wit;
-  color:#000;
+  color:#222;
   padding:1em;
+  width: 1400px;
+  //rounds up to 1432?
   clear:both;
-  width: 100%;
   height:96px;
 
   .title{
@@ -75,8 +86,39 @@ i{
   }
   a{
     text-decoration: none;
+    color:$wit;
   }
   a:visited{
-    color:$teel;
+    color:$grau;
+  }
+}
+
+.close{
+  @include button-sml;
+  position: relative;
+  border: 1px solid $deepred;
+  top:0;
+  left:0;
+  content: 'X';
+}
+
+.copyright{
+  position: absolute;
+  bottom:10px;
+  font-size: 0.5em;
+  opacity: 0;
+}
+
+.admin-test{
+  @include push--auto;
+  max-width: 960px;
+  min-height: 128px;
+  position: relative;
+  background-color: $teel;
+  color:$color6;
+  ol{
+    margin: 1em auto;
+    padding:.5rem;
+
   }
 }

@@ -60,7 +60,7 @@ if (window.AL === undefined){window.AL = {}; }
       console.log("state check", this.state);
       //validate conditions here
 
-      // this.submitStructure(evt);
+
 
       // input to control object
       var encodePic = encodeURIComponent(this.picInput.value);
@@ -73,7 +73,8 @@ if (window.AL === undefined){window.AL = {}; }
         cityState:this.cityInput.value,
         country:this.countryInput.value,
         pic:encodePic,
-        styles:this.state.styles
+        styles:this.state.styles,
+        description:this.descriptionInput.value
       }
 
       //edit?
@@ -95,19 +96,20 @@ if (window.AL === undefined){window.AL = {}; }
 
 
       if(this.state.tagMode){
-        fields = <div><hr/>
-                  <h4>Styles</h4>
-                  <div className="styletags">Adding StyleTags {this.state.styles}</div>
-                  <input ref={(input)=>{this.styleInput = input}} />
-                  <div className="nav-button" onClick={() => {this.addStyleTag(this.styleInput)}}>Add</div>
-                </div>
+        fields = <div>
+          <hr/>
+          <h4>Styles</h4>
+          <div className="styletags">Adding StyleTags {this.state.styles}</div>
+          <input ref={(input)=>{this.styleInput = input}} />
+          <div className="nav-button" onClick={() => {this.addStyleTag(this.styleInput)}}>Add</div>
+        </div>
       }else{
        fields = (
         <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
           <h4>Details</h4>
-          <input placeholder={name} ref={(input) => {this.nameInput = input}}/>
-          <input placeholder={year} ref={(input) => {this.yearInput = input}}/>
-          <input placeholder={arch} ref={(input) => {this.archInput = input}}/>
+          <input defaultValue={name}  placeholder={name} ref={(input) => {this.nameInput = input}}/>
+          <input defaultValue={year} placeholder={year} ref={(input) => {this.yearInput = input}}/>
+          <input defaultValue={arch} placeholder={arch} ref={(input) => {this.archInput = input}}/>
 
           <hr/>
           <h4>Categories</h4>
@@ -122,13 +124,20 @@ if (window.AL === undefined){window.AL = {}; }
           <hr/>
 
           <h4>Location</h4>
-          <input placeholder={street} ref={(input) => {this.streetInput = input}}/>
-          <input placeholder={city} ref={(input) => {this.cityInput = input}}/>
-          <input placeholder={country} ref={(input) => {this.countryInput = input}}/>
+          <input defaultValue={street} placeholder={street} ref={(input) => {this.streetInput = input}}/>
+          <input defaultValue={city} placeholder={city} ref={(input) => {this.cityInput = input}}/>
+          <input defaultValue={country} placeholder={country} ref={(input) => {this.countryInput = input}}/>
+
+          <hr/>
+
+          <h4>Description</h4>
+          <input type='text' placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
+
+
 
           <hr/>
           <h4>Image</h4>
-          <input placeholder="add a URL" ref={(input)=>{this.picInput = input}}/>
+          <input defaultValue="add a URL" ref={(input)=>{this.picInput = input}}/>
 
           <button>Add</button>
         </form>);
@@ -143,8 +152,10 @@ if (window.AL === undefined){window.AL = {}; }
       var city = "City, State";
       var country = "Country";
       var styles = "Styles";
+      var description = "This is a Building, probably"
+      var picUrl = "add a URL"
 
-
+      //set placeholders and defaults if editing
       if(this.state){
         console.log('last added/edit', this.state.lastAdded);
         if(this.state.lastAdded){
@@ -158,13 +169,15 @@ if (window.AL === undefined){window.AL = {}; }
             street = this.state.lastAdded.street;
             country = this.state.lastAdded.country;
             styles = this.state.lastAdded.styles || "no style";
+            picUrl = this.state.lastAdded.pic;
+            description = this.state.lastAdded.description;
           }
 
 
           console.log('returned data in state', this.state.lastAdded);
         }
         if(this.state.error){
-          review = <ReviewData warning={this.state.error} />
+          review = <ReviewData warning={this.state.error,this.state.stat} />
         }
 
       }

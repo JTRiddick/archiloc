@@ -103,7 +103,8 @@ if (window.AL === undefined){window.AL = {}; }
           cityState:inputs.cityState,
           country:inputs.country,
           pic:inputs.pic,
-          styles:inputs.styles
+          styles:inputs.styles,
+          description:inputs.description
         }
 
       })
@@ -139,7 +140,8 @@ if (window.AL === undefined){window.AL = {}; }
             cityState:inputs.cityState,
             country:inputs.country,
             pic:inputs.pic,
-            styles:inputs.styles
+            styles:inputs.styles,
+            description:inputs.description
           }
         })
         .fail((req,stat,error)=>{
@@ -192,10 +194,6 @@ if (window.AL === undefined){window.AL = {}; }
 
       },//end of typefilter
       mapOneItem: function(itemId){
-        // AL.ControlObject.registerCallback(()=>{
-        //   console.log('geocoding');
-        //   // this.geoCode(this.sendData);
-        // });
 
         $.ajax({
           url:'/api/sites/' + itemId + '/view-map',

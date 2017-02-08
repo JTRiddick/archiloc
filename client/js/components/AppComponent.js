@@ -10,6 +10,8 @@ if (window.AL === undefined) {window.AL = { }; }
       var testBar = (<div className = "top-bar nav">
         <ul>
           <li><ReactRouter.Link className="link" to={"/map" }>Map</ReactRouter.Link></li>
+          <li><ReactRouter.Link className="link" to={'/test'
+        }>Admin/Testing</ReactRouter.Link></li>
         </ul>
       </div>)
 

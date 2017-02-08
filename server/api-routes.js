@@ -24,6 +24,7 @@ module.exports = function(){
     site.cityState = req.body.cityState;
     site.country = req.body.country
     site.pic = req.body.pic;
+    site.description = req.body.description;
     site.styles.set(req.body.styles);
     site.save(cb);
   });
@@ -56,6 +57,7 @@ module.exports = function(){
       country:req.body.country,
       pic: req.body.pic,
       styles:req.body.styles,
+      description:req.body.description,
     },{safe:false,upsert:true,new:true,runValidators:false},cb)
   });
 
@@ -118,6 +120,7 @@ module.exports = function(){
             coordinate:item.coordinate,
             pic:item.pic,
             styles:item.styles,
+            description:item.description,
             updated:item.updated
           };
         siteArray.push(site);
