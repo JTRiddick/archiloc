@@ -21,16 +21,23 @@ if (window.AL === undefined){window.AL = {}; }
     componentWillMount(){
       console.log('mounting with props, ',this.props);
       if(this.props.location.pathname.includes('tag')){
-        this.setState({
-          tagMode:true
-        })
+        AL.ControlObject.registerCallback(() => {
+          this.setState({
+            tagMode:true
+          })
+        });
         AL.ControlObject.getStructById(this.props.params.sId);
       }
-      if(this.props.params.sId && !this.state.editMode && !this.state.tagMode){
-        this.setState({
-          editMode:true
-        })
+      else if(this.props.params.sId && !this.state.editMode && !this.state.tagMode){
+        AL.ControlObject.registerCallback(() => {
+          this.setState({
+            editMode:true
+          })
+        });
         AL.ControlObject.getStructById(this.props.params.sId);
+      }
+      else{
+        console.log('standard add mode');
       }
 
     }
@@ -106,41 +113,40 @@ if (window.AL === undefined){window.AL = {}; }
       var picUrl;
 
       //set placeholders and defaults if editing
-      if(this.state){
-        console.log('last added/edit', this.state.lastAdded);
-        if (this.state.editMode === false){
-           name = "Name";
-           year = "Year of Construction/Completion";
-           arch = "Architect/Firm";
-           type = "Cultural";
-           street = "Street";
-           city = "City, State";
-           country = "Country";
-           styles = "Styles";
-           description = "This is a Building, probably";
-           picUrl = "add a URL"
-        }
-        else if(this.state.editMode === true){
-          name = this.state.lastAdded.title;
-          year = this.state.lastAdded.year || 'Add Year';
-          arch = this.state.lastAdded.arch;
-          type = this.state.lastAdded.type;
-          city = this.state.lastAdded.cityState;
-          street = this.state.lastAdded.street;
-          country = this.state.lastAdded.country;
-          styles = this.state.lastAdded.styles || "no style";
-          picUrl = this.state.lastAdded.pic;
-          description = this.state.lastAdded.description;
-        }
-        if(this.state.error){
-          review = <ReviewData warning={this.state.error,this.state.stat} />
-        }
-        if(this.state.lastAdded){
-          review = <ReviewData info={this.state.lastAdded} />
-          console.log('returned data in state', this.state.lastAdded);
-        }
 
-
+      console.log('last added/edit', this.state.lastAdded);
+      if (!this.state.editMode){
+        console.log('generic placeholders');
+         name = "Name";
+         year = "Year of Construction/Completion";
+         arch = "Architect/Firm";
+         type = "Cultural";
+         street = "Street";
+         city = "City, State";
+         country = "Country";
+         styles = "Styles";
+         description = "This is a Building, probably";
+         picUrl = "add a URL"
+      }
+      else if(this.state.editMode){
+        console.log('default values');
+        name = this.state.lastAdded.title;
+        year = this.state.lastAdded.year || 'Add Year';
+        arch = this.state.lastAdded.arch;
+        type = this.state.lastAdded.type;
+        city = this.state.lastAdded.cityState;
+        street = this.state.lastAdded.street;
+        country = this.state.lastAdded.country;
+        styles = this.state.lastAdded.styles || "no style";
+        picUrl = this.state.lastAdded.pic;
+        description = this.state.lastAdded.description;
+      }
+      if(this.state.error){
+        review = <ReviewData warning={this.state.error,this.state.stat} />
+      }
+      if(this.state.lastAdded){
+        review = <ReviewData info={this.state.lastAdded} />
+        console.log('returned data in state', this.state.lastAdded);
       }
 
 

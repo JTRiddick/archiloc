@@ -37,18 +37,25 @@ if (window.AL === undefined) {
     _createClass(AddEditComponent, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
+        var _this2 = this;
+
         console.log('mounting with props, ', this.props);
         if (this.props.location.pathname.includes('tag')) {
-          this.setState({
-            tagMode: true
+          AL.ControlObject.registerCallback(function () {
+            _this2.setState({
+              tagMode: true
+            });
           });
           AL.ControlObject.getStructById(this.props.params.sId);
-        }
-        if (this.props.params.sId && !this.state.editMode && !this.state.tagMode) {
-          this.setState({
-            editMode: true
+        } else if (this.props.params.sId && !this.state.editMode && !this.state.tagMode) {
+          AL.ControlObject.registerCallback(function () {
+            _this2.setState({
+              editMode: true
+            });
           });
           AL.ControlObject.getStructById(this.props.params.sId);
+        } else {
+          console.log('standard add mode');
         }
       }
     }, {
@@ -108,7 +115,7 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        var _this2 = this;
+        var _this3 = this;
 
         console.log('@render, state set to ', this.state);
         var review;
@@ -126,38 +133,39 @@ if (window.AL === undefined) {
         var picUrl;
 
         //set placeholders and defaults if editing
-        if (this.state) {
-          console.log('last added/edit', this.state.lastAdded);
-          if (this.state.editMode === false) {
-            name = "Name";
-            year = "Year of Construction/Completion";
-            arch = "Architect/Firm";
-            type = "Cultural";
-            street = "Street";
-            city = "City, State";
-            country = "Country";
-            styles = "Styles";
-            description = "This is a Building, probably";
-            picUrl = "add a URL";
-          } else if (this.state.editMode === true) {
-            name = this.state.lastAdded.title;
-            year = this.state.lastAdded.year || 'Add Year';
-            arch = this.state.lastAdded.arch;
-            type = this.state.lastAdded.type;
-            city = this.state.lastAdded.cityState;
-            street = this.state.lastAdded.street;
-            country = this.state.lastAdded.country;
-            styles = this.state.lastAdded.styles || "no style";
-            picUrl = this.state.lastAdded.pic;
-            description = this.state.lastAdded.description;
-          }
-          if (this.state.error) {
-            review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
-          }
-          if (this.state.lastAdded) {
-            review = React.createElement(ReviewData, { info: this.state.lastAdded });
-            console.log('returned data in state', this.state.lastAdded);
-          }
+
+        console.log('last added/edit', this.state.lastAdded);
+        if (!this.state.editMode) {
+          console.log('generic placeholders');
+          name = "Name";
+          year = "Year of Construction/Completion";
+          arch = "Architect/Firm";
+          type = "Cultural";
+          street = "Street";
+          city = "City, State";
+          country = "Country";
+          styles = "Styles";
+          description = "This is a Building, probably";
+          picUrl = "add a URL";
+        } else if (this.state.editMode) {
+          console.log('default values');
+          name = this.state.lastAdded.title;
+          year = this.state.lastAdded.year || 'Add Year';
+          arch = this.state.lastAdded.arch;
+          type = this.state.lastAdded.type;
+          city = this.state.lastAdded.cityState;
+          street = this.state.lastAdded.street;
+          country = this.state.lastAdded.country;
+          styles = this.state.lastAdded.styles || "no style";
+          picUrl = this.state.lastAdded.pic;
+          description = this.state.lastAdded.description;
+        }
+        if (this.state.error) {
+          review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
+        }
+        if (this.state.lastAdded) {
+          review = React.createElement(ReviewData, { info: this.state.lastAdded });
+          console.log('returned data in state', this.state.lastAdded);
         }
 
         if (this.state.tagMode) {
@@ -177,12 +185,12 @@ if (window.AL === undefined) {
               this.state.styles
             ),
             React.createElement('input', { ref: function ref(input) {
-                _this2.styleInput = input;
+                _this3.styleInput = input;
               } }),
             React.createElement(
               'div',
               { className: 'nav-button', onClick: function onClick() {
-                  _this2.addStyleTag(_this2.styleInput);
+                  _this3.addStyleTag(_this3.styleInput);
                 } },
               'Add'
             )
@@ -192,7 +200,7 @@ if (window.AL === undefined) {
           fields = React.createElement(
             'form',
             { onSubmit: function onSubmit(evt) {
-                _this2.validateStructure(evt);
+                _this3.validateStructure(evt);
               } },
             React.createElement(
               'h4',
@@ -200,13 +208,13 @@ if (window.AL === undefined) {
               'Details'
             ),
             React.createElement('input', { defaultValue: name, placeholder: name, ref: function ref(input) {
-                _this2.nameInput = input;
+                _this3.nameInput = input;
               } }),
             React.createElement('input', { defaultValue: year, placeholder: year, ref: function ref(input) {
-                _this2.yearInput = input;
+                _this3.yearInput = input;
               } }),
             React.createElement('input', { defaultValue: arch, placeholder: arch, ref: function ref(input) {
-                _this2.archInput = input;
+                _this3.archInput = input;
               } }),
             React.createElement('hr', null),
             React.createElement(
@@ -217,7 +225,7 @@ if (window.AL === undefined) {
             React.createElement(
               'select',
               { defaultValue: type, ref: function ref(input) {
-                  _this2.typeInput = input;
+                  _this3.typeInput = input;
                 } },
               React.createElement(
                 'option',
@@ -257,13 +265,13 @@ if (window.AL === undefined) {
               'Location'
             ),
             React.createElement('input', { defaultValue: street, placeholder: street, ref: function ref(input) {
-                _this2.streetInput = input;
+                _this3.streetInput = input;
               } }),
             React.createElement('input', { defaultValue: city, placeholder: city, ref: function ref(input) {
-                _this2.cityInput = input;
+                _this3.cityInput = input;
               } }),
             React.createElement('input', { defaultValue: country, placeholder: country, ref: function ref(input) {
-                _this2.countryInput = input;
+                _this3.countryInput = input;
               } }),
             React.createElement('hr', null),
             React.createElement(
@@ -272,7 +280,7 @@ if (window.AL === undefined) {
               'Description'
             ),
             React.createElement('textfield', { placeholder: description, defaultValue: description, ref: function ref(input) {
-                _this2.descriptionInput = input;
+                _this3.descriptionInput = input;
               } }),
             React.createElement('hr', null),
             React.createElement(
@@ -281,7 +289,7 @@ if (window.AL === undefined) {
               'Image'
             ),
             React.createElement('input', { defaultValue: 'add a URL', ref: function ref(input) {
-                _this2.picInput = input;
+                _this3.picInput = input;
               } }),
             React.createElement(
               'button',
@@ -333,7 +341,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'div',
                 { className: 'nav-button view right', onClick: function onClick() {
-                    _this2.sendToViewer();
+                    _this3.sendToViewer();
                   } },
                 ' Show All '
               )
