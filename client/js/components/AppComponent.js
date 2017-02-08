@@ -19,7 +19,7 @@ if (window.AL === undefined) {window.AL = { }; }
 
         <div className="component-header">
           <div className="title">
-            <h1>ArchiLocator &apos;97</h1>
+            <h1>ArchiType &apos;97</h1>
             <p><i>How Much does your Building Weigh?</i></p>
           </div>
           {testBar}

@@ -9,7 +9,7 @@ var siteSchema = new Schema({
   year:{type: String},
   arch:{type: String},
   styles: [{type: String}],
-  street:{type: String, required:true, unique:true},
+  street:{type: String, required:true},
   cityState:{type: String, required:true},
   country:{type:String, required:true},
   coordinate:{

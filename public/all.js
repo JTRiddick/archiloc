@@ -113,6 +113,17 @@ if (window.AL === undefined) {
         console.log('@render, state set to ', this.state);
         var review;
         var fields;
+        //field placeholders
+        var name = "Name";
+        var year = "Year of Construction/Completion";
+        var arch = "Architect/Firm";
+        var type = "Cultural";
+        var street = "Street";
+        var city = "City, State";
+        var country = "Country";
+        var styles = "Styles";
+        var description = "This is a Building, probably";
+        var picUrl = "add a URL";
 
         if (this.state.tagMode) {
           fields = React.createElement(
@@ -142,6 +153,7 @@ if (window.AL === undefined) {
             )
           );
         } else {
+
           fields = React.createElement(
             'form',
             { onSubmit: function onSubmit(evt) {
@@ -224,7 +236,7 @@ if (window.AL === undefined) {
               null,
               'Description'
             ),
-            React.createElement('input', { type: 'text', placeholder: description, defaultValue: description, ref: function ref(input) {
+            React.createElement('textfield', { placeholder: description, defaultValue: description, ref: function ref(input) {
                 _this2.descriptionInput = input;
               } }),
             React.createElement('hr', null),
@@ -244,24 +256,12 @@ if (window.AL === undefined) {
           );
         }
 
-        //field placeholders
-        var name = "Name";
-        var year = "Year of Construction/Completion";
-        var arch = "Architect/Firm";
-        var type = "Cultural";
-        var street = "Street";
-        var city = "City, State";
-        var country = "Country";
-        var styles = "Styles";
-        var description = "This is a Building, probably";
-        var picUrl = "add a URL";
-
         //set placeholders and defaults if editing
         if (this.state) {
           console.log('last added/edit', this.state.lastAdded);
           if (this.state.lastAdded) {
             review = React.createElement(ReviewData, { info: this.state.lastAdded });
-            if (this.state.editMode) {
+            if (this.state.editMode === true) {
               name = this.state.lastAdded.title;
               year = this.state.lastAdded.year || 'Add Year';
               arch = this.state.lastAdded.arch;
@@ -338,7 +338,7 @@ if (window.AL === undefined) {
 
         if (this.props.warning) {
           console.log(this.props.warning);
-          info = "Error " + JSON.stringify(this.props.warning);
+          info = "Error ", this.props.warning;
         }
 
         if (this.props.info && !this.props.warning) {
@@ -491,7 +491,7 @@ if (window.AL === undefined) {
               React.createElement(
                 "h1",
                 null,
-                "ArchiLocator '97"
+                "ArchiType '97"
               ),
               React.createElement(
                 "p",

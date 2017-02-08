@@ -93,6 +93,17 @@ if (window.AL === undefined){window.AL = {}; }
       console.log('@render, state set to ', this.state);
       var review;
       var fields;
+      //field placeholders
+      var name = "Name";
+      var year = "Year of Construction/Completion";
+      var arch = "Architect/Firm";
+      var type = "Cultural";
+      var street = "Street";
+      var city = "City, State";
+      var country = "Country";
+      var styles = "Styles";
+      var description = "This is a Building, probably";
+      var picUrl = "add a URL"
 
 
       if(this.state.tagMode){
@@ -104,6 +115,7 @@ if (window.AL === undefined){window.AL = {}; }
           <div className="nav-button" onClick={() => {this.addStyleTag(this.styleInput)}}>Add</div>
         </div>
       }else{
+
        fields = (
         <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
           <h4>Details</h4>
@@ -131,7 +143,7 @@ if (window.AL === undefined){window.AL = {}; }
           <hr/>
 
           <h4>Description</h4>
-          <input type='text' placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
+          <textfield placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
 
 
 
@@ -143,24 +155,14 @@ if (window.AL === undefined){window.AL = {}; }
         </form>);
       }
 
-      //field placeholders
-      var name = "Name";
-      var year = "Year of Construction/Completion";
-      var arch = "Architect/Firm";
-      var type = "Cultural";
-      var street = "Street";
-      var city = "City, State";
-      var country = "Country";
-      var styles = "Styles";
-      var description = "This is a Building, probably"
-      var picUrl = "add a URL"
+
 
       //set placeholders and defaults if editing
       if(this.state){
         console.log('last added/edit', this.state.lastAdded);
         if(this.state.lastAdded){
           review = <ReviewData info={this.state.lastAdded} />
-          if(this.state.editMode){
+          if(this.state.editMode === true){
             name = this.state.lastAdded.title;
             year = this.state.lastAdded.year || 'Add Year';
             arch = this.state.lastAdded.arch;
@@ -214,7 +216,7 @@ if (window.AL === undefined){window.AL = {}; }
 
       if (this.props.warning){
         console.log(this.props.warning);
-        info = "Error " + JSON.stringify(this.props.warning);
+        info = "Error ", this.props.warning;
       }
 
       if (this.props.info && !this.props.warning){
