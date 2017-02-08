@@ -15,7 +15,6 @@ if (window.AL === undefined){window.AL = {}; }
 
   class MapComponent extends React.Component{
 
-
     constructor(){
       super();
 
@@ -26,7 +25,8 @@ if (window.AL === undefined){window.AL = {}; }
         controlClass:'low inactive',
         mapClass:'center',
         showSite:null,
-        findingOne:false
+        findingOne:false,
+        tag:'none'
       }
       var locationToGeocoder;
       var geoCode;
@@ -124,13 +124,25 @@ if (window.AL === undefined){window.AL = {}; }
       })
     }
 
-    locationToGeocoder(addresses){
-      console.log('locationToGeocoder says this is',addresses);
-        addresses.forEach(address => {
-           if( AL.mapData.markers.indexOf(address)<0){
+    locationToGeocoder(locations){
+      var addresses;
+      if(this.state.tag == 'none'){
+        addresses = locations;
+        console.log('locationToGeocoder says this is',addresses);
+          addresses.forEach(address => {
+             if( AL.mapData.markers.indexOf(address)<0){
+              this.geoCode(address,this.map);
+            }
+          })
+      }else{
+        let addresses = locations.filter(addresses => addresses.styles.includes(this.state.tag))
+        addresses.forEach(address =>{
+          if (AL.mapData.markers.indexOf(address)<0){
             this.geoCode(address,this.map);
           }
         })
+      }
+
 
     }
 
@@ -227,7 +239,6 @@ if (window.AL === undefined){window.AL = {}; }
             <div className = "close" onClick={(evt)=>{this.deselectSite(evt)}}>X</div>
           {info}
           </div>
-
           <div className={mapClass} ref={(map) =>
             { this.map = map; }} style={{height: '440px'}}>
           </div>
@@ -243,54 +254,66 @@ if (window.AL === undefined){window.AL = {}; }
 
     constructor(){
       super();
-
+      var generateTags;
+  
     }
     componentWillMount(){
       this.setState({
-        info:this.props.showSite
+        info:this.props.showSite,
+        tags:this.props.showSite.styles
       })
-    }
-    componentDidMount(){
 
+    }
+
+    generateTags(arr){
+      var infoboxTags;
+      arr.map(tag => {
+        <li>tag</li>
+      })
+      infoboxTags = arr;
+      return infoboxTags;
     }
 
     render(){
-      console.log("InfoComponent showing ", this.state.info);
+      console.log("InfoComponent showing ", this.state.info,this.state.tags);
+
+      var tags = this.generateTags(this.state.tags);
+
       return (<div className="info-box">
 
         <div className="info-box-text">
           <ol>
            <li><h4>{this.state.info.title}</h4> </li>
-           <li>{this.state.info.street}," ", {this.state.info.cityState}," ",
+           <li>{this.state.info.street}, {this.state.info.cityState},
               {this.state.info.country}, </li>
            <li className='info-type'>{this.state.info.type} </li>
            <li>{this.state.info.year} </li>
            <li>{this.state.info.arch} </li>
          </ol>
-
-        </div>
+        <div className="info-box-tags">
+          <ul>
+            {tags}
+          </ul>
+        </div></div>
       </div>)
     }
 
   }
 
   class MapControlComponent extends React.Component{
-    constructor(){
-      super();
-    }
+
     componentWillMount(){
       if (this.props.showSite){
         this.setState({
-          info:this.props.showSite,
+          info:this.props.showSite
         })
       }
 
     }
 
     render(){
-      console.log('controbox state: ',this.state,' img ',this.state.info.pic);
-      return(<div>
-
+      console.log('controlbox state: ',this.state,' img ',this.state.info.pic);
+      return(<div className="controlbox-content">
          <div className="mapview-image">
            <img src={decodeURIComponent(this.state.info.pic)}/>
         </div>

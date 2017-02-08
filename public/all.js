@@ -810,7 +810,8 @@ if (window.AL === undefined) {
         controlClass: 'low inactive',
         mapClass: 'center',
         showSite: null,
-        findingOne: false
+        findingOne: false,
+        tag: 'none'
       };
       var locationToGeocoder;
       var geoCode;
@@ -918,15 +919,28 @@ if (window.AL === undefined) {
       }
     }, {
       key: 'locationToGeocoder',
-      value: function locationToGeocoder(addresses) {
+      value: function locationToGeocoder(locations) {
         var _this4 = this;
 
-        console.log('locationToGeocoder says this is', addresses);
-        addresses.forEach(function (address) {
-          if (AL.mapData.markers.indexOf(address) < 0) {
-            _this4.geoCode(address, _this4.map);
-          }
-        });
+        var addresses;
+        if (this.state.tag == 'none') {
+          addresses = locations;
+          console.log('locationToGeocoder says this is', addresses);
+          addresses.forEach(function (address) {
+            if (AL.mapData.markers.indexOf(address) < 0) {
+              _this4.geoCode(address, _this4.map);
+            }
+          });
+        } else {
+          var _addresses = locations.filter(function (addresses) {
+            return addresses.styles.includes(_this4.state.tag);
+          });
+          _addresses.forEach(function (address) {
+            if (AL.mapData.markers.indexOf(address) < 0) {
+              _this4.geoCode(address, _this4.map);
+            }
+          });
+        }
       }
 
       //^^ Test Geocode
@@ -1052,23 +1066,42 @@ if (window.AL === undefined) {
     function InfoComponent() {
       _classCallCheck(this, InfoComponent);
 
-      return _possibleConstructorReturn(this, (InfoComponent.__proto__ || Object.getPrototypeOf(InfoComponent)).call(this));
+      var _this7 = _possibleConstructorReturn(this, (InfoComponent.__proto__ || Object.getPrototypeOf(InfoComponent)).call(this));
+
+      var generateTags;
+
+      return _this7;
     }
 
     _createClass(InfoComponent, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
         this.setState({
-          info: this.props.showSite
+          info: this.props.showSite,
+          tags: this.props.showSite.styles
         });
       }
     }, {
-      key: 'componentDidMount',
-      value: function componentDidMount() {}
+      key: 'generateTags',
+      value: function generateTags(arr) {
+        var infoboxTags;
+        arr.map(function (tag) {
+          React.createElement(
+            'li',
+            null,
+            'tag'
+          );
+        });
+        infoboxTags = arr;
+        return infoboxTags;
+      }
     }, {
       key: 'render',
       value: function render() {
-        console.log("InfoComponent showing ", this.state.info);
+        console.log("InfoComponent showing ", this.state.info, this.state.tags);
+
+        var tags = this.generateTags(this.state.tags);
+
         return React.createElement(
           'div',
           { className: 'info-box' },
@@ -1092,9 +1125,9 @@ if (window.AL === undefined) {
                 'li',
                 null,
                 this.state.info.street,
-                '," ", ',
+                ', ',
                 this.state.info.cityState,
-                '," ",',
+                ',',
                 this.state.info.country,
                 ', '
               ),
@@ -1116,6 +1149,15 @@ if (window.AL === undefined) {
                 this.state.info.arch,
                 ' '
               )
+            ),
+            React.createElement(
+              'div',
+              { className: 'info-box-tags' },
+              React.createElement(
+                'ul',
+                null,
+                tags
+              )
             )
           )
         );
@@ -1131,7 +1173,7 @@ if (window.AL === undefined) {
     function MapControlComponent() {
       _classCallCheck(this, MapControlComponent);
 
-      return _possibleConstructorReturn(this, (MapControlComponent.__proto__ || Object.getPrototypeOf(MapControlComponent)).call(this));
+      return _possibleConstructorReturn(this, (MapControlComponent.__proto__ || Object.getPrototypeOf(MapControlComponent)).apply(this, arguments));
     }
 
     _createClass(MapControlComponent, [{
@@ -1146,10 +1188,10 @@ if (window.AL === undefined) {
     }, {
       key: 'render',
       value: function render() {
-        console.log('controbox state: ', this.state, ' img ', this.state.info.pic);
+        console.log('controlbox state: ', this.state, ' img ', this.state.info.pic);
         return React.createElement(
           'div',
-          null,
+          { className: 'controlbox-content' },
           React.createElement(
             'div',
             { className: 'mapview-image' },
