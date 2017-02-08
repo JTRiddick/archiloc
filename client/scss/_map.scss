@@ -82,6 +82,17 @@
         text-transform: capitalize;
       }
     }
+    .info-box-tags{
+      padding:1em;
+      li{
+        @include button-sml;
+        margin: 0.25em 0.5em;
+        padding:6px;
+        width:auto;
+        float:left;
+      }
+
+    }
     .info-box-image{
       position: relative;
       padding: 0;

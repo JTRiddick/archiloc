@@ -215,6 +215,21 @@ table {
       padding: 1em; }
       #map-component .info-pane .info-box-text .info-type {
         text-transform: capitalize; }
+    #map-component .info-pane .info-box-tags {
+      padding: 1em; }
+      #map-component .info-pane .info-box-tags li {
+        background-color: #fbfffa;
+        color: #a0332f;
+        display: inline-block;
+        width: 10%;
+        text-align: center;
+        padding: 2px 2px;
+        cursor: default;
+        user-select: none;
+        margin: 0.25em 0.5em;
+        padding: 6px;
+        width: auto;
+        float: left; }
     #map-component .info-pane .info-box-image {
       position: relative;
       padding: 0;

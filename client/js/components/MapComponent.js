@@ -36,6 +36,10 @@ if (window.AL === undefined){window.AL = {}; }
 
 
     componentWillMount(){
+      this.setState({
+        tag:'none'
+      })
+      console.log('map mounted with props',this.props);
       if(this.props.params.sId){
         console.log('only,', this.props.params.sId);
         this.setState({
@@ -45,6 +49,13 @@ if (window.AL === undefined){window.AL = {}; }
           AL.mapData.locations.push(AL.ControlObject.sendData);
         })
       }else{
+
+        if(this.props.params.styleFilter){
+          console.log('map has filter specified');
+          this.setState({tag:this.props.params.styleFilter});
+        }else{
+          this.setState({tag:'none'})
+        }
         console.log('showing maximum stuff');
         console.log('fill mapdata locations list with',AL.ControlObject.sendData);
         AL.ControlObject.registerCallback(()=>
@@ -52,9 +63,6 @@ if (window.AL === undefined){window.AL = {}; }
           AL.mapData.locations.push(item);
         }))
       }
-
-
-
       //moves control data to list
       AL.ControlObject.registerCallback(()=>this.locationToGeocoder(AL.mapData.locations));
       //registers callback to geocode (then locate and mark) points of interest
@@ -63,6 +71,7 @@ if (window.AL === undefined){window.AL = {}; }
 
 
     componentDidMount() {
+      //reset filter
       this.googleMap = new google.maps.Map(this.map, {
         center: this.state.focus,
         zoom: this.state.zoom
@@ -135,9 +144,9 @@ if (window.AL === undefined){window.AL = {}; }
             }
           })
       }else{
-        let addresses = locations.filter(addresses => addresses.styles.includes(this.state.tag))
+        let addresses = locations;
         addresses.forEach(address =>{
-          if (AL.mapData.markers.indexOf(address)<0){
+          if (address.styles.includes(this.state.tag)){
             this.geoCode(address,this.map);
           }
         })
@@ -255,7 +264,7 @@ if (window.AL === undefined){window.AL = {}; }
     constructor(){
       super();
       var generateTags;
-  
+
     }
     componentWillMount(){
       this.setState({
@@ -265,19 +274,10 @@ if (window.AL === undefined){window.AL = {}; }
 
     }
 
-    generateTags(arr){
-      var infoboxTags;
-      arr.map(tag => {
-        <li>tag</li>
-      })
-      infoboxTags = arr;
-      return infoboxTags;
-    }
 
     render(){
       console.log("InfoComponent showing ", this.state.info,this.state.tags);
 
-      var tags = this.generateTags(this.state.tags);
 
       return (<div className="info-box">
 
@@ -292,7 +292,11 @@ if (window.AL === undefined){window.AL = {}; }
          </ol>
         <div className="info-box-tags">
           <ul>
-            {tags}
+            {this.state.tags.map((tag,i) => {
+              return <li key={i} onClick={(evt)=>{
+                ReactRouter.hashHistory.push('/map/filter/'+tag);
+              }}>{tag}</li>
+            })}
           </ul>
         </div></div>
       </div>)

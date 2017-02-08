@@ -824,6 +824,10 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
+        this.setState({
+          tag: 'none'
+        });
+        console.log('map mounted with props', this.props);
         if (this.props.params.sId) {
           console.log('only,', this.props.params.sId);
           this.setState({
@@ -833,6 +837,13 @@ if (window.AL === undefined) {
             AL.mapData.locations.push(AL.ControlObject.sendData);
           });
         } else {
+
+          if (this.props.params.styleFilter) {
+            console.log('map has filter specified');
+            this.setState({ tag: this.props.params.styleFilter });
+          } else {
+            this.setState({ tag: 'none' });
+          }
           console.log('showing maximum stuff');
           console.log('fill mapdata locations list with', AL.ControlObject.sendData);
           AL.ControlObject.registerCallback(function () {
@@ -841,7 +852,6 @@ if (window.AL === undefined) {
             });
           });
         }
-
         //moves control data to list
         AL.ControlObject.registerCallback(function () {
           return _this2.locationToGeocoder(AL.mapData.locations);
@@ -851,6 +861,7 @@ if (window.AL === undefined) {
     }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
+        //reset filter
         this.googleMap = new google.maps.Map(this.map, {
           center: this.state.focus,
           zoom: this.state.zoom
@@ -932,11 +943,9 @@ if (window.AL === undefined) {
             }
           });
         } else {
-          var _addresses = locations.filter(function (addresses) {
-            return addresses.styles.includes(_this4.state.tag);
-          });
+          var _addresses = locations;
           _addresses.forEach(function (address) {
-            if (AL.mapData.markers.indexOf(address) < 0) {
+            if (address.styles.includes(_this4.state.tag)) {
               _this4.geoCode(address, _this4.map);
             }
           });
@@ -1082,25 +1091,9 @@ if (window.AL === undefined) {
         });
       }
     }, {
-      key: 'generateTags',
-      value: function generateTags(arr) {
-        var infoboxTags;
-        arr.map(function (tag) {
-          React.createElement(
-            'li',
-            null,
-            'tag'
-          );
-        });
-        infoboxTags = arr;
-        return infoboxTags;
-      }
-    }, {
       key: 'render',
       value: function render() {
         console.log("InfoComponent showing ", this.state.info, this.state.tags);
-
-        var tags = this.generateTags(this.state.tags);
 
         return React.createElement(
           'div',
@@ -1156,7 +1149,15 @@ if (window.AL === undefined) {
               React.createElement(
                 'ul',
                 null,
-                tags
+                this.state.tags.map(function (tag, i) {
+                  return React.createElement(
+                    'li',
+                    { key: i, onClick: function onClick(evt) {
+                        ReactRouter.hashHistory.push('/map/filter/' + tag);
+                      } },
+                    tag
+                  );
+                })
               )
             )
           )
@@ -1560,6 +1561,7 @@ if (window.AL === undefined) {
       AL.MapComponent,
       " />",
       React.createElement(Route, { path: "/map", component: AL.MapComponent }),
+      React.createElement(Route, { path: "/map/filter/:styleFilter", component: AL.MapComponent }),
       React.createElement(Route, { path: "/map/view-one/:sId", component: AL.MapComponent }),
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
       React.createElement(Route, { path: "/test/asd", component: AL.AddEditComponent }),
