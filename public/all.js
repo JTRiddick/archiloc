@@ -114,16 +114,51 @@ if (window.AL === undefined) {
         var review;
         var fields;
         //field placeholders
-        var name = "Name";
-        var year = "Year of Construction/Completion";
-        var arch = "Architect/Firm";
-        var type = "Cultural";
-        var street = "Street";
-        var city = "City, State";
-        var country = "Country";
-        var styles = "Styles";
-        var description = "This is a Building, probably";
-        var picUrl = "add a URL";
+        var name;
+        var year;
+        var arch;
+        var type;
+        var street;
+        var city;
+        var country;
+        var styles;
+        var description;
+        var picUrl;
+
+        //set placeholders and defaults if editing
+        if (this.state) {
+          console.log('last added/edit', this.state.lastAdded);
+          if (this.state.editMode === false) {
+            name = "Name";
+            year = "Year of Construction/Completion";
+            arch = "Architect/Firm";
+            type = "Cultural";
+            street = "Street";
+            city = "City, State";
+            country = "Country";
+            styles = "Styles";
+            description = "This is a Building, probably";
+            picUrl = "add a URL";
+          } else if (this.state.editMode === true) {
+            name = this.state.lastAdded.title;
+            year = this.state.lastAdded.year || 'Add Year';
+            arch = this.state.lastAdded.arch;
+            type = this.state.lastAdded.type;
+            city = this.state.lastAdded.cityState;
+            street = this.state.lastAdded.street;
+            country = this.state.lastAdded.country;
+            styles = this.state.lastAdded.styles || "no style";
+            picUrl = this.state.lastAdded.pic;
+            description = this.state.lastAdded.description;
+          }
+          if (this.state.error) {
+            review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
+          }
+          if (this.state.lastAdded) {
+            review = React.createElement(ReviewData, { info: this.state.lastAdded });
+            console.log('returned data in state', this.state.lastAdded);
+          }
+        }
 
         if (this.state.tagMode) {
           fields = React.createElement(
