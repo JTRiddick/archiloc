@@ -815,15 +815,14 @@ if (window.AL === undefined) {
           AL.ControlObject.registerCallback(function () {
             AL.mapData.locations.push(AL.ControlObject.sendData);
           });
-        } else {
-          //console.log('showing maximum stuff');
-          //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
-          AL.ControlObject.registerCallback(function () {
-            return AL.ControlObject.sendData.sites.forEach(function (item) {
-              AL.mapData.locations.push(item);
-            });
-          });
-        }
+        } else {}
+        //console.log('showing maximum stuff');
+        //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
+        // AL.ControlObject.registerCallback(()=>
+        //  AL.ControlObject.sendData.sites.forEach(item => {
+        //   AL.mapData.locations.push(item);
+        // }))
+
         //moves control data to list
         AL.ControlObject.registerCallback(function () {
           return _this2.locationToGeocoder(AL.mapData.locations);
