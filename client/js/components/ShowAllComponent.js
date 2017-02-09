@@ -12,6 +12,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillMount(){
+      AL.ControlObject.resetControl();
       console.log('show all will mount');
       AL.ControlObject.registerCallback(()=>
        AL.ControlObject.sendData.sites.forEach(item => {
@@ -22,6 +23,7 @@ if (window.AL === undefined){window.AL = {}; }
           sites:AL.ControlObject.locationObjects.sites
         });
       });
+
     }
 
     componentDidMount(){
@@ -32,7 +34,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillUnmount(){
       console.log('unmounting show all');
-      AL.ControlObject.resetControl();
+
     }
 
     populateList(){

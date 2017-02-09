@@ -9,17 +9,17 @@ if (window.AL === undefined){window.AL = {}; }
 
       this.state = {editMode:false,styles:[],tagMode:false};
 
+
+
+    }
+    componentWillMount(){
+      AL.ControlObject.resetControl();
+      console.log('mounting with props, ',this.props);
       AL.ControlObject.registerCallback(() => {
         this.setState({
           lastAdded:AL.ControlObject.sendData
         })
       });
-
-    console.log('added callbacks', AL.ControlObject.cbSuccess,AL.ControlObject.cbFail);
-
-    }
-    componentWillMount(){
-      console.log('mounting with props, ',this.props);
       if(this.props.location.pathname.includes('tag')){
         AL.ControlObject.registerCallback(() => {
           this.setState({
@@ -44,7 +44,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillUnmount(){
       console.log('unmount');
-      AL.ControlObject.resetControl();
+      // AL.ControlObject.resetControl();
     }
 
     sendToViewer(){
@@ -112,10 +112,23 @@ if (window.AL === undefined){window.AL = {}; }
       var description;
       var picUrl;
 
+      if(this.state){
+        console.log('last added/edit', this.state.lastAdded);
+        if(this.state.lastAdded){
+          review = <ReviewData info={this.state.lastAdded} />
+
+          console.log('returned data in state', this.state.lastAdded);
+        }
+        if(this.state.error){
+          review = <ReviewData warning={this.state.error,this.state.stat} />
+        }
+
+      }
+
       //set placeholders and defaults if editing
 
       console.log('last added/edit', this.state.lastAdded);
-      if (!this.state.editMode){
+      if (!this.state.editMode && !this.state.lastAdded){
         console.log('generic placeholders');
          name = "Name";
          year = "Year of Construction/Completion";
@@ -128,7 +141,7 @@ if (window.AL === undefined){window.AL = {}; }
          description = "This is a Building, probably";
          picUrl = "add a URL"
       }
-      else if(this.state.editMode){
+     if(this.state.lastAdded){
         console.log('default values');
         name = this.state.lastAdded.title;
         year = this.state.lastAdded.year || 'Add Year';
@@ -137,7 +150,6 @@ if (window.AL === undefined){window.AL = {}; }
         city = this.state.lastAdded.cityState;
         street = this.state.lastAdded.street;
         country = this.state.lastAdded.country;
-        styles = this.state.lastAdded.styles || "no style";
         picUrl = this.state.lastAdded.pic;
         description = this.state.lastAdded.description;
       }
@@ -187,7 +199,7 @@ if (window.AL === undefined){window.AL = {}; }
           <hr/>
 
           <h4>Description</h4>
-          <textfield placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
+          <textfield rows={5} cols={40} placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
 
 
 
@@ -202,31 +214,7 @@ if (window.AL === undefined){window.AL = {}; }
 
 
       //set placeholders and defaults if editing
-      if(this.state){
-        console.log('last added/edit', this.state.lastAdded);
-        if(this.state.lastAdded){
-          review = <ReviewData info={this.state.lastAdded} />
-          if(this.state.editMode === true){
-            name = this.state.lastAdded.title;
-            year = this.state.lastAdded.year || 'Add Year';
-            arch = this.state.lastAdded.arch;
-            type = this.state.lastAdded.type;
-            city = this.state.lastAdded.cityState;
-            street = this.state.lastAdded.street;
-            country = this.state.lastAdded.country;
-            styles = this.state.lastAdded.styles || "no style";
-            picUrl = this.state.lastAdded.pic;
-            description = this.state.lastAdded.description;
-          }
 
-
-          console.log('returned data in state', this.state.lastAdded);
-        }
-        if(this.state.error){
-          review = <ReviewData warning={this.state.error,this.state.stat} />
-        }
-
-      }
 
 
       return (<div>

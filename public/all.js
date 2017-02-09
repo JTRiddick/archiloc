@@ -23,14 +23,6 @@ if (window.AL === undefined) {
 
       _this.state = { editMode: false, styles: [], tagMode: false };
 
-      AL.ControlObject.registerCallback(function () {
-        _this.setState({
-          lastAdded: AL.ControlObject.sendData
-        });
-      });
-
-      console.log('added callbacks', AL.ControlObject.cbSuccess, AL.ControlObject.cbFail);
-
       return _this;
     }
 
@@ -39,7 +31,13 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
+        AL.ControlObject.resetControl();
         console.log('mounting with props, ', this.props);
+        AL.ControlObject.registerCallback(function () {
+          _this2.setState({
+            lastAdded: AL.ControlObject.sendData
+          });
+        });
         if (this.props.location.pathname.includes('tag')) {
           AL.ControlObject.registerCallback(function () {
             _this2.setState({
@@ -62,7 +60,7 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('unmount');
-        AL.ControlObject.resetControl();
+        // AL.ControlObject.resetControl();
       }
     }, {
       key: 'sendToViewer',
@@ -132,10 +130,22 @@ if (window.AL === undefined) {
         var description;
         var picUrl;
 
+        if (this.state) {
+          console.log('last added/edit', this.state.lastAdded);
+          if (this.state.lastAdded) {
+            review = React.createElement(ReviewData, { info: this.state.lastAdded });
+
+            console.log('returned data in state', this.state.lastAdded);
+          }
+          if (this.state.error) {
+            review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
+          }
+        }
+
         //set placeholders and defaults if editing
 
         console.log('last added/edit', this.state.lastAdded);
-        if (!this.state.editMode) {
+        if (!this.state.editMode && !this.state.lastAdded) {
           console.log('generic placeholders');
           name = "Name";
           year = "Year of Construction/Completion";
@@ -147,7 +157,8 @@ if (window.AL === undefined) {
           styles = "Styles";
           description = "This is a Building, probably";
           picUrl = "add a URL";
-        } else if (this.state.editMode) {
+        }
+        if (this.state.lastAdded) {
           console.log('default values');
           name = this.state.lastAdded.title;
           year = this.state.lastAdded.year || 'Add Year';
@@ -156,7 +167,6 @@ if (window.AL === undefined) {
           city = this.state.lastAdded.cityState;
           street = this.state.lastAdded.street;
           country = this.state.lastAdded.country;
-          styles = this.state.lastAdded.styles || "no style";
           picUrl = this.state.lastAdded.pic;
           description = this.state.lastAdded.description;
         }
@@ -279,7 +289,7 @@ if (window.AL === undefined) {
               null,
               'Description'
             ),
-            React.createElement('textfield', { placeholder: description, defaultValue: description, ref: function ref(input) {
+            React.createElement('textfield', { rows: 5, cols: 40, placeholder: description, defaultValue: description, ref: function ref(input) {
                 _this3.descriptionInput = input;
               } }),
             React.createElement('hr', null),
@@ -300,29 +310,7 @@ if (window.AL === undefined) {
         }
 
         //set placeholders and defaults if editing
-        if (this.state) {
-          console.log('last added/edit', this.state.lastAdded);
-          if (this.state.lastAdded) {
-            review = React.createElement(ReviewData, { info: this.state.lastAdded });
-            if (this.state.editMode === true) {
-              name = this.state.lastAdded.title;
-              year = this.state.lastAdded.year || 'Add Year';
-              arch = this.state.lastAdded.arch;
-              type = this.state.lastAdded.type;
-              city = this.state.lastAdded.cityState;
-              street = this.state.lastAdded.street;
-              country = this.state.lastAdded.country;
-              styles = this.state.lastAdded.styles || "no style";
-              picUrl = this.state.lastAdded.pic;
-              description = this.state.lastAdded.description;
-            }
 
-            console.log('returned data in state', this.state.lastAdded);
-          }
-          if (this.state.error) {
-            review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
-          }
-        }
 
         return React.createElement(
           'div',
@@ -580,7 +568,7 @@ if (window.AL === undefined) {
     },
     resetControl: function resetControl() {
       this.callbacks = [];
-      this.sendData = {};
+      // this.sendData = {};
     },
 
     getAll: function getAll() {
@@ -817,7 +805,8 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
-        //console.log('map mounted with props',this.props);
+        AL.ControlObject.resetControl();
+        console.log('map mounted with props', this.props);
         if (this.props.params.sId) {
           //console.log('only,', this.props.params.sId);
           this.setState({
@@ -865,7 +854,7 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('main page unmounted');
-        AL.ControlObject.resetControl();
+        // AL.ControlObject.resetControl();
       }
 
       //defaults
@@ -1261,6 +1250,7 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
+        AL.ControlObject.resetControl();
         console.log('show all will mount');
         AL.ControlObject.registerCallback(function () {
           return AL.ControlObject.sendData.sites.forEach(function (item) {
@@ -1282,7 +1272,6 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('unmounting show all');
-        AL.ControlObject.resetControl();
       }
     }, {
       key: 'populateList',
