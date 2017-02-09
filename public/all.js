@@ -789,6 +789,7 @@ if (window.AL === undefined) {
   window.AL.mapData = {
     locations: [],
     markers: [],
+    filter: 'none',
     defaultView: { lat: 15, lng: -80 },
     mapZoom: 14
   };
@@ -824,9 +825,6 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
-        this.setState({
-          tag: 'none'
-        });
         console.log('map mounted with props', this.props);
         if (this.props.params.sId) {
           console.log('only,', this.props.params.sId);
@@ -838,12 +836,9 @@ if (window.AL === undefined) {
           });
         } else {
 
-          if (this.props.params.styleFilter) {
-            console.log('map has filter specified');
-            this.setState({ tag: this.props.params.styleFilter });
-          } else {
-            this.setState({ tag: 'none' });
-          }
+          console.log('map has filter specified');
+          this.setState({ tag: AL.mapData.styleFilter });
+
           console.log('showing maximum stuff');
           console.log('fill mapdata locations list with', AL.ControlObject.sendData);
           AL.ControlObject.registerCallback(function () {
@@ -1010,10 +1005,15 @@ if (window.AL === undefined) {
         return;
       }
     }, {
-      key: 'selectFocus',
-      value: function selectFocus(sId) {
-        console.log(AL.mapData.markers);
-
+      key: 'selectFilter',
+      value: function selectFilter(reset) {
+        console.log('FILTER RESET, SET TO ', AL.mapData.filter);
+        if (reset == false) {
+          this.locationToGeocoder(AL.mapData.locations);
+        } else {
+          AL.mapData.filter = 'none';
+        }
+        //WARNING! WILL MAKE GOOGLE API GEOCODER REQUEST EVERY TIME
         //test^
       }
     }, {
@@ -1022,7 +1022,6 @@ if (window.AL === undefined) {
         var _this6 = this;
 
         console.log('render state', this.state);
-
         var mapClass = "map-pane " + this.state.mapClass;
         var infoClass = "info-pane " + this.state.infoClass;
         var controlClass = "control-pane-" + this.state.controlClass;
@@ -1051,7 +1050,25 @@ if (window.AL === undefined) {
                   } },
                 'X'
               ),
-              info
+              info,
+              React.createElement(
+                'div',
+                { className: 'filter-button', onClick: this.selectFilter(false) },
+                React.createElement(
+                  'p',
+                  null,
+                  'More Like This'
+                )
+              ),
+              React.createElement(
+                'div',
+                { className: 'filter-button reset', onClick: this.selectFilter(true) },
+                React.createElement(
+                  'p',
+                  null,
+                  'Reset Filter'
+                )
+              )
             ),
             React.createElement('div', { className: mapClass, ref: function ref(map) {
                 _this6.map = map;
@@ -1153,7 +1170,7 @@ if (window.AL === undefined) {
                   return React.createElement(
                     'li',
                     { key: i, onClick: function onClick(evt) {
-                        ReactRouter.hashHistory.push('/map/filter/' + tag);
+                        AL.mapData.filters = tag;
                       } },
                     tag
                   );
@@ -1561,7 +1578,6 @@ if (window.AL === undefined) {
       AL.MapComponent,
       " />",
       React.createElement(Route, { path: "/map", component: AL.MapComponent }),
-      React.createElement(Route, { path: "/map/filter/:styleFilter", component: AL.MapComponent }),
       React.createElement(Route, { path: "/map/view-one/:sId", component: AL.MapComponent }),
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
       React.createElement(Route, { path: "/test/asd", component: AL.AddEditComponent }),

@@ -17,6 +17,12 @@
 
   }
 
+  .filter-button{
+    @include button-mid;
+  }
+  .filter-button:active{
+    border-color:$color4;
+  }
 
   .left-bar{
     float:left;

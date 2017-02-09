@@ -5,6 +5,7 @@ if (window.AL === undefined){window.AL = {}; }
   window.AL.mapData = {
     locations:[],
     markers:[],
+    filter:'none',
     defaultView: {lat:15,lng:-80},
     mapZoom: 14
   }
@@ -33,12 +34,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     }
 
-
-
     componentWillMount(){
-      this.setState({
-        tag:'none'
-      })
       console.log('map mounted with props',this.props);
       if(this.props.params.sId){
         console.log('only,', this.props.params.sId);
@@ -50,12 +46,9 @@ if (window.AL === undefined){window.AL = {}; }
         })
       }else{
 
-        if(this.props.params.styleFilter){
-          console.log('map has filter specified');
-          this.setState({tag:this.props.params.styleFilter});
-        }else{
-          this.setState({tag:'none'})
-        }
+        console.log('map has filter specified');
+        this.setState({tag:AL.mapData.styleFilter});
+
         console.log('showing maximum stuff');
         console.log('fill mapdata locations list with',AL.ControlObject.sendData);
         AL.ControlObject.registerCallback(()=>
@@ -218,15 +211,19 @@ if (window.AL === undefined){window.AL = {}; }
      return;
     }
 
-    selectFocus(sId){
-      console.log(AL.mapData.markers);
-
+    selectFilter(reset){
+      console.log('FILTER RESET, SET TO ',AL.mapData.filter);
+      if(reset == false){
+        this.locationToGeocoder(AL.mapData.locations);
+      }else{
+        AL.mapData.filter = 'none';
+      }
+      //WARNING! WILL MAKE GOOGLE API GEOCODER REQUEST EVERY TIME
       //test^
     }
 
     render(){
       console.log('render state', this.state);
-
       var mapClass = "map-pane " + this.state.mapClass
       var infoClass = "info-pane " + this.state.infoClass;
       var controlClass = "control-pane-" + this.state.controlClass;
@@ -247,6 +244,12 @@ if (window.AL === undefined){window.AL = {}; }
           <div className={infoClass}>
             <div className = "close" onClick={(evt)=>{this.deselectSite(evt)}}>X</div>
           {info}
+            <div className = "filter-button" onClick={(this.selectFilter(false))}>
+            <p>More Like This</p>
+            </div>
+            <div className = "filter-button reset" onClick={(this.selectFilter(true))}>
+            <p>Reset Filter</p>
+            </div>
           </div>
           <div className={mapClass} ref={(map) =>
             { this.map = map; }} style={{height: '440px'}}>
@@ -294,7 +297,7 @@ if (window.AL === undefined){window.AL = {}; }
           <ul>
             {this.state.tags.map((tag,i) => {
               return <li key={i} onClick={(evt)=>{
-                ReactRouter.hashHistory.push('/map/filter/'+tag);
+                AL.mapData.filters=tag;
               }}>{tag}</li>
             })}
           </ul>
