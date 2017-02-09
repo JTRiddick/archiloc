@@ -561,7 +561,10 @@ if (window.AL === undefined) {
       this.callbacks.push(cb);
     },
     callbacksEdit: function callbacksEdit() {
+      var _this = this;
+
       this.callbacks.forEach(function (cb) {
+        console.log('sendData is ', _this.sendData);
         cb();
         console.log('callback fired ', cb);
       });
@@ -572,7 +575,7 @@ if (window.AL === undefined) {
     },
 
     getAll: function getAll() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.sendData !== undefined) {
         this.callbacksEdit();
@@ -587,10 +590,10 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         // console.log("done, recieved: \n ",data, "type of", typeof data);
-        _this.sendData = data;
-        _this.locationObjects = data;
+        _this2.sendData = data;
+        _this2.locationObjects = data;
 
-        _this.callbacksEdit();
+        _this2.callbacksEdit();
         // console.log('grabbd everything',data);
       }).fail(function () {
         console.log('cant get');
@@ -598,7 +601,7 @@ if (window.AL === undefined) {
     }, //end of get all
 
     getStructById: function getStructById(itemId) {
-      var _this2 = this;
+      var _this3 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId,
@@ -606,36 +609,36 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         console.log("found ", data);
-        _this2.sendData = data;
-        _this2.callbacksEdit();
-        console.log('control callbacks test, callbacks are done ', _this2.callbacks);
+        _this3.sendData = data;
+        _this3.callbacksEdit();
+        console.log('control callbacks test, callbacks are done ', _this3.callbacks);
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this2.sendData = (req, stat, err);
-        _this2.callbacksEdit();
+        _this3.sendData = (req, stat, err);
+        _this3.callbacksEdit();
         //??
       });
     },
     deleteItem: function deleteItem(itemId) {
-      var _this3 = this;
+      var _this4 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId + "/delete",
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
-        console.log('callbacksEdit', _this3.callbacksEdit);
+        console.log('callbacksEdit', _this4.callbacksEdit);
         console.log('deleted, ', data);
-        _this3.sendData = data;
-        _this3.callbacksEdit();
+        _this4.sendData = data;
+        _this4.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('delete failure');
-        _this3.sendData = (req, stat, err);
-        _this3.callbacksEdit();
+        _this4.sendData = (req, stat, err);
+        _this4.callbacksEdit();
       });
     }, //end of delete
     addItem: function addItem(inputs) {
-      var _this4 = this;
+      var _this5 = this;
 
       //test
       console.log("sending...", inputs);
@@ -663,17 +666,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this4.sendData = (req, stat, error);
-        _this4.callbacksEdit();
+        _this5.sendData = (req, stat, error);
+        _this5.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this4.sendData = data;
-        _this4.callbacksEdit();
+        _this5.sendData = data;
+        _this5.callbacksEdit();
       });
     }, //end of addItem
     editItem: function editItem(itemId, inputs) {
-      var _this5 = this;
+      var _this6 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId + '/edit',
@@ -696,17 +699,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this5.sendData = (req, stat, err);
-        _this5.callbacksEdit();
+        _this6.sendData = (req, stat, err);
+        _this6.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this5.sendData = data;
-        _this5.callbacksEdit();
+        _this6.sendData = data;
+        _this6.callbacksEdit();
       });
     }, //end of editor
     setStyleTags: function setStyleTags(itemId, tags) {
-      var _this6 = this;
+      var _this7 = this;
 
       console.log('set tags of ', itemId, ' to ', tags);
       $.ajax({
@@ -722,18 +725,18 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this6.sendData = (req, stat, err);
-        _this6.callbacksEdit();
+        _this7.sendData = (req, stat, err);
+        _this7.callbacksEdit();
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this6.sendData = data;
-        _this6.callbacksEdit();
+        _this7.sendData = data;
+        _this7.callbacksEdit();
       });
     },
 
     mapOneItem: function mapOneItem(itemId) {
-      var _this7 = this;
+      var _this8 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId + '/view-map',
@@ -746,8 +749,8 @@ if (window.AL === undefined) {
         // this.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this7.sendData = (req, stat, err);
-        _this7.callbacksEdit();
+        _this8.sendData = (req, stat, err);
+        _this8.callbacksEdit();
         //??
       });
     } };
@@ -805,7 +808,6 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
-        AL.ControlObject.resetControl();
         console.log('map mounted with props', this.props);
         if (this.props.params.sId) {
           //console.log('only,', this.props.params.sId);
@@ -815,14 +817,15 @@ if (window.AL === undefined) {
           AL.ControlObject.registerCallback(function () {
             AL.mapData.locations.push(AL.ControlObject.sendData);
           });
-        } else {}
-        //console.log('showing maximum stuff');
-        //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
-        // AL.ControlObject.registerCallback(()=>
-        //  AL.ControlObject.sendData.sites.forEach(item => {
-        //   AL.mapData.locations.push(item);
-        // }))
-
+        } else {
+          //console.log('showing maximum stuff');
+          //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
+          AL.ControlObject.registerCallback(function () {
+            return AL.ControlObject.sendData.sites.forEach(function (item) {
+              AL.mapData.locations.push(item);
+            });
+          });
+        }
         //moves control data to list
         AL.ControlObject.registerCallback(function () {
           return _this2.locationToGeocoder(AL.mapData.locations);
@@ -853,7 +856,7 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('main page unmounted');
-        // AL.ControlObject.resetControl();
+        AL.ControlObject.resetControl();
       }
 
       //defaults

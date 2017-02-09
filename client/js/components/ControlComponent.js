@@ -14,6 +14,7 @@ if (window.AL === undefined){window.AL = {}; }
     },
     callbacksEdit: function(){
       this.callbacks.forEach((cb) => {
+        console.log('sendData is ',this.sendData);
         cb();
         console.log('callback fired ',cb);
       })
@@ -25,10 +26,10 @@ if (window.AL === undefined){window.AL = {}; }
 
     getAll:function(){
 
-      // if (this.sendData !== undefined) {
-      //   this.callbacksEdit();
-      //   return;
-      // }
+      if (this.sendData !== undefined) {
+        this.callbacksEdit();
+        return;
+      }
 
       // console.log('gettin everything');
       //api get all
