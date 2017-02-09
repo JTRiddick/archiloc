@@ -111,13 +111,13 @@ table {
   max-width: 1200px;
   margin: 0.5em auto;
   background-color: #2b3341;
-  color: #546a7b;
+  color: #fbfffa;
   position: relative;
   overflow: auto;
-  border: 4px solid #2b3341; }
+  border: 4px solid #e3e3e3; }
   .sites-view .info-boxes-container {
     overflow: auto;
-    background-color: #3f5e5a; }
+    background-color: #a0332f; }
   .sites-view .site-info-box {
     position: relative;
     float: left;
@@ -126,7 +126,7 @@ table {
     margin: 0.5em 0.25em;
     overflow: none; }
   .sites-view .site-info {
-    background-color: #546a7b;
+    background-color: #247ba0;
     color: #2b3341;
     height: 144px; }
   .sites-view .site-controls {
@@ -174,17 +174,25 @@ table {
     max-height: 100%;
     width: 100%;
     background-color: #fbfffa; }
-  #map-component .filter-button {
-    background-color: #e3e3e3;
-    color: #a0332f;
-    display: inline-block;
-    width: 20%;
-    text-align: center;
-    padding: 2px 3px;
-    cursor: default;
-    user-select: none; }
-  #map-component .filter-button:active {
-    border-color: #35ad1a; }
+  #map-component .filter-controls {
+    margin-top: 1em; }
+    #map-component .filter-controls .filter-button {
+      background-color: #e3e3e3;
+      color: #a0332f;
+      display: inline-block;
+      width: 20%;
+      text-align: center;
+      padding: 2px 3px;
+      cursor: default;
+      user-select: none; }
+    #map-component .filter-controls .filter-button:hover {
+      border-color: #35ad1a;
+      color: #247ba0;
+      background-color: #dbd83b; }
+    #map-component .filter-controls .filter-button:active {
+      border-color: #35ad1a;
+      color: firebrick;
+      background-color: #fbfffa; }
   #map-component .left-bar {
     float: left;
     clear: left;
@@ -201,6 +209,10 @@ table {
     background-color: #e3e3e3;
     color: #fbfffa;
     min-height: 96px; }
+  #map-component .control-pane-text {
+    padding: 1em;
+    background: #a0332f;
+    color: #fbfffa; }
   #map-component .map-pane {
     padding: 0;
     margin: 0;
@@ -237,10 +249,16 @@ table {
         padding: 2px 2px;
         cursor: default;
         user-select: none;
-        margin: 0.25em 0.5em;
-        padding: 6px;
+        margin: 0.25em 0.75em;
+        padding: 5px;
+        border: 1px solid #a0332f;
         width: auto;
         float: left; }
+      #map-component .info-pane .info-box-tags li:hover {
+        border: 3px solid #fbfffa; }
+      #map-component .info-pane .info-box-tags li:active {
+        border: 6px solid #fbfffa;
+        background-color: #e3e3e3; }
     #map-component .info-pane .info-box-image {
       position: relative;
       padding: 0;
@@ -261,6 +279,8 @@ table {
     background-color: #e3e3e3;
     color: #247ba0;
     min-height: 96px;
+    margin-top: 1em;
+    padding: .5em;
     overflow: auto;
     opacity: 1;
     transition: all 1s ease; }
@@ -383,8 +403,8 @@ i {
   max-width: 960px;
   min-height: 128px;
   position: relative;
-  background-color: #70c1b3;
-  color: #dbd83b; }
+  background-color: #fedc97;
+  color: #247ba0; }
   .admin-test ol {
     margin: 1em auto;
     padding: .5rem; }

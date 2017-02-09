@@ -14,9 +14,8 @@ if (window.AL === undefined){window.AL = {}; }
     },
     callbacksEdit: function(){
       this.callbacks.forEach((cb) => {
-        console.log("this.sendData",this.sendData);
         cb();
-        console.log('callback');
+
       })
     },
     resetControl: function(){
@@ -25,7 +24,13 @@ if (window.AL === undefined){window.AL = {}; }
     },
 
     getAll:function(){
-      console.log('gettin everything');
+
+      if (this.sendData !== undefined) {
+        this.callbacksEdit();
+        return;
+      }
+
+      // console.log('gettin everything');
       //api get all
       $.ajax({
         url: '/api/sites',
@@ -33,12 +38,12 @@ if (window.AL === undefined){window.AL = {}; }
         dataType: 'JSON'
       })
       .done((data)=> {
-        console.log("done, recieved: \n ",data, "type of", typeof data);
+        // console.log("done, recieved: \n ",data, "type of", typeof data);
         this.sendData = data;
         this.locationObjects = data;
-        console.log('get done.');
+
         this.callbacksEdit();
-        console.log('grabbd everything',data);
+        // console.log('grabbd everything',data);
       })
       .fail(()=>{
         console.log('cant get');

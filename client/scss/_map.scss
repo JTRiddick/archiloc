@@ -16,13 +16,24 @@
     background-color: $wit;
 
   }
+  .filter-controls{
 
-  .filter-button{
-    @include button-mid;
+    margin-top:1em;
+    .filter-button{
+      @include button-mid;
+    }
+    .filter-button:hover{
+      border-color:$color4;
+      color:$blau;
+      background-color: $color6;
+    }
+    .filter-button:active{
+      border-color:$color4;
+      color:firebrick;
+      background-color: $wit;
+    }
   }
-  .filter-button:active{
-    border-color:$color4;
-  }
+
 
   .left-bar{
     float:left;
@@ -46,7 +57,11 @@
     min-height:96px;
 
   }
-
+  .control-pane-text{
+    padding:1em;
+    background: $deepred;
+    color:$wit;
+  }
   .map-pane{
     padding: 0;
     margin:0;
@@ -92,10 +107,18 @@
       padding:1em;
       li{
         @include button-sml;
-        margin: 0.25em 0.5em;
-        padding:6px;
+        margin: 0.25em 0.75em;
+        padding:5px;
+        border:1px solid $deepred;
         width:auto;
         float:left;
+      }
+      li:hover{
+        border:3px solid $wit;
+      }
+      li:active{
+        border:6px solid $wit;
+        background-color: $grau;
       }
 
     }
@@ -126,6 +149,9 @@
     background-color: $grau;
     color:$blau;
     min-height:96px;
+    margin-top:1em;
+    padding: .5em;
+
     overflow: auto;
     opacity: 1;
     transition:all 1s ease;

@@ -29,15 +29,13 @@ if (window.AL === undefined){window.AL = {}; }
         findingOne:false,
         tag:'none'
       }
-      var locationToGeocoder;
-      var geoCode;
 
     }
 
     componentWillMount(){
-      console.log('map mounted with props',this.props);
+      //console.log('map mounted with props',this.props);
       if(this.props.params.sId){
-        console.log('only,', this.props.params.sId);
+        //console.log('only,', this.props.params.sId);
         this.setState({
           findingOne:true
         })
@@ -46,11 +44,8 @@ if (window.AL === undefined){window.AL = {}; }
         })
       }else{
 
-        console.log('map has filter specified');
-        this.setState({tag:AL.mapData.styleFilter});
-
-        console.log('showing maximum stuff');
-        console.log('fill mapdata locations list with',AL.ControlObject.sendData);
+        //console.log('showing maximum stuff');
+        //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
         AL.ControlObject.registerCallback(()=>
          AL.ControlObject.sendData.sites.forEach(item => {
           AL.mapData.locations.push(item);
@@ -70,11 +65,6 @@ if (window.AL === undefined){window.AL = {}; }
         zoom: this.state.zoom
       });
 
-      this.marker = new google.maps.Marker({
-        lat: 30,
-        lng: 30
-      });
-
       this.geocoder = new google.maps.Geocoder();
 
       if(!this.state.findingOne){
@@ -84,7 +74,7 @@ if (window.AL === undefined){window.AL = {}; }
       }
 
       //sets mapdata locations and triggers callback to run geo+location
-      console.log(this.map,this.geocoder);
+      //console.log(this.map,this.geocoder);
 
     }
 
@@ -95,24 +85,47 @@ if (window.AL === undefined){window.AL = {}; }
     //defaults
 
     deselectSite(evt,ele){
-      console.log('evt ',evt,' ele ',ele);
+
       this.setState({
         showSite:null,
         infoClass:'oof',
         controlClass:'low inactive',
         mapClass:'center'
       })
+     this.googleMap.setZoom(AL.mapData.mapZoom);
     }
     //master close
+
+    locationToGeocoder(locations){
+      console.log('location to geocoder',locations,'state',this.state.tag);
+      var addresses;
+      if(AL.mapData.filter == 'none'){
+        addresses = locations;
+        //console.log('locationToGeocoder says this is',addresses);
+          addresses.forEach(address => {
+             if( AL.mapData.markers.indexOf(address)<0){
+              this.geoCode(address,this.map);
+            }
+          })
+      }else{
+        let addresses = locations;
+        addresses.forEach(address =>{
+          if (address.styles.includes(AL.mapData.filter)){
+            console.log('filter including', address);
+            this.geoCode(address,this.map);
+          }
+        })
+      }
+    }
 
     geoCode(itemId,map){
       var handleResults;
       //check for item id or obj
-      console.log('GEOCODE',itemId);
+      //console.log('GEOCODE',itemId);
       var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
       this.geocoder.geocode({'address':address}, handleResults = (results,status)=>{
         if (status === google.maps.GeocoderStatus.OK){
-          console.log('geo code this check',this.map);
+          //console.log('geo code this check',this.map);
           this.googleMap.setCenter(results[0].geometry.location);
           var marker = new google.maps.Marker({
             position: (results[0].geometry.location),
@@ -126,27 +139,7 @@ if (window.AL === undefined){window.AL = {}; }
       })
     }
 
-    locationToGeocoder(locations){
-      var addresses;
-      if(this.state.tag == 'none'){
-        addresses = locations;
-        console.log('locationToGeocoder says this is',addresses);
-          addresses.forEach(address => {
-             if( AL.mapData.markers.indexOf(address)<0){
-              this.geoCode(address,this.map);
-            }
-          })
-      }else{
-        let addresses = locations;
-        addresses.forEach(address =>{
-          if (address.styles.includes(this.state.tag)){
-            this.geoCode(address,this.map);
-          }
-        })
-      }
 
-
-    }
 
     //^^ Test Geocode
 
@@ -164,7 +157,7 @@ if (window.AL === undefined){window.AL = {}; }
       var infowindow = new google.maps.InfoWindow({
        content: contentString
       });
-      console.log(infowindow, "infowindow");
+      //console.log(infowindow, "infowindow");
       //make infowindow
 
 
@@ -197,7 +190,7 @@ if (window.AL === undefined){window.AL = {}; }
 
 
      if(this.state.findingOne ===true){
-       console.log('and its..,', this.props.params.sId);
+       //console.log('and its..,', this.props.params.sId);
 
        mapRef.setCenter(marker.getPosition());
        infowindow.open(this.map,marker);
@@ -211,15 +204,19 @@ if (window.AL === undefined){window.AL = {}; }
      return;
     }
 
-    selectFilter(reset){
-      console.log('FILTER RESET, SET TO ',AL.mapData.filter);
-      if(reset == false){
-        this.locationToGeocoder(AL.mapData.locations);
-      }else{
-        AL.mapData.filter = 'none';
-      }
-      //WARNING! WILL MAKE GOOGLE API GEOCODER REQUEST EVERY TIME
-      //test^
+    selectFilter(filter){
+
+      this.deselectSite();
+      AL.mapData.filter = filter;
+      console.log('FILTER SET TO ',AL.mapData.filter);
+      AL.mapData.markers.forEach(marker => {marker.setMap(null)})
+      AL.mapData.markers = [];
+      this.setState({
+        tag:filter
+      })
+      console.log('resending to geocode with filter', filter, 'these',AL.mapData.markers,AL.mapData.locations);
+      this.locationToGeocoder(AL.mapData.locations);
+
     }
 
     render(){
@@ -232,7 +229,7 @@ if (window.AL === undefined){window.AL = {}; }
       var controls = '';
 
       if(this.state.showSite !== null){
-        info= <InfoComponent showSite={this.state.showSite}/>
+        info= <InfoComponent showSite={this.state.showSite} infoboxFilter={(filter)=>{this.selectFilter(filter);}}/>
         controls = <MapControlComponent showSite={this.state.showSite}/>
       }
 
@@ -244,11 +241,10 @@ if (window.AL === undefined){window.AL = {}; }
           <div className={infoClass}>
             <div className = "close" onClick={(evt)=>{this.deselectSite(evt)}}>X</div>
           {info}
-            <div className = "filter-button" onClick={(this.selectFilter(false))}>
-            <p>More Like This</p>
-            </div>
-            <div className = "filter-button reset" onClick={(this.selectFilter(true))}>
-            <p>Reset Filter</p>
+            <div className = "filter-controls">
+              <div className = "filter-button reset" onClick={()=>{this.selectFilter('none')}}>
+              <p>Reset Filter</p>
+              </div>
             </div>
           </div>
           <div className={mapClass} ref={(map) =>
@@ -279,8 +275,7 @@ if (window.AL === undefined){window.AL = {}; }
 
 
     render(){
-      console.log("InfoComponent showing ", this.state.info,this.state.tags);
-
+      //console.log("InfoComponent showing ", this.state.info,this.state.tags);
 
       return (<div className="info-box">
 
@@ -297,7 +292,7 @@ if (window.AL === undefined){window.AL = {}; }
           <ul>
             {this.state.tags.map((tag,i) => {
               return <li key={i} onClick={(evt)=>{
-                AL.mapData.filters=tag;
+                this.props.infoboxFilter(tag)
               }}>{tag}</li>
             })}
           </ul>
@@ -319,7 +314,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     render(){
-      console.log('controlbox state: ',this.state,' img ',this.state.info.pic);
+      //console.log('controlbox state: ',this.state,' img ',this.state.info.pic);
       return(<div className="controlbox-content">
          <div className="mapview-image">
            <img src={decodeURIComponent(this.state.info.pic)}/>
