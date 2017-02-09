@@ -911,6 +911,7 @@ if (window.AL === undefined) {
         //console.log('GEOCODE',itemId);
         var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
         this.geocoder.geocode({ 'address': address }, handleResults = function handleResults(results, status) {
+          console.log('hi, im geocoding');
           if (status === google.maps.GeocoderStatus.OK) {
             //console.log('geo code this check',this.map);
             _this4.googleMap.setCenter(results[0].geometry.location);
