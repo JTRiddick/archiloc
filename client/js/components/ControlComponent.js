@@ -25,10 +25,10 @@ if (window.AL === undefined){window.AL = {}; }
 
     getAll:function(){
 
-      if (this.sendData !== undefined) {
-        this.callbacksEdit();
-        return;
-      }
+      // if (this.sendData !== undefined) {
+      //   this.callbacksEdit();
+      //   return;
+      // }
 
       // console.log('gettin everything');
       //api get all
