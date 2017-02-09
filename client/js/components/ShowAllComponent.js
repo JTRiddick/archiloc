@@ -12,9 +12,14 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentDidMount(){
+      AL.ControlObject.registerCallback(()=>
+       AL.ControlObject.sendData.sites.forEach(item => {
+        AL.mapData.locations.push(item);
+      }))
       AL.ControlObject.registerCallback(() => {
+
         this.setState({
-          sites:AL.ControlObject.sendData.sites
+          sites:AL.ControlObject.locationObjects.sites
         });
       });
 

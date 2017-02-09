@@ -43,7 +43,6 @@ if (window.AL === undefined){window.AL = {}; }
           AL.mapData.locations.push(AL.ControlObject.sendData);
         })
       }else{
-
         //console.log('showing maximum stuff');
         //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
         AL.ControlObject.registerCallback(()=>

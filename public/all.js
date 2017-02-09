@@ -832,7 +832,6 @@ if (window.AL === undefined) {
             AL.mapData.locations.push(AL.ControlObject.sendData);
           });
         } else {
-
           //console.log('showing maximum stuff');
           //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
           AL.ControlObject.registerCallback(function () {
@@ -1267,8 +1266,14 @@ if (window.AL === undefined) {
         var _this2 = this;
 
         AL.ControlObject.registerCallback(function () {
+          return AL.ControlObject.sendData.sites.forEach(function (item) {
+            AL.mapData.locations.push(item);
+          });
+        });
+        AL.ControlObject.registerCallback(function () {
+
           _this2.setState({
-            sites: AL.ControlObject.sendData.sites
+            sites: AL.ControlObject.locationObjects.sites
           });
         });
       }
