@@ -20,7 +20,7 @@ if (window.AL === undefined){window.AL = {}; }
     },
     resetControl: function(){
       this.callbacks = [];
-      this.sendData = {}
+      this.sendData = {};
     },
 
     getAll:function(){

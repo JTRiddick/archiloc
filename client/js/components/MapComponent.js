@@ -46,10 +46,10 @@ if (window.AL === undefined){window.AL = {}; }
       }else{
         //console.log('showing maximum stuff');
         //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
-        // AL.ControlObject.registerCallback(()=>
-        //  AL.ControlObject.sendData.sites.forEach(item => {
-        //   AL.mapData.locations.push(item);
-        // }))
+        AL.ControlObject.registerCallback(()=>
+         AL.ControlObject.sendData.sites.forEach(item => {
+          AL.mapData.locations.push(item);
+        }))
       }
       //moves control data to list
       AL.ControlObject.registerCallback(()=>this.locationToGeocoder(AL.mapData.locations));
