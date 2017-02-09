@@ -884,17 +884,15 @@ if (window.AL === undefined) {
         var addresses;
         if (AL.mapData.filter == 'none') {
           addresses = locations;
-          //console.log('locationToGeocoder says this is',addresses);
+          console.log('locationToGeocoder says this is', addresses);
           addresses.forEach(function (address) {
-            if (AL.mapData.markers.indexOf(address) < 0) {
-              _this3.geoCode(address, _this3.map);
-            }
+            _this3.geoCode(address, _this3.map);
           });
         } else {
           var _addresses = locations;
           _addresses.forEach(function (address) {
             console.log('address', address, 'includes', address.styles);
-            if (address.styles.includes(AL.mapData.filter) && AL.mapData.markers.indexOf(address) < 0) {
+            if (address.styles.includes(AL.mapData.filter)) {
               console.log('filter including', address);
               _this3.geoCode(address, _this3.map);
             }

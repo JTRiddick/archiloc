@@ -102,17 +102,15 @@ if (window.AL === undefined){window.AL = {}; }
       var addresses;
       if(AL.mapData.filter == 'none'){
         addresses = locations;
-        //console.log('locationToGeocoder says this is',addresses);
+        console.log('locationToGeocoder says this is',addresses);
           addresses.forEach(address => {
-             if( AL.mapData.markers.indexOf(address)<0){
-              this.geoCode(address,this.map);
-            }
+            this.geoCode(address,this.map);
           })
       }else{
         let addresses = locations;
         addresses.forEach(address =>{
           console.log('address',address,'includes',address.styles);
-          if (address.styles.includes(AL.mapData.filter) && AL.mapData.markers.indexOf(address)<0){
+          if (address.styles.includes(AL.mapData.filter)){
             console.log('filter including', address);
             this.geoCode(address,this.map);
           }
