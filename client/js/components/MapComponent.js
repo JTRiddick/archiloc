@@ -124,7 +124,7 @@ if (window.AL === undefined){window.AL = {}; }
       //console.log('GEOCODE',itemId);
       var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
       this.geocoder.geocode({'address':address}, handleResults = (results,status)=>{
-        console.log('hi, im geocoding');
+        console.log('hi, im geocoding', 'geocoder status',status);
         if (status === google.maps.GeocoderStatus.OK){
           //console.log('geo code this check',this.map);
           this.googleMap.setCenter(results[0].geometry.location);
