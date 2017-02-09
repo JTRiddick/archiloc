@@ -568,7 +568,7 @@ if (window.AL === undefined) {
     },
     resetControl: function resetControl() {
       this.callbacks = [];
-      // this.sendData = {};
+      this.sendData = {};
     },
 
     getAll: function getAll() {
@@ -892,7 +892,7 @@ if (window.AL === undefined) {
           var _addresses = locations;
           _addresses.forEach(function (address) {
             console.log('address', address, 'includes', address.styles);
-            if (address.styles.includes(AL.mapData.filter)) {
+            if (address.styles.includes(AL.mapData.filter) && AL.mapData.markers.indexOf(address) < 0) {
               console.log('filter including', address);
               _this3.geoCode(address, _this3.map);
             }

@@ -301,6 +301,10 @@ table {
       display: inline-block;
       width: auto;
       height: 640px; }
+  #map-component .mapview-desc {
+    float: right;
+    background: #a0332f;
+    color: #fbfffa; }
 
 body {
   background-color: #fbfffa;
