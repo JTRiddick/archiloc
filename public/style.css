@@ -231,7 +231,7 @@ table {
     min-height: 60px;
     background-color: #a0332f;
     color: #fbfffa;
-    transition: all 1s ease; }
+    transition: all .33s ease; }
     #map-component .info-pane .info-box-text {
       font-size: 1.2em;
       text-align: left;
@@ -283,16 +283,18 @@ table {
     padding: .5em;
     overflow: auto;
     opacity: 1;
-    transition: all 1s ease; }
+    transition: all .5s ease; }
   #map-component .inactive {
     opacity: 0;
     height: 96px; }
   #map-component .aif {
     right: 0px;
-    height: auto; }
+    height: auto;
+    opacity: 1; }
   #map-component .oof {
     left: -660px;
-    height: 64px; }
+    height: 64px;
+    opacity: 0; }
   #map-component .mapview-image {
     position: absolute;
     float: left;

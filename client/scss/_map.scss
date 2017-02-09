@@ -91,7 +91,7 @@
     min-height:60px;
     background-color: $deepred;
     color:$wit;
-    transition: all 1s ease;
+    transition: all .33s ease;
     //animtest ^
 
     .info-box-text{
@@ -154,7 +154,7 @@
 
     overflow: auto;
     opacity: 1;
-    transition:all 1s ease;
+    transition:all .5s ease;
   }
   .inactive{
     opacity: 0;
@@ -164,11 +164,13 @@
   .aif{
     right:0px;
     height:auto;
+    opacity: 1;
   }
 
   .oof{
     left:-660px;
     height:64px;
+    opacity: 0;
   }
 
   .mapview-image{

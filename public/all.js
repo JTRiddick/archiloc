@@ -1252,7 +1252,6 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
-        AL.ControlObject.resetControl();
         console.log('show all will mount');
         AL.ControlObject.registerCallback(function () {
           return AL.ControlObject.sendData.sites.forEach(function (item) {
@@ -1274,6 +1273,7 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('unmounting show all');
+        AL.ControlObject.resetControl();
       }
     }, {
       key: 'populateList',
