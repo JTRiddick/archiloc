@@ -78,6 +78,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillUnmount(){
+      console.log('main page unmounted');
       AL.ControlObject.resetControl();
     }
 

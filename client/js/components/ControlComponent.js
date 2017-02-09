@@ -15,7 +15,7 @@ if (window.AL === undefined){window.AL = {}; }
     callbacksEdit: function(){
       this.callbacks.forEach((cb) => {
         cb();
-
+        console.log('callback fired ',cb);
       })
     },
     resetControl: function(){
@@ -108,7 +108,6 @@ if (window.AL === undefined){window.AL = {}; }
           cityState:inputs.cityState,
           country:inputs.country,
           pic:inputs.pic,
-          styles:inputs.styles,
           description:inputs.description
         }
 
@@ -145,7 +144,6 @@ if (window.AL === undefined){window.AL = {}; }
             cityState:inputs.cityState,
             country:inputs.country,
             pic:inputs.pic,
-            styles:inputs.styles,
             description:inputs.description
           }
         })
@@ -193,11 +191,7 @@ if (window.AL === undefined){window.AL = {}; }
 
         })
       },
-      mapFilterResults: function(query,type){
-
-
-
-      },//end of typefilter
+  
       mapOneItem: function(itemId){
 
         $.ajax({

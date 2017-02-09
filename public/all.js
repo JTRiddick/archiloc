@@ -579,6 +579,7 @@ if (window.AL === undefined) {
     callbacksEdit: function callbacksEdit() {
       this.callbacks.forEach(function (cb) {
         cb();
+        console.log('callback fired ', cb);
       });
     },
     resetControl: function resetControl() {
@@ -669,7 +670,6 @@ if (window.AL === undefined) {
           cityState: inputs.cityState,
           country: inputs.country,
           pic: inputs.pic,
-          styles: inputs.styles,
           description: inputs.description
         }
 
@@ -704,7 +704,6 @@ if (window.AL === undefined) {
           cityState: inputs.cityState,
           country: inputs.country,
           pic: inputs.pic,
-          styles: inputs.styles,
           description: inputs.description
         }
       }).fail(function (req, stat, error) {
@@ -748,7 +747,7 @@ if (window.AL === undefined) {
         _this6.callbacksEdit();
       });
     },
-    mapFilterResults: function mapFilterResults(query, type) {}, //end of typefilter
+
     mapOneItem: function mapOneItem(itemId) {
       var _this7 = this;
 
@@ -869,6 +868,7 @@ if (window.AL === undefined) {
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
+        console.log('main page unmounted');
         AL.ControlObject.resetControl();
       }
 
@@ -1261,17 +1261,22 @@ if (window.AL === undefined) {
     }
 
     _createClass(ShowAllComponent, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        console.log('show all will mount');
+      }
+    }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
         var _this2 = this;
 
+        console.log('show all did mount');
         AL.ControlObject.registerCallback(function () {
           return AL.ControlObject.sendData.sites.forEach(function (item) {
             AL.mapData.locations.push(item);
           });
         });
         AL.ControlObject.registerCallback(function () {
-
           _this2.setState({
             sites: AL.ControlObject.locationObjects.sites
           });
@@ -1280,6 +1285,7 @@ if (window.AL === undefined) {
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
+        console.log('unmounting show all');
         AL.ControlObject.resetControl();
       }
     }, {
