@@ -144,7 +144,7 @@ if (window.AL === undefined){window.AL = {}; }
      if(this.state.lastAdded){
         console.log('default values');
         name = this.state.lastAdded.title;
-        year = this.state.lastAdded.year || 'Add Year';
+        year = this.state.lastAdded.year;
         arch = this.state.lastAdded.arch;
         type = this.state.lastAdded.type;
         city = this.state.lastAdded.cityState;

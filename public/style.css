@@ -367,6 +367,7 @@ i {
   overflow: auto; }
 
 .nav {
+  opacity: 0;
   position: relative;
   float: right;
   display: inline-block;
