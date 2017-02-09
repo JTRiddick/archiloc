@@ -907,6 +907,7 @@ if (window.AL === undefined) {
         } else {
           var _addresses = locations;
           _addresses.forEach(function (address) {
+            console.log('address', address, 'includes', address.styles);
             if (address.styles.includes(AL.mapData.filter)) {
               console.log('filter including', address);
               _this3.geoCode(address, _this3.map);

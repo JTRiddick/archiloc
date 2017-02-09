@@ -110,6 +110,7 @@ if (window.AL === undefined){window.AL = {}; }
       }else{
         let addresses = locations;
         addresses.forEach(address =>{
+          console.log('address',address,'includes',address.styles);
           if (address.styles.includes(AL.mapData.filter)){
             console.log('filter including', address);
             this.geoCode(address,this.map);
