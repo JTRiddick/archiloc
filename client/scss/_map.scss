@@ -57,11 +57,7 @@
     min-height:96px;
 
   }
-  .control-pane-text{
-    padding:1em;
-    background: $deepred;
-    color:$wit;
-  }
+
   .map-pane{
     padding: 0;
     margin:0;
@@ -185,7 +181,11 @@
   }
   .mapview-desc{
     float:right;
-    background:$deepred;
+    width:440px;
+    height:440px;
+    margin:2em;
+    padding:1em;
+    background: $deepred;
     color:$wit;
   }
 
