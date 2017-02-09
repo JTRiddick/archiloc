@@ -33,7 +33,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillMount(){
-      AL.ControlObject.resetControl();
+
       console.log('map mounted with props',this.props);
       if(this.props.params.sId){
         //console.log('only,', this.props.params.sId);
@@ -80,7 +80,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillUnmount(){
       console.log('main page unmounted');
-      // AL.ControlObject.resetControl();
+      AL.ControlObject.resetControl();
     }
 
     //defaults
