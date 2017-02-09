@@ -13,10 +13,6 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillMount(){
       console.log('show all will mount');
-    }
-
-    componentDidMount(){
-      console.log('show all did mount');
       AL.ControlObject.registerCallback(()=>
        AL.ControlObject.sendData.sites.forEach(item => {
         AL.mapData.locations.push(item);
@@ -26,6 +22,11 @@ if (window.AL === undefined){window.AL = {}; }
           sites:AL.ControlObject.locationObjects.sites
         });
       });
+    }
+
+    componentDidMount(){
+      console.log('show all did mount');
+
 
     }
 
@@ -92,7 +93,6 @@ if (window.AL === undefined){window.AL = {}; }
     }
     componentWillUnmount(){
       console.log(this,'viewbox unmount');
-      AL.ControlObject.resetControl();
     }
 
     tagOneItem(tagSite){

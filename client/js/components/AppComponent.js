@@ -9,8 +9,8 @@ if (window.AL === undefined) {window.AL = { }; }
 
       var testBar = (<div className = "top-bar nav">
         <ul>
-          <li><ReactRouter.Link className="link" to={"/map" }>Map</ReactRouter.Link></li>
-          <li><ReactRouter.Link className="link" to={'/test'}>Admin/Testing</ReactRouter.Link></li>
+          <li className="link" onClick={()=> {ReactRouter.hashHistory.push('/map');}}>Map</li>
+          <li className="link" onClick={()=> {ReactRouter.hashHistory.push('/test/all');}}>Admin/Testing</li>
         </ul>
       </div>)
 

@@ -503,21 +503,17 @@ if (window.AL === undefined) {
             null,
             React.createElement(
               "li",
-              null,
-              React.createElement(
-                ReactRouter.Link,
-                { className: "link", to: "/map" },
-                "Map"
-              )
+              { className: "link", onClick: function onClick() {
+                  ReactRouter.hashHistory.push('/map');
+                } },
+              "Map"
             ),
             React.createElement(
               "li",
-              null,
-              React.createElement(
-                ReactRouter.Link,
-                { className: "link", to: '/test' },
-                "Admin/Testing"
-              )
+              { className: "link", onClick: function onClick() {
+                  ReactRouter.hashHistory.push('/test/all');
+                } },
+              "Admin/Testing"
             )
           )
         );
@@ -1263,14 +1259,9 @@ if (window.AL === undefined) {
     _createClass(ShowAllComponent, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
-        console.log('show all will mount');
-      }
-    }, {
-      key: 'componentDidMount',
-      value: function componentDidMount() {
         var _this2 = this;
 
-        console.log('show all did mount');
+        console.log('show all will mount');
         AL.ControlObject.registerCallback(function () {
           return AL.ControlObject.sendData.sites.forEach(function (item) {
             AL.mapData.locations.push(item);
@@ -1281,6 +1272,11 @@ if (window.AL === undefined) {
             sites: AL.ControlObject.locationObjects.sites
           });
         });
+      }
+    }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        console.log('show all did mount');
       }
     }, {
       key: 'componentWillUnmount',
@@ -1375,7 +1371,6 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log(this, 'viewbox unmount');
-        AL.ControlObject.resetControl();
       }
     }, {
       key: 'tagOneItem',
