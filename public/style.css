@@ -2,7 +2,7 @@
    v2.0 | 20110126
    License: none (public domain)
 */
-@import url("https://fonts.googleapis.com/css?family=Josefin+Sans|Josefin+Slab");
+@import url("https://fonts.googleapis.com/css?family=Josefin+Sans|Josefin+Slab|Roboto");
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -47,6 +47,9 @@ table {
   border-spacing: 0; }
 
 /* Coolors Exported Palette - coolors.co/0d1f2d-546a7b-3f5e5a-35ad1a-dbd83b */
+/* HSL */
+/* RGB */
+/* Coolors Exported Palette - coolors.co/a0332f-fbfffa-e3e3e3-247ba0-70c1b3 */
 /* HSL */
 /* RGB */
 .add-structure {
@@ -108,13 +111,13 @@ table {
   max-width: 1200px;
   margin: 0.5em auto;
   background-color: #2b3341;
-  color: #546a7b;
+  color: #fbfffa;
   position: relative;
   overflow: auto;
-  border: 4px solid #2b3341; }
+  border: 4px solid #e3e3e3; }
   .sites-view .info-boxes-container {
     overflow: auto;
-    background-color: #3f5e5a; }
+    background-color: #a0332f; }
   .sites-view .site-info-box {
     position: relative;
     float: left;
@@ -123,7 +126,7 @@ table {
     margin: 0.5em 0.25em;
     overflow: none; }
   .sites-view .site-info {
-    background-color: #546a7b;
+    background-color: #247ba0;
     color: #2b3341;
     height: 144px; }
   .sites-view .site-controls {
@@ -156,7 +159,7 @@ table {
     color: white; }
   .sites-view .link {
     text-decoration: none;
-    color: #546a7b; }
+    color: #fbfffa; }
 
 #map-component {
   position: absolute;
@@ -170,7 +173,26 @@ table {
     min-height: 960px;
     max-height: 100%;
     width: 100%;
-    background-color: #2b3341; }
+    background-color: #fbfffa; }
+  #map-component .filter-controls {
+    margin-top: 1em; }
+    #map-component .filter-controls .filter-button {
+      background-color: #e3e3e3;
+      color: #a0332f;
+      display: inline-block;
+      width: 20%;
+      text-align: center;
+      padding: 2px 3px;
+      cursor: default;
+      user-select: none; }
+    #map-component .filter-controls .filter-button:hover {
+      border-color: #35ad1a;
+      color: #247ba0;
+      background-color: #dbd83b; }
+    #map-component .filter-controls .filter-button:active {
+      border-color: #35ad1a;
+      color: firebrick;
+      background-color: #fbfffa; }
   #map-component .left-bar {
     float: left;
     clear: left;
@@ -184,72 +206,130 @@ table {
     position: relative;
     max-height: 300px;
     width: 100%;
-    background-color: #3f5e5a;
-    color: #546a7b;
+    background-color: #e3e3e3;
+    color: #fbfffa;
     min-height: 96px; }
+  #map-component .control-pane-text {
+    padding: 1em;
+    background: #a0332f;
+    color: #fbfffa; }
   #map-component .map-pane {
     padding: 0;
     margin: 0;
     width: 48%;
     position: relative;
-    transition: all 0.25s ease; }
-  #map-component .map-pane:after {
-    content: '';
-    float: none;
-    clear: both; }
+    transition: all 0.55s ease; }
   #map-component .center {
     width: 80%;
-    margin: 0 auto; }
+    margin: 0 auto;
+    margin-left: auto;
+    margin-right: auto; }
   #map-component .info-pane {
     float: left;
     position: relative;
     width: 48%;
     min-height: 60px;
-    background-color: #2b3341;
-    color: #546a7b;
-    transition: all 1s ease; }
+    background-color: #a0332f;
+    color: #fbfffa;
+    transition: all .33s ease; }
     #map-component .info-pane .info-box-text {
-      background-color: #FEDC97;
       font-size: 1.2em;
       text-align: left;
       padding: 1em; }
       #map-component .info-pane .info-box-text .info-type {
         text-transform: capitalize; }
+    #map-component .info-pane .info-box-tags {
+      padding: 1em; }
+      #map-component .info-pane .info-box-tags li {
+        background-color: #fbfffa;
+        color: #a0332f;
+        display: inline-block;
+        width: 10%;
+        text-align: center;
+        padding: 2px 2px;
+        cursor: default;
+        user-select: none;
+        margin: 0.25em 0.75em;
+        padding: 5px;
+        border: 1px solid #a0332f;
+        width: auto;
+        float: left; }
+      #map-component .info-pane .info-box-tags li:hover {
+        border: 3px solid #fbfffa; }
+      #map-component .info-pane .info-box-tags li:active {
+        border: 6px solid #fbfffa;
+        background-color: #e3e3e3; }
+    #map-component .info-pane .info-box-image {
+      position: relative;
+      padding: 0;
+      margin: 0; }
+      #map-component .info-pane .info-box-image img {
+        height: 240px;
+        width: auto; }
   #map-component .control-pane-left {
     float: left;
     position: relative;
     width: 33.333%;
-    transition: all 1s ease; }
+    transition: all .33s ease; }
   #map-component .control-pane-low {
     display: inline-block;
     position: relative;
-    max-height: 300px;
+    height: 720px;
     width: 100%;
-    background-color: #3f5e5a;
-    color: #546a7b;
-    min-height: 96px; }
+    background-color: #e3e3e3;
+    color: #247ba0;
+    min-height: 96px;
+    margin-top: 1em;
+    padding: .5em;
+    overflow: auto;
+    opacity: 1;
+    transition: all .5s ease; }
+  #map-component .inactive {
+    opacity: 0;
+    height: 96px; }
   #map-component .aif {
     right: 0px;
-    height: 440px; }
+    height: auto;
+    opacity: 1; }
   #map-component .oof {
     left: -660px;
-    height: 64px; }
+    height: 64px;
+    opacity: 0; }
+  #map-component .mapview-image {
+    position: absolute;
+    float: left;
+    max-height: 640px; }
+    #map-component .mapview-image img {
+      display: inline-block;
+      width: auto;
+      height: 640px; }
+  #map-component .mapview-desc {
+    float: right;
+    background: #a0332f;
+    color: #fbfffa; }
 
 body {
-  background-color: #2b3341;
-  font-family: "Josefin Sans", sans-serif; }
+  background-color: #fbfffa;
+  font-family: "Roboto", sans-serif;
+  font-weight: 100;
+  max-width: 1400px; }
 
 h1 {
-  font-size: 2.33em; }
+  font-size: 2.33em;
+  letter-spacing: 3px;
+  font-weight: 100; }
 
 h2 {
-  font-size: 2em; }
+  font-size: 2em;
+  letter-spacing: 2px; }
 
 h3 {
   font-size: 1.75em; }
 
 h4 {
-  font-size: 1.5em; }
+  font-size: 1.5em;
+  letter-spacing: 1px;
+  font-weight: 200; }
 
 i {
   font-style: italic; }
@@ -262,12 +342,15 @@ i {
   float: right;
   clear: none; }
 
+.main-content {
+  height: auto; }
+
 .app-component {
-  background-color: #2b3341;
-  color: #546a7b;
+  background-color: #fbfffa;
+  color: #222;
   padding: 1em;
+  width: 1400px;
   clear: both;
-  width: 100%;
   height: 96px; }
   .app-component .title {
     display: inline-block;
@@ -280,14 +363,57 @@ i {
   height: 54px; }
 
 .top-bar {
-  background-color: #fedc97;
+  background-color: #a0332f;
   overflow: auto; }
 
 .nav {
+  opacity: 0;
   position: relative;
   float: right;
   display: inline-block;
   width: 20%;
   height: 100%; }
+  .nav li {
+    padding: 2px 0 2px 6px;
+    border-bottom: 1px solid #fbfffa;
+    border-right: 1px solid #fbfffa; }
+  .nav a {
+    text-decoration: none;
+    color: #fbfffa; }
+  .nav a:visited {
+    color: #fbfffa; }
+
+.close {
+  background-color: #fbfffa;
+  color: #a0332f;
+  display: inline-block;
+  width: 10%;
+  text-align: center;
+  padding: 2px 2px;
+  cursor: default;
+  user-select: none;
+  position: relative;
+  border: 1px solid #a0332f;
+  top: 0;
+  left: 0;
+  content: 'X'; }
+
+.copyright {
+  position: absolute;
+  bottom: 10px;
+  font-size: 0.5em;
+  opacity: 0; }
+
+.admin-test {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 960px;
+  min-height: 128px;
+  position: relative;
+  background-color: #fedc97;
+  color: #247ba0; }
+  .admin-test ol {
+    margin: 1em auto;
+    padding: .5rem; }
 
 /*# sourceMappingURL=style.css.map */

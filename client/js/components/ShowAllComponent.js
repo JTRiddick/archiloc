@@ -11,17 +11,30 @@ if (window.AL === undefined){window.AL = {}; }
       }
     }
 
-    componentDidMount(){
+    componentWillMount(){
+
+      console.log('show all will mount');
+      AL.ControlObject.registerCallback(()=>
+       AL.ControlObject.sendData.sites.forEach(item => {
+        AL.mapData.locations.push(item);
+      }))
       AL.ControlObject.registerCallback(() => {
         this.setState({
-          sites:AL.ControlObject.sendData.sheds
+          sites:AL.ControlObject.locationObjects.sites
         });
       });
 
     }
 
+    componentDidMount(){
+      console.log('show all did mount');
+
+
+    }
+
     componentWillUnmount(){
-      AL.ControlObject.resetControl();
+      console.log('unmounting show all');
+        AL.ControlObject.resetControl();
     }
 
     populateList(){
@@ -82,7 +95,11 @@ if (window.AL === undefined){window.AL = {}; }
     }
     componentWillUnmount(){
       console.log(this,'viewbox unmount');
-      AL.ControlObject.resetControl();
+    }
+
+    tagOneItem(tagSite){
+      console.log('sending to editor to tag ',tagSite);
+      ReactRouter.hashHistory.push('/test/asd/'+tagSite+'/tag');
     }
 
     render(){
@@ -103,6 +120,7 @@ if (window.AL === undefined){window.AL = {}; }
             <li>{this.props.info.street}</li>
             <li>{this.props.info.city}</li>
             <li>{this.props.info.country}</li>
+            <li>{this.props.info.styles}</li>
           </ol>
         </div>
 
@@ -111,6 +129,9 @@ if (window.AL === undefined){window.AL = {}; }
             {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
           <div className = "button">
            <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }>edit</ReactRouter.Link>
+          </div>
+          <div className = "button" onClick={() =>
+            {this.tagOneItem(this.state.info.id)}}>tag
           </div>
           <div className = "button" onClick={() =>
             {AL.ControlObject.mapOneItem(this.state.info.id)}}>view

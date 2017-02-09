@@ -14,9 +14,9 @@ if (window.AL === undefined){window.AL = {}; }
     },
     callbacksEdit: function(){
       this.callbacks.forEach((cb) => {
-        console.log("this.sendData",this.sendData);
+        console.log('sendData is ',this.sendData);
         cb();
-        console.log('callback');
+        console.log('callback fired ',cb);
       })
     },
     resetControl: function(){
@@ -25,20 +25,26 @@ if (window.AL === undefined){window.AL = {}; }
     },
 
     getAll:function(){
-      console.log('gettin everything');
+
+      if (this.sendData !== undefined) {
+        this.callbacksEdit();
+        return;
+      }
+
+      // console.log('gettin everything');
       //api get all
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'GET',
         dataType: 'JSON'
       })
       .done((data)=> {
-        console.log("done, recieved: \n ",data, "type of", typeof data);
+        // console.log("done, recieved: \n ",data, "type of", typeof data);
         this.sendData = data;
         this.locationObjects = data;
-        console.log('get done.');
+
         this.callbacksEdit();
-        console.log('grabbd everything',data);
+        // console.log('grabbd everything',data);
       })
       .fail(()=>{
         console.log('cant get');
@@ -48,7 +54,7 @@ if (window.AL === undefined){window.AL = {}; }
     getStructById: function(itemId){
 
       $.ajax({
-        url:'/api/sheds/' + itemId,
+        url:'/api/sites/' + itemId,
         method:'GET',
         dataType:'JSON',
       })
@@ -68,7 +74,7 @@ if (window.AL === undefined){window.AL = {}; }
     deleteItem: function(itemId){
 
       $.ajax({
-        url:'/api/sheds/' + itemId +"/delete",
+        url:'/api/sites/' + itemId +"/delete",
         method: 'DELETE',
         dataType:'JSON'
       })
@@ -87,11 +93,11 @@ if (window.AL === undefined){window.AL = {}; }
     },//end of delete
     addItem: function(inputs){
       //test
-      console.log("sending...", inputs.name, inputs.type);
+      console.log("sending...", inputs);
 
       //api POST NEW
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'POST',
         dataType: 'JSON',
         data:{
@@ -100,8 +106,10 @@ if (window.AL === undefined){window.AL = {}; }
           year:inputs.year,
           arch:inputs.arch,
           street:inputs.street,
-          city:inputs.city,
-          country:inputs.country
+          cityState:inputs.cityState,
+          country:inputs.country,
+          pic:inputs.pic,
+          description:inputs.description
         }
 
       })
@@ -125,7 +133,7 @@ if (window.AL === undefined){window.AL = {}; }
       editItem: function(itemId,inputs){
 
         $.ajax({
-          url: '/api/sheds/' + itemId + '/edit',
+          url: '/api/sites/' + itemId + '/edit',
           method:'PUT',
           dataType:'JSON',
           data:{
@@ -134,8 +142,10 @@ if (window.AL === undefined){window.AL = {}; }
             year:inputs.year,
             arch:inputs.arch,
             street:inputs.street,
-            city:inputs.city,
-            country:inputs.country
+            cityState:inputs.cityState,
+            country:inputs.country,
+            pic:inputs.pic,
+            description:inputs.description
           }
         })
         .fail((req,stat,error)=>{
@@ -155,19 +165,38 @@ if (window.AL === undefined){window.AL = {}; }
 
         })
       },//end of editor
-      mapFilterResults: function(query,type){
+      setStyleTags: function(itemId,tags){
+        console.log('set tags of ',itemId,' to ',tags)
+        $.ajax({
+          url:'/api/sites/'+itemId+'/tag',
+          method:'PUT',
+          dataType:'JSON',
+          data:{
+            styles:tags
+          }
+        })
+        .fail((req,stat,error)=>{
+          // window.alert('no');
+          console.log('request unsucessful');
+          console.log("req",req);
+          console.log("stat",stat);
+          console.log("err",error);
+          this.sendData = (req,stat,err);
+          this.callbacksEdit();
+        })
+        .done((data)=>{
+          console.log('request successful');
+          console.log('data: ',data);
+          this.sendData = data;
+          this.callbacksEdit();
 
+        })
+      },
 
-
-      },//end of typefilter
       mapOneItem: function(itemId){
-        // AL.ControlObject.registerCallback(()=>{
-        //   console.log('geocoding');
-        //   // this.geoCode(this.sendData);
-        // });
 
         $.ajax({
-          url:'/api/sheds/' + itemId + '/view-map',
+          url:'/api/sites/' + itemId + '/view-map',
           method:'GET',
           dataType:'JSON',
         })

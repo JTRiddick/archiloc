@@ -1,15 +1,63 @@
 
-@import url('https://fonts.googleapis.com/css?family=Josefin+Sans|Josefin+Slab');
+@import url('https://fonts.googleapis.com/css?family=Josefin+Sans|Josefin+Slab|Roboto');
 
 $stack-one:'Andale mono','Menlo','Monaco',monospace;
 
 $stack-two-serif: 'Josefin Slab',serif;
-$stack-two-sans:'Josefin Sans',sans-serif;
+$stack-two-sans:'Roboto',sans-serif;
 //Josefin fonts
-
-
-
-//colors
-
+//roboto
 
 //colors
+
+
+//mixins
+
+@mixin push--auto {
+    margin: {
+        left: auto;
+        right: auto;
+    }
+}
+@mixin button-sml{
+  background-color: $wit;
+  color:$deepred;
+  display: inline-block;
+  width: 10%;
+  text-align: center;
+  padding: 2px 2px;
+  cursor: default;
+  user-select: none;
+}
+
+@mixin button-mid{
+  background-color: $grau;
+  color:$deepred;
+  display: inline-block;
+  width: 20%;
+  text-align: center;
+  padding: 2px 3px;
+  cursor: default;
+  user-select: none;
+}
+
+@mixin pseudo($display: block, $pos: absolute, $content: ''){
+    content: $content;
+    display: $display;
+    position: $pos;
+}
+
+@mixin responsive-ratio($x,$y, $pseudo: false) {
+    $padding: unquote( ( $y / $x ) * 100 + '%' );
+    @if $pseudo {
+        &:before {
+            @include pseudo($pos: relative);
+            width: 100%;
+            padding-top: $padding;
+        }
+    } @else {
+        padding-top: $padding;
+    }
+}
+
+//include with @includes mixin-name(arg)

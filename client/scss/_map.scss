@@ -5,18 +5,6 @@
   min-height: 960px;
   overflow: auto;
 
-  .button{
-    border:$color4;
-    background-color: $color1;
-    color:$color5;
-    display: inline-block;
-    width: 20%;
-    text-align: center;
-    padding: 2px 3px;
-    cursor: default;
-    user-select: none;
-  }
-
 
   .component-inner{
     margin: 0;
@@ -25,8 +13,25 @@
     min-height: 960px;
     max-height: 100%;
     width: 100%;
-    background-color: $color1;
+    background-color: $wit;
 
+  }
+  .filter-controls{
+
+    margin-top:1em;
+    .filter-button{
+      @include button-mid;
+    }
+    .filter-button:hover{
+      border-color:$color4;
+      color:$blau;
+      background-color: $color6;
+    }
+    .filter-button:active{
+      border-color:$color4;
+      color:firebrick;
+      background-color: $wit;
+    }
   }
 
 
@@ -47,50 +52,83 @@
     position: relative;
     max-height: 300px;
     width: 100%;
-    background-color: $color3;
-    color:$color2;
+    background-color: $grau;
+    color:$wit;
     min-height:96px;
 
   }
-
+  .control-pane-text{
+    padding:1em;
+    background: $deepred;
+    color:$wit;
+  }
   .map-pane{
     padding: 0;
     margin:0;
     width: 48%;
     position: relative;
 
-    transition: all 0.25s ease;
+    transition: all 0.55s ease;
     //animtest
   }
-  .map-pane:after{
-    content:'';
-    float: none;
-    clear: both;
-  }
+  // .map-pane:after{
+  //   content:'';
+  //   float: none;
+  //   clear: both;
+  // }
 
   .center{
     width:80%;
     margin:0 auto;
+    @include push--auto;
   }
+
 
   .info-pane{
     float:left;
     position: relative;
     width:48%;
     min-height:60px;
-    background-color: $color1;
-    color:$color2;
-    transition: all 1s ease;
+    background-color: $deepred;
+    color:$wit;
+    transition: all .33s ease;
     //animtest ^
 
     .info-box-text{
-      background-color: #FEDC97;
       font-size: 1.2em;
       text-align: left;
       padding: 1em;
 
       .info-type{
         text-transform: capitalize;
+      }
+    }
+    .info-box-tags{
+      padding:1em;
+      li{
+        @include button-sml;
+        margin: 0.25em 0.75em;
+        padding:5px;
+        border:1px solid $deepred;
+        width:auto;
+        float:left;
+      }
+      li:hover{
+        border:3px solid $wit;
+      }
+      li:active{
+        border:6px solid $wit;
+        background-color: $grau;
+      }
+
+    }
+    .info-box-image{
+      position: relative;
+      padding: 0;
+      margin: 0;
+      img{
+        height:240px;
+        width: auto;
       }
     }
   }
@@ -100,27 +138,55 @@
     position: relative;
     width:33.333%;
 
-    transition:all 1s ease;
+    transition:all .33s ease;
   }
 
   .control-pane-low{
     display: inline-block;
     position: relative;
-    max-height: 300px;
+    height: 720px;
     width: 100%;
-    background-color: $color3;
-    color:$color2;
+    background-color: $grau;
+    color:$blau;
     min-height:96px;
+    margin-top:1em;
+    padding: .5em;
+
+    overflow: auto;
+    opacity: 1;
+    transition:all .5s ease;
+  }
+  .inactive{
+    opacity: 0;
+    height:96px;
   }
 
   .aif{
     right:0px;
-    height:440px;
+    height:auto;
+    opacity: 1;
   }
 
   .oof{
     left:-660px;
     height:64px;
+    opacity: 0;
+  }
+
+  .mapview-image{
+    position: absolute;
+    float:left;
+    max-height:640px;
+    img{
+      display: inline-block;
+      width: auto;
+      height: 640px;
+    }
+  }
+  .mapview-desc{
+    float:right;
+    background:$deepred;
+    color:$wit;
   }
 
 

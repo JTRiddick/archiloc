@@ -21,15 +21,7 @@ if (window.AL === undefined) {
 
       var _this = _possibleConstructorReturn(this, (AddEditComponent.__proto__ || Object.getPrototypeOf(AddEditComponent)).call(this));
 
-      _this.state = { editMode: false };
-
-      AL.ControlObject.registerCallback(function () {
-        _this.setState({
-          lastAdded: AL.ControlObject.sendData
-        });
-      });
-
-      console.log('added callbacks', AL.ControlObject.cbSuccess, AL.ControlObject.cbFail);
+      _this.state = { editMode: false, styles: [], tagMode: false };
 
       return _this;
     }
@@ -37,24 +29,54 @@ if (window.AL === undefined) {
     _createClass(AddEditComponent, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
-        console.log('mounting with params, ', this.props.params);
-        if (this.props.params.sId && !this.state.editMode) {
-          this.setState({
-            editMode: true
+        var _this2 = this;
+
+        AL.ControlObject.resetControl();
+        console.log('mounting with props, ', this.props);
+        AL.ControlObject.registerCallback(function () {
+          _this2.setState({
+            lastAdded: AL.ControlObject.sendData
+          });
+        });
+        if (this.props.location.pathname.includes('tag')) {
+          AL.ControlObject.registerCallback(function () {
+            _this2.setState({
+              tagMode: true
+            });
           });
           AL.ControlObject.getStructById(this.props.params.sId);
+        } else if (this.props.params.sId && !this.state.editMode && !this.state.tagMode) {
+          AL.ControlObject.registerCallback(function () {
+            _this2.setState({
+              editMode: true
+            });
+          });
+          AL.ControlObject.getStructById(this.props.params.sId);
+        } else {
+          console.log('standard add mode');
         }
       }
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('unmount');
-        AL.ControlObject.resetControl();
+        // AL.ControlObject.resetControl();
       }
     }, {
       key: 'sendToViewer',
       value: function sendToViewer() {
         ReactRouter.hashHistory.push('/test/all');
+      }
+    }, {
+      key: 'addStyleTag',
+      value: function addStyleTag(tag) {
+        console.log("tag is", tag.value, 'sId is ', this.props.params.sId);
+        if (tag.value.length > 0) {
+          AL.ControlObject.setStyleTags(this.props.params.sId, tag.value);
+          console.log('tagged');
+        } else {
+          console.log('tag failed');
+        }
       }
     }, {
       key: 'validateStructure',
@@ -63,17 +85,20 @@ if (window.AL === undefined) {
         console.log("state check", this.state);
         //validate conditions here
 
-        // this.submitStructure(evt);
 
         // input to control object
+        var encodePic = encodeURIComponent(this.picInput.value);
         var inputs = {
           title: this.nameInput.value,
           type: this.typeInput.value,
           year: this.yearInput.value,
           arch: this.archInput.value,
           street: this.streetInput.value,
-          city: this.cityInput.value,
-          country: this.countryInput.value
+          cityState: this.cityInput.value,
+          country: this.countryInput.value,
+          pic: encodePic,
+          styles: this.state.styles,
+          description: this.descriptionInput.value
         };
 
         //edit?
@@ -81,47 +106,211 @@ if (window.AL === undefined) {
         if (this.state.editMode) {
           AL.ControlObject.editItem(this.props.params.sId, inputs);
         } else {
+          console.log('adding', inputs);
           AL.ControlObject.addItem(inputs);
         }
       }
     }, {
       key: 'render',
       value: function render() {
-        var _this2 = this;
+        var _this3 = this;
 
         console.log('@render, state set to ', this.state);
         var review;
         var fields;
-
         //field placeholders
-        var name = "Name";
-        var year = "Year of Construction/Completion";
-        var arch = "Architect/Firm";
-        var type = "Cultural";
-        var street = "Street";
-        var city = "City, State";
-        var country = "Country";
+        var name;
+        var year;
+        var arch;
+        var type;
+        var street;
+        var city;
+        var country;
+        var styles;
+        var description;
+        var picUrl;
 
         if (this.state) {
           console.log('last added/edit', this.state.lastAdded);
           if (this.state.lastAdded) {
             review = React.createElement(ReviewData, { info: this.state.lastAdded });
-            if (this.state.editMode) {
-              name = this.state.lastAdded.title;
-              year = this.state.lastAdded.year || 'Add Year';
-              arch = this.state.lastAdded.arch;
-              type = this.state.lastAdded.type;
-              street = this.state.lastAdded.street;
-              city = this.state.lastAdded.city;
-              country = this.state.lastAdded.country;
-            }
 
             console.log('returned data in state', this.state.lastAdded);
           }
           if (this.state.error) {
-            review = React.createElement(ReviewData, { warning: this.state.error });
+            review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
           }
         }
+
+        //set placeholders and defaults if editing
+
+        console.log('last added/edit', this.state.lastAdded);
+        if (!this.state.editMode && !this.state.lastAdded) {
+          console.log('generic placeholders');
+          name = "Name";
+          year = "Year of Construction/Completion";
+          arch = "Architect/Firm";
+          type = "Cultural";
+          street = "Street";
+          city = "City, State";
+          country = "Country";
+          styles = "Styles";
+          description = "This is a Building, probably";
+          picUrl = "add a URL";
+        }
+        if (this.state.lastAdded) {
+          console.log('default values');
+          name = this.state.lastAdded.title;
+          year = this.state.lastAdded.year;
+          arch = this.state.lastAdded.arch;
+          type = this.state.lastAdded.type;
+          city = this.state.lastAdded.cityState;
+          street = this.state.lastAdded.street;
+          country = this.state.lastAdded.country;
+          picUrl = this.state.lastAdded.pic;
+          description = this.state.lastAdded.description;
+        }
+        if (this.state.error) {
+          review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
+        }
+        if (this.state.lastAdded) {
+          review = React.createElement(ReviewData, { info: this.state.lastAdded });
+          console.log('returned data in state', this.state.lastAdded);
+        }
+
+        if (this.state.tagMode) {
+          fields = React.createElement(
+            'div',
+            null,
+            React.createElement('hr', null),
+            React.createElement(
+              'h4',
+              null,
+              'Styles'
+            ),
+            React.createElement(
+              'div',
+              { className: 'styletags' },
+              'Adding StyleTags ',
+              this.state.styles
+            ),
+            React.createElement('input', { ref: function ref(input) {
+                _this3.styleInput = input;
+              } }),
+            React.createElement(
+              'div',
+              { className: 'nav-button', onClick: function onClick() {
+                  _this3.addStyleTag(_this3.styleInput);
+                } },
+              'Add'
+            )
+          );
+        } else {
+
+          fields = React.createElement(
+            'form',
+            { onSubmit: function onSubmit(evt) {
+                _this3.validateStructure(evt);
+              } },
+            React.createElement(
+              'h4',
+              null,
+              'Details'
+            ),
+            React.createElement('input', { defaultValue: name, placeholder: name, ref: function ref(input) {
+                _this3.nameInput = input;
+              } }),
+            React.createElement('input', { defaultValue: year, placeholder: year, ref: function ref(input) {
+                _this3.yearInput = input;
+              } }),
+            React.createElement('input', { defaultValue: arch, placeholder: arch, ref: function ref(input) {
+                _this3.archInput = input;
+              } }),
+            React.createElement('hr', null),
+            React.createElement(
+              'h4',
+              null,
+              'Categories'
+            ),
+            React.createElement(
+              'select',
+              { defaultValue: type, ref: function ref(input) {
+                  _this3.typeInput = input;
+                } },
+              React.createElement(
+                'option',
+                { value: 'cultural' },
+                'Cultural'
+              ),
+              React.createElement(
+                'option',
+                { value: 'civic' },
+                'Civic'
+              ),
+              React.createElement(
+                'option',
+                { value: 'residential' },
+                'Residential'
+              ),
+              React.createElement(
+                'option',
+                { value: 'industrial' },
+                'Industrial'
+              ),
+              React.createElement(
+                'option',
+                { value: 'commercial' },
+                'Commercial'
+              ),
+              React.createElement(
+                'option',
+                { value: 'infrastructural' },
+                'Infrastructural'
+              )
+            ),
+            React.createElement('hr', null),
+            React.createElement(
+              'h4',
+              null,
+              'Location'
+            ),
+            React.createElement('input', { defaultValue: street, placeholder: street, ref: function ref(input) {
+                _this3.streetInput = input;
+              } }),
+            React.createElement('input', { defaultValue: city, placeholder: city, ref: function ref(input) {
+                _this3.cityInput = input;
+              } }),
+            React.createElement('input', { defaultValue: country, placeholder: country, ref: function ref(input) {
+                _this3.countryInput = input;
+              } }),
+            React.createElement('hr', null),
+            React.createElement(
+              'h4',
+              null,
+              'Description'
+            ),
+            React.createElement('textfield', { rows: 5, cols: 40, placeholder: description, defaultValue: description, ref: function ref(input) {
+                _this3.descriptionInput = input;
+              } }),
+            React.createElement('hr', null),
+            React.createElement(
+              'h4',
+              null,
+              'Image'
+            ),
+            React.createElement('input', { defaultValue: 'add a URL', ref: function ref(input) {
+                _this3.picInput = input;
+              } }),
+            React.createElement(
+              'button',
+              null,
+              'Add'
+            )
+          );
+        }
+
+        //set placeholders and defaults if editing
+
 
         return React.createElement(
           'div',
@@ -140,89 +329,12 @@ if (window.AL === undefined) {
               React.createElement(
                 'div',
                 { className: 'nav-button view right', onClick: function onClick() {
-                    _this2.sendToViewer();
+                    _this3.sendToViewer();
                   } },
                 ' Show All '
               )
             ),
-            React.createElement('hr', null),
-            React.createElement(
-              'form',
-              { onSubmit: function onSubmit(evt) {
-                  _this2.validateStructure(evt);
-                } },
-              React.createElement(
-                'h4',
-                null,
-                'Details'
-              ),
-              React.createElement('input', { placeholder: name, ref: function ref(input) {
-                  _this2.nameInput = input;
-                } }),
-              React.createElement('input', { placeholder: year, ref: function ref(input) {
-                  _this2.yearInput = input;
-                } }),
-              React.createElement('input', { placeholder: arch, ref: function ref(input) {
-                  _this2.archInput = input;
-                } }),
-              React.createElement('hr', null),
-              React.createElement(
-                'h4',
-                null,
-                'Categories'
-              ),
-              React.createElement(
-                'select',
-                { defaultValue: type, ref: function ref(input) {
-                    _this2.typeInput = input;
-                  } },
-                React.createElement(
-                  'option',
-                  { value: 'cultural' },
-                  'Cultural'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'residential' },
-                  'Residential'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'industrial' },
-                  'Industrial'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'commercial' },
-                  'Commercial'
-                ),
-                React.createElement(
-                  'option',
-                  { value: 'infrastructural' },
-                  'Infrastructural'
-                )
-              ),
-              React.createElement('hr', null),
-              React.createElement(
-                'h4',
-                null,
-                'Location'
-              ),
-              React.createElement('input', { placeholder: street, ref: function ref(input) {
-                  _this2.streetInput = input;
-                } }),
-              React.createElement('input', { placeholder: city, ref: function ref(input) {
-                  _this2.cityInput = input;
-                } }),
-              React.createElement('input', { placeholder: country, ref: function ref(input) {
-                  _this2.countryInput = input;
-                } }),
-              React.createElement(
-                'button',
-                null,
-                'Add'
-              )
-            )
+            fields
           ),
           review
         );
@@ -257,10 +369,10 @@ if (window.AL === undefined) {
 
         if (this.props.warning) {
           console.log(this.props.warning);
-          info = "Error " + JSON.stringify(this.props.warning);
+          info = "Error ", this.props.warning;
         }
 
-        if (this.props.info) {
+        if (this.props.info && !this.props.warning) {
           info = React.createElement(
             'ol',
             null,
@@ -303,7 +415,7 @@ if (window.AL === undefined) {
               'li',
               null,
               'City: ',
-              this.props.info.city,
+              this.props.info.cityState,
               ' '
             ),
             React.createElement(
@@ -311,6 +423,13 @@ if (window.AL === undefined) {
               null,
               'Country: ',
               this.props.info.country,
+              ' '
+            ),
+            React.createElement(
+              'li',
+              null,
+              'Styles: ',
+              JSON.stringify(this.props.info.styles),
               ' '
             )
           );
@@ -372,12 +491,17 @@ if (window.AL === undefined) {
             null,
             React.createElement(
               "li",
-              null,
-              React.createElement(
-                ReactRouter.Link,
-                { className: "link", to: "/map" },
-                "Map"
-              )
+              { className: "link", onClick: function onClick() {
+                  ReactRouter.hashHistory.push('/map');
+                } },
+              "Map"
+            ),
+            React.createElement(
+              "li",
+              { className: "link", onClick: function onClick() {
+                  ReactRouter.hashHistory.push('/test/all');
+                } },
+              "Admin/Testing"
             )
           )
         );
@@ -394,7 +518,7 @@ if (window.AL === undefined) {
               React.createElement(
                 "h1",
                 null,
-                "ArchiLocator '97"
+                "ArchiType '97"
               ),
               React.createElement(
                 "p",
@@ -420,8 +544,6 @@ if (window.AL === undefined) {
 })();
 'use strict';
 
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-
 if (window.AL === undefined) {
   window.AL = {};
 }
@@ -442,9 +564,9 @@ if (window.AL === undefined) {
       var _this = this;
 
       this.callbacks.forEach(function (cb) {
-        console.log("this.sendData", _this.sendData);
+        console.log('sendData is ', _this.sendData);
         cb();
-        console.log('callback');
+        console.log('callback fired ', cb);
       });
     },
     resetControl: function resetControl() {
@@ -455,19 +577,24 @@ if (window.AL === undefined) {
     getAll: function getAll() {
       var _this2 = this;
 
-      console.log('gettin everything');
+      if (this.sendData !== undefined) {
+        this.callbacksEdit();
+        return;
+      }
+
+      // console.log('gettin everything');
       //api get all
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'GET',
         dataType: 'JSON'
       }).done(function (data) {
-        console.log("done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
+        // console.log("done, recieved: \n ",data, "type of", typeof data);
         _this2.sendData = data;
         _this2.locationObjects = data;
-        console.log('get done.');
+
         _this2.callbacksEdit();
-        console.log('grabbd everything', data);
+        // console.log('grabbd everything',data);
       }).fail(function () {
         console.log('cant get');
       });
@@ -477,7 +604,7 @@ if (window.AL === undefined) {
       var _this3 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId,
+        url: '/api/sites/' + itemId,
         method: 'GET',
         dataType: 'JSON'
       }).done(function (data) {
@@ -496,7 +623,7 @@ if (window.AL === undefined) {
       var _this4 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId + "/delete",
+        url: '/api/sites/' + itemId + "/delete",
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
@@ -514,11 +641,11 @@ if (window.AL === undefined) {
       var _this5 = this;
 
       //test
-      console.log("sending...", inputs.name, inputs.type);
+      console.log("sending...", inputs);
 
       //api POST NEW
       $.ajax({
-        url: '/api/sheds',
+        url: '/api/sites',
         method: 'POST',
         dataType: 'JSON',
         data: {
@@ -527,8 +654,10 @@ if (window.AL === undefined) {
           year: inputs.year,
           arch: inputs.arch,
           street: inputs.street,
-          city: inputs.city,
-          country: inputs.country
+          cityState: inputs.cityState,
+          country: inputs.country,
+          pic: inputs.pic,
+          description: inputs.description
         }
 
       }).fail(function (req, stat, error) {
@@ -550,7 +679,7 @@ if (window.AL === undefined) {
       var _this6 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId + '/edit',
+        url: '/api/sites/' + itemId + '/edit',
         method: 'PUT',
         dataType: 'JSON',
         data: {
@@ -559,8 +688,10 @@ if (window.AL === undefined) {
           year: inputs.year,
           arch: inputs.arch,
           street: inputs.street,
-          city: inputs.city,
-          country: inputs.country
+          cityState: inputs.cityState,
+          country: inputs.country,
+          pic: inputs.pic,
+          description: inputs.description
         }
       }).fail(function (req, stat, error) {
         // window.alert('no');
@@ -577,17 +708,38 @@ if (window.AL === undefined) {
         _this6.callbacksEdit();
       });
     }, //end of editor
-    mapFilterResults: function mapFilterResults(query, type) {}, //end of typefilter
-    mapOneItem: function mapOneItem(itemId) {
+    setStyleTags: function setStyleTags(itemId, tags) {
       var _this7 = this;
 
-      // AL.ControlObject.registerCallback(()=>{
-      //   console.log('geocoding');
-      //   // this.geoCode(this.sendData);
-      // });
+      console.log('set tags of ', itemId, ' to ', tags);
+      $.ajax({
+        url: '/api/sites/' + itemId + '/tag',
+        method: 'PUT',
+        dataType: 'JSON',
+        data: {
+          styles: tags
+        }
+      }).fail(function (req, stat, error) {
+        // window.alert('no');
+        console.log('request unsucessful');
+        console.log("req", req);
+        console.log("stat", stat);
+        console.log("err", error);
+        _this7.sendData = (req, stat, err);
+        _this7.callbacksEdit();
+      }).done(function (data) {
+        console.log('request successful');
+        console.log('data: ', data);
+        _this7.sendData = data;
+        _this7.callbacksEdit();
+      });
+    },
+
+    mapOneItem: function mapOneItem(itemId) {
+      var _this8 = this;
 
       $.ajax({
-        url: '/api/sheds/' + itemId + '/view-map',
+        url: '/api/sites/' + itemId + '/view-map',
         method: 'GET',
         dataType: 'JSON'
       }).done(function (data) {
@@ -597,8 +749,8 @@ if (window.AL === undefined) {
         // this.callbacksEdit();
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this7.sendData = (req, stat, err);
-        _this7.callbacksEdit();
+        _this8.sendData = (req, stat, err);
+        _this8.callbacksEdit();
         //??
       });
     } };
@@ -622,6 +774,7 @@ if (window.AL === undefined) {
   window.AL.mapData = {
     locations: [],
     markers: [],
+    filter: 'none',
     defaultView: { lat: 15, lng: -80 },
     mapZoom: 14
   };
@@ -643,10 +796,9 @@ if (window.AL === undefined) {
         controlClass: 'low inactive',
         mapClass: 'center',
         showSite: null,
-        findingOne: false
+        findingOne: false,
+        tag: 'none'
       };
-      var locationToGeocoder;
-      var geoCode;
 
       return _this;
     }
@@ -656,8 +808,9 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
+        console.log('map mounted with props', this.props);
         if (this.props.params.sId) {
-          console.log('only,', this.props.params.sId);
+          //console.log('only,', this.props.params.sId);
           this.setState({
             findingOne: true
           });
@@ -665,15 +818,14 @@ if (window.AL === undefined) {
             AL.mapData.locations.push(AL.ControlObject.sendData);
           });
         } else {
-          console.log('showing maximum stuff');
-          console.log('fill mapdata locations list with', AL.ControlObject.sendData);
+          //console.log('showing maximum stuff');
+          //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
           AL.ControlObject.registerCallback(function () {
-            return AL.ControlObject.sendData.sheds.forEach(function (item) {
+            return AL.ControlObject.sendData.sites.forEach(function (item) {
               AL.mapData.locations.push(item);
             });
           });
         }
-
         //moves control data to list
         AL.ControlObject.registerCallback(function () {
           return _this2.locationToGeocoder(AL.mapData.locations);
@@ -683,14 +835,10 @@ if (window.AL === undefined) {
     }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
+        //reset filter
         this.googleMap = new google.maps.Map(this.map, {
           center: this.state.focus,
           zoom: this.state.zoom
-        });
-
-        this.marker = new google.maps.Marker({
-          lat: 30,
-          lng: 30
         });
 
         this.geocoder = new google.maps.Geocoder();
@@ -702,49 +850,79 @@ if (window.AL === undefined) {
         }
 
         //sets mapdata locations and triggers callback to run geo+location
-        console.log(this.map, this.geocoder);
+        //console.log(this.map,this.geocoder);
       }
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
+        console.log('main page unmounted');
         AL.ControlObject.resetControl();
       }
 
-      //
+      //defaults
 
+    }, {
+      key: 'deselectSite',
+      value: function deselectSite(evt, ele) {
+
+        this.setState({
+          showSite: null,
+          infoClass: 'oof',
+          controlClass: 'low inactive',
+          mapClass: 'center'
+        });
+        this.googleMap.setZoom(AL.mapData.mapZoom);
+      }
+      //master close
+
+    }, {
+      key: 'locationToGeocoder',
+      value: function locationToGeocoder(locations) {
+        var _this3 = this;
+
+        console.log('location to geocoder', locations, 'state', this.state.tag);
+        var addresses;
+        if (AL.mapData.filter == 'none') {
+          addresses = locations;
+          //console.log('locationToGeocoder says this is',addresses);
+          addresses.forEach(function (address) {
+            if (AL.mapData.markers.indexOf(address) < 0) {
+              _this3.geoCode(address, _this3.map);
+            }
+          });
+        } else {
+          var _addresses = locations;
+          _addresses.forEach(function (address) {
+            console.log('address', address, 'includes', address.styles);
+            if (address.styles.includes(AL.mapData.filter) && AL.mapData.markers.indexOf(address) < 0) {
+              console.log('filter including', address);
+              _this3.geoCode(address, _this3.map);
+            }
+          });
+        }
+      }
     }, {
       key: 'geoCode',
       value: function geoCode(itemId, map) {
-        var _this3 = this;
+        var _this4 = this;
 
         var handleResults;
         //check for item id or obj
-        console.log('GEOCODE', itemId);
-        this.geocoder.geocode({ 'address': itemId.street }, handleResults = function handleResults(results, status) {
+        //console.log('GEOCODE',itemId);
+        var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
+        this.geocoder.geocode({ 'address': address }, handleResults = function handleResults(results, status) {
           if (status === google.maps.GeocoderStatus.OK) {
-            console.log('geo code this check', _this3.map);
-            _this3.googleMap.setCenter(results[0].geometry.location);
+            //console.log('geo code this check',this.map);
+            _this4.googleMap.setCenter(results[0].geometry.location);
             var marker = new google.maps.Marker({
               position: results[0].geometry.location,
               title: itemId.title
             });
 
-            _this3.markMap(_this3.googleMap, marker, itemId);
+            _this4.markMap(_this4.googleMap, marker, itemId);
             return;
           }
           return;
-        });
-      }
-    }, {
-      key: 'locationToGeocoder',
-      value: function locationToGeocoder(addresses) {
-        var _this4 = this;
-
-        console.log('locationToGeocoder says this is', addresses);
-        addresses.forEach(function (address) {
-          if (AL.mapData.markers.indexOf(address) < 0) {
-            _this4.geoCode(address, _this4.map);
-          }
         });
       }
 
@@ -762,7 +940,7 @@ if (window.AL === undefined) {
         var infowindow = new google.maps.InfoWindow({
           content: contentString
         });
-        console.log(infowindow, "infowindow");
+        //console.log(infowindow, "infowindow");
         //make infowindow
 
 
@@ -773,6 +951,7 @@ if (window.AL === undefined) {
           _this5.setState({
             showSite: item,
             infoClass: 'aif',
+            controlClass: 'low',
             mapClass: 'two-thirds-map'
           });
           mapRef.setZoom(18);
@@ -783,6 +962,7 @@ if (window.AL === undefined) {
           _this5.setState({
             showSite: null,
             infoClass: 'oof',
+            controlClass: 'low inactive',
             mapClass: 'center'
           });
           mapRef.setZoom(AL.mapData.mapZoom);
@@ -791,7 +971,7 @@ if (window.AL === undefined) {
         AL.mapData.markers.push(marker);
 
         if (this.state.findingOne === true) {
-          console.log('and its..,', this.props.params.sId);
+          //console.log('and its..,', this.props.params.sId);
 
           mapRef.setCenter(marker.getPosition());
           infowindow.open(this.map, marker);
@@ -804,11 +984,21 @@ if (window.AL === undefined) {
         return;
       }
     }, {
-      key: 'selectFocus',
-      value: function selectFocus(sId) {
-        console.log(AL.mapData.markers);
+      key: 'selectFilter',
+      value: function selectFilter(filter) {
 
-        //test^
+        this.deselectSite();
+        AL.mapData.filter = filter;
+        console.log('FILTER SET TO ', AL.mapData.filter);
+        AL.mapData.markers.forEach(function (marker) {
+          marker.setMap(null);
+        });
+        AL.mapData.markers = [];
+        this.setState({
+          tag: filter
+        });
+        console.log('resending to geocode with filter', filter, 'these', AL.mapData.markers, AL.mapData.locations);
+        this.locationToGeocoder(AL.mapData.locations);
       }
     }, {
       key: 'render',
@@ -816,7 +1006,6 @@ if (window.AL === undefined) {
         var _this6 = this;
 
         console.log('render state', this.state);
-
         var mapClass = "map-pane " + this.state.mapClass;
         var infoClass = "info-pane " + this.state.infoClass;
         var controlClass = "control-pane-" + this.state.controlClass;
@@ -825,7 +1014,10 @@ if (window.AL === undefined) {
         var controls = '';
 
         if (this.state.showSite !== null) {
-          info = React.createElement(InfoComponent, { showSite: this.state.showSite });
+          info = React.createElement(InfoComponent, { showSite: this.state.showSite, infoboxFilter: function infoboxFilter(filter) {
+              _this6.selectFilter(filter);
+            } });
+          controls = React.createElement(MapControlComponent, { showSite: this.state.showSite });
         }
 
         return React.createElement(
@@ -837,7 +1029,29 @@ if (window.AL === undefined) {
             React.createElement(
               'div',
               { className: infoClass },
-              info
+              React.createElement(
+                'div',
+                { className: 'close', onClick: function onClick(evt) {
+                    _this6.deselectSite(evt);
+                  } },
+                'X'
+              ),
+              info,
+              React.createElement(
+                'div',
+                { className: 'filter-controls' },
+                React.createElement(
+                  'div',
+                  { className: 'filter-button reset', onClick: function onClick() {
+                      _this6.selectFilter('none');
+                    } },
+                  React.createElement(
+                    'p',
+                    null,
+                    'Reset Filter'
+                  )
+                )
+              )
             ),
             React.createElement('div', { className: mapClass, ref: function ref(map) {
                 _this6.map = map;
@@ -861,63 +1075,92 @@ if (window.AL === undefined) {
     function InfoComponent() {
       _classCallCheck(this, InfoComponent);
 
-      return _possibleConstructorReturn(this, (InfoComponent.__proto__ || Object.getPrototypeOf(InfoComponent)).call(this));
+      var _this7 = _possibleConstructorReturn(this, (InfoComponent.__proto__ || Object.getPrototypeOf(InfoComponent)).call(this));
+
+      var generateTags;
+
+      return _this7;
     }
 
     _createClass(InfoComponent, [{
       key: 'componentWillMount',
       value: function componentWillMount() {
         this.setState({
-          info: this.props.showSite
+          info: this.props.showSite,
+          tags: this.props.showSite.styles
         });
       }
     }, {
       key: 'render',
       value: function render() {
+        var _this8 = this;
+
+        //console.log("InfoComponent showing ", this.state.info,this.state.tags);
 
         return React.createElement(
           'div',
-          { className: 'info-box-text' },
+          { className: 'info-box' },
           React.createElement(
-            'ol',
-            null,
+            'div',
+            { className: 'info-box-text' },
             React.createElement(
-              'li',
+              'ol',
               null,
               React.createElement(
-                'h4',
+                'li',
                 null,
-                this.state.info.title
+                React.createElement(
+                  'h4',
+                  null,
+                  this.state.info.title
+                ),
+                ' '
               ),
-              ' '
+              React.createElement(
+                'li',
+                null,
+                this.state.info.street,
+                ', ',
+                this.state.info.cityState,
+                ',',
+                this.state.info.country,
+                ', '
+              ),
+              React.createElement(
+                'li',
+                { className: 'info-type' },
+                this.state.info.type,
+                ' '
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.state.info.year,
+                ' '
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.state.info.arch,
+                ' '
+              )
             ),
             React.createElement(
-              'li',
-              null,
-              this.state.info.street,
-              ', ',
-              this.state.info.city,
-              ',',
-              this.state.info.country,
-              ', '
-            ),
-            React.createElement(
-              'li',
-              { className: 'info-type' },
-              this.state.info.type,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              this.state.info.year,
-              ' '
-            ),
-            React.createElement(
-              'li',
-              null,
-              this.state.info.arch,
-              ' '
+              'div',
+              { className: 'info-box-tags' },
+              React.createElement(
+                'ul',
+                null,
+                this.state.tags.map(function (tag, i) {
+                  return React.createElement(
+                    'li',
+                    { key: i, onClick: function onClick(evt) {
+                        _this8.props.infoboxFilter(tag);
+                      } },
+                    tag
+                  );
+                })
+              )
             )
           )
         );
@@ -925,6 +1168,52 @@ if (window.AL === undefined) {
     }]);
 
     return InfoComponent;
+  }(React.Component);
+
+  var MapControlComponent = function (_React$Component3) {
+    _inherits(MapControlComponent, _React$Component3);
+
+    function MapControlComponent() {
+      _classCallCheck(this, MapControlComponent);
+
+      return _possibleConstructorReturn(this, (MapControlComponent.__proto__ || Object.getPrototypeOf(MapControlComponent)).apply(this, arguments));
+    }
+
+    _createClass(MapControlComponent, [{
+      key: 'componentWillMount',
+      value: function componentWillMount() {
+        if (this.props.showSite) {
+          this.setState({
+            info: this.props.showSite
+          });
+        }
+      }
+    }, {
+      key: 'render',
+      value: function render() {
+        //console.log('controlbox state: ',this.state,' img ',this.state.info.pic);
+        return React.createElement(
+          'div',
+          { className: 'controlbox-content' },
+          React.createElement(
+            'div',
+            { className: 'mapview-image' },
+            React.createElement('img', { src: decodeURIComponent(this.state.info.pic) })
+          ),
+          React.createElement(
+            'div',
+            { className: 'mapview-desc' },
+            React.createElement(
+              'p',
+              null,
+              this.state.info.description || "Stuff here"
+            )
+          )
+        );
+      }
+    }]);
+
+    return MapControlComponent;
   }(React.Component);
 
   AL.MapComponent = MapComponent;
@@ -959,19 +1248,31 @@ if (window.AL === undefined) {
     }
 
     _createClass(ShowAllComponent, [{
-      key: 'componentDidMount',
-      value: function componentDidMount() {
+      key: 'componentWillMount',
+      value: function componentWillMount() {
         var _this2 = this;
 
+        console.log('show all will mount');
+        AL.ControlObject.registerCallback(function () {
+          return AL.ControlObject.sendData.sites.forEach(function (item) {
+            AL.mapData.locations.push(item);
+          });
+        });
         AL.ControlObject.registerCallback(function () {
           _this2.setState({
-            sites: AL.ControlObject.sendData.sheds
+            sites: AL.ControlObject.locationObjects.sites
           });
         });
       }
     }, {
+      key: 'componentDidMount',
+      value: function componentDidMount() {
+        console.log('show all did mount');
+      }
+    }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
+        console.log('unmounting show all');
         AL.ControlObject.resetControl();
       }
     }, {
@@ -1061,7 +1362,12 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log(this, 'viewbox unmount');
-        AL.ControlObject.resetControl();
+      }
+    }, {
+      key: 'tagOneItem',
+      value: function tagOneItem(tagSite) {
+        console.log('sending to editor to tag ', tagSite);
+        ReactRouter.hashHistory.push('/test/asd/' + tagSite + '/tag');
       }
     }, {
       key: 'render',
@@ -1122,6 +1428,11 @@ if (window.AL === undefined) {
                 'li',
                 null,
                 this.props.info.country
+              ),
+              React.createElement(
+                'li',
+                null,
+                this.props.info.styles
               )
             )
           ),
@@ -1143,6 +1454,13 @@ if (window.AL === undefined) {
                 { className: 'link', to: "/test/asd/" + editLinkId + "/edit" },
                 'edit'
               )
+            ),
+            React.createElement(
+              'div',
+              { className: 'button', onClick: function onClick() {
+                  _this5.tagOneItem(_this5.state.info.id);
+                } },
+              'tag'
             ),
             React.createElement(
               'div',
@@ -1183,17 +1501,46 @@ if (window.AL === undefined) {
     function TestComponent() {
       _classCallCheck(this, TestComponent);
 
-      return _possibleConstructorReturn(this, (TestComponent.__proto__ || Object.getPrototypeOf(TestComponent)).apply(this, arguments));
+      return _possibleConstructorReturn(this, (TestComponent.__proto__ || Object.getPrototypeOf(TestComponent)).call(this));
     }
 
     _createClass(TestComponent, [{
+      key: "onComponentMount",
+      value: function onComponentMount() {}
+    }, {
       key: "render",
       value: function render() {
-
+        var links = React.createElement(
+          "ol",
+          null,
+          React.createElement(
+            "li",
+            null,
+            React.createElement(
+              ReactRouter.Link,
+              { className: "link", to: "/test/asd" },
+              "Add"
+            )
+          ),
+          React.createElement(
+            "li",
+            null,
+            React.createElement(
+              ReactRouter.Link,
+              { className: "link", to: '/test/all' },
+              "Show Collection"
+            )
+          )
+        );
         return React.createElement(
           "div",
-          null,
-          "Test Component"
+          { className: "admin-test" },
+          React.createElement(
+            "h3",
+            null,
+            "This is the place where you can break everything"
+          ),
+          links
         );
       }
     }]);
@@ -1231,6 +1578,7 @@ if (window.AL === undefined) {
       React.createElement(Route, { path: "/test", component: AL.TestComponent }),
       React.createElement(Route, { path: "/test/asd", component: AL.AddEditComponent }),
       React.createElement(Route, { path: "/test/asd/:sId/edit", component: AL.AddEditComponent }),
+      React.createElement(Route, { path: "/test/asd/:sId/tag", component: AL.AddEditComponent }),
       React.createElement(Route, { path: "/test/all", component: AL.ShowAllComponent })
     )
   );
