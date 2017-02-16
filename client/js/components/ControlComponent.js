@@ -20,8 +20,10 @@ if (window.AL === undefined){window.AL = {}; }
       })
     },
     resetControl: function(){
+
       this.callbacks = [];
       this.sendData = {};
+      console.log('control data and callbacks cleared');
     },
 
     getAll:function(){
@@ -39,9 +41,9 @@ if (window.AL === undefined){window.AL = {}; }
         dataType: 'JSON'
       })
       .done((data)=> {
-        // console.log("done, recieved: \n ",data, "type of", typeof data);
+        console.log("ajax get all done, recieved: \n ",data, "type of", typeof data);
         this.sendData = data;
-        this.locationObjects = data;
+        this.locationObjects = this.sendData.sites;
 
         this.callbacksEdit();
         // console.log('grabbd everything',data);

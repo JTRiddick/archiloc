@@ -33,6 +33,7 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillMount(){
+      console.log('map will mount')
 
       console.log('map mounted with props',this.props);
       if(this.props.params.sId){
@@ -45,9 +46,9 @@ if (window.AL === undefined){window.AL = {}; }
         })
       }else{
         //console.log('showing maximum stuff');
-        //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
+        console.log('fill mapdata locations list with',AL.ControlObject.sendData);
         AL.ControlObject.registerCallback(()=>
-         AL.ControlObject.sendData.sites.forEach(item => {
+         AL.ControlObject.locationObjects.forEach(item => {
           AL.mapData.locations.push(item);
         }))
       }
@@ -59,6 +60,7 @@ if (window.AL === undefined){window.AL = {}; }
 
 
     componentDidMount() {
+      console.log('map did mount');
       //reset filter
       this.googleMap = new google.maps.Map(this.map, {
         center: this.state.focus,
@@ -99,7 +101,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     locationToGeocoder(locations){
       console.log('location to geocoder',locations,'state',this.state.tag);
-      var addresses;
+      var addresses
       if(AL.mapData.filter == 'none'){
         addresses = locations;
         console.log('locationToGeocoder says this is',addresses);

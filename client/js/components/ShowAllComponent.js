@@ -15,12 +15,12 @@ if (window.AL === undefined){window.AL = {}; }
 
       console.log('show all will mount');
       AL.ControlObject.registerCallback(()=>
-       AL.ControlObject.sendData.sites.forEach(item => {
+       AL.ControlObject.locationObjects.forEach(item => {
         AL.mapData.locations.push(item);
       }))
       AL.ControlObject.registerCallback(() => {
         this.setState({
-          sites:AL.ControlObject.locationObjects.sites
+          sites:AL.ControlObject.locationObjects
         });
       });
 
@@ -50,7 +50,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     render(){
       var sitesList;
-      console.log(this.state.sites);
+      console.log('state sites',this.state.sites);
       if (this.state.sites && this.state.sites.length > 0){
 
       sitesList = this.state.sites.map((site,index) =>{
