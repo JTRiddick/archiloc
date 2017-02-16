@@ -25,7 +25,7 @@ module.exports = function(){
     site.country = req.body.country
     site.pic = req.body.pic;
     site.description = req.body.description;
-    site.styles.set(req.body.styles);
+    // site.styles.set(req.body.styles);
     site.save(cb);
   });
   //added new
@@ -56,7 +56,7 @@ module.exports = function(){
       cityState: req.body.cityState,
       country:req.body.country,
       pic: req.body.pic,
-      styles:req.body.styles,
+      // styles:req.body.styles,
       description:req.body.description,
     },{safe:false,upsert:true,new:true,runValidators:false},cb)
   });
