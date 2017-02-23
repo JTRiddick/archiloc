@@ -59,8 +59,8 @@ if (window.AL === undefined) {
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
-        console.log('unmount');
-        // AL.ControlObject.resetControl();
+        console.log('unmounting ASD');
+        AL.ControlObject.resetControl();
       }
     }, {
       key: 'sendToViewer',
@@ -544,6 +544,8 @@ if (window.AL === undefined) {
 })();
 'use strict';
 
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
 if (window.AL === undefined) {
   window.AL = {};
 }
@@ -570,8 +572,10 @@ if (window.AL === undefined) {
       });
     },
     resetControl: function resetControl() {
+
       this.callbacks = [];
       this.sendData = {};
+      console.log('control data and callbacks cleared');
     },
 
     getAll: function getAll() {
@@ -589,9 +593,9 @@ if (window.AL === undefined) {
         method: 'GET',
         dataType: 'JSON'
       }).done(function (data) {
-        // console.log("done, recieved: \n ",data, "type of", typeof data);
+        console.log("ajax get all done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
         _this2.sendData = data;
-        _this2.locationObjects = data;
+        _this2.locationObjects = _this2.sendData.sites;
 
         _this2.callbacksEdit();
         // console.log('grabbd everything',data);
@@ -808,6 +812,8 @@ if (window.AL === undefined) {
       value: function componentWillMount() {
         var _this2 = this;
 
+        console.log('map will mount');
+
         console.log('map mounted with props', this.props);
         if (this.props.params.sId) {
           //console.log('only,', this.props.params.sId);
@@ -819,9 +825,9 @@ if (window.AL === undefined) {
           });
         } else {
           //console.log('showing maximum stuff');
-          //console.log('fill mapdata locations list with',AL.ControlObject.sendData);
+          console.log('fill mapdata locations list with', AL.ControlObject.sendData);
           AL.ControlObject.registerCallback(function () {
-            return AL.ControlObject.sendData.sites.forEach(function (item) {
+            return AL.ControlObject.locationObjects.forEach(function (item) {
               AL.mapData.locations.push(item);
             });
           });
@@ -835,6 +841,7 @@ if (window.AL === undefined) {
     }, {
       key: 'componentDidMount',
       value: function componentDidMount() {
+        console.log('map did mount');
         //reset filter
         this.googleMap = new google.maps.Map(this.map, {
           center: this.state.focus,
@@ -884,17 +891,15 @@ if (window.AL === undefined) {
         var addresses;
         if (AL.mapData.filter == 'none') {
           addresses = locations;
-          //console.log('locationToGeocoder says this is',addresses);
+          console.log('locationToGeocoder says this is', addresses);
           addresses.forEach(function (address) {
-            if (AL.mapData.markers.indexOf(address) < 0) {
-              _this3.geoCode(address, _this3.map);
-            }
+            _this3.geoCode(address, _this3.map);
           });
         } else {
           var _addresses = locations;
           _addresses.forEach(function (address) {
             console.log('address', address, 'includes', address.styles);
-            if (address.styles.includes(AL.mapData.filter) && AL.mapData.markers.indexOf(address) < 0) {
+            if (address.styles.includes(AL.mapData.filter)) {
               console.log('filter including', address);
               _this3.geoCode(address, _this3.map);
             }
@@ -911,6 +916,7 @@ if (window.AL === undefined) {
         //console.log('GEOCODE',itemId);
         var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
         this.geocoder.geocode({ 'address': address }, handleResults = function handleResults(results, status) {
+          console.log('hi, im geocoding', 'geocoder status', status);
           if (status === google.maps.GeocoderStatus.OK) {
             //console.log('geo code this check',this.map);
             _this4.googleMap.setCenter(results[0].geometry.location);
@@ -1254,13 +1260,13 @@ if (window.AL === undefined) {
 
         console.log('show all will mount');
         AL.ControlObject.registerCallback(function () {
-          return AL.ControlObject.sendData.sites.forEach(function (item) {
+          return AL.ControlObject.locationObjects.forEach(function (item) {
             AL.mapData.locations.push(item);
           });
         });
         AL.ControlObject.registerCallback(function () {
           _this2.setState({
-            sites: AL.ControlObject.locationObjects.sites
+            sites: AL.ControlObject.locationObjects
           });
         });
       }
@@ -1293,7 +1299,7 @@ if (window.AL === undefined) {
         var _this3 = this;
 
         var sitesList;
-        console.log(this.state.sites);
+        console.log('state sites', this.state.sites);
         if (this.state.sites && this.state.sites.length > 0) {
 
           sitesList = this.state.sites.map(function (site, index) {
@@ -1447,11 +1453,11 @@ if (window.AL === undefined) {
               'delete'
             ),
             React.createElement(
-              'div',
-              { className: 'button' },
+              ReactRouter.Link,
+              { className: 'link', to: "/test/asd/" + editLinkId + "/edit" },
               React.createElement(
-                ReactRouter.Link,
-                { className: 'link', to: "/test/asd/" + editLinkId + "/edit" },
+                'div',
+                { className: 'button' },
                 'edit'
               )
             ),

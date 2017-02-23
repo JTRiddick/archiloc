@@ -43,8 +43,8 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillUnmount(){
-      console.log('unmount');
-      // AL.ControlObject.resetControl();
+      console.log('unmounting ASD');
+        AL.ControlObject.resetControl();
     }
 
     sendToViewer(){
