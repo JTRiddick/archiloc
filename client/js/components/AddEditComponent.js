@@ -9,9 +9,8 @@ if (window.AL === undefined){window.AL = {}; }
 
       this.state = {editMode:false,styles:[],tagMode:false};
 
-
-
     }
+
     componentWillMount(){
       AL.ControlObject.resetControl();
       console.log('mounting with props, ',this.props);
@@ -94,7 +93,6 @@ if (window.AL === undefined){window.AL = {}; }
         console.log('adding',inputs);
         AL.ControlObject.addItem(inputs);
       }
-
 
     }
 
@@ -189,7 +187,7 @@ if (window.AL === undefined){window.AL = {}; }
           <hr/>
 
           <h4>Description</h4>
-          <textarea rows={5} cols={40} placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
+          <textarea rows={5} cols={120} placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
 
 
 

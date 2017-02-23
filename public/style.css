@@ -54,11 +54,12 @@ table {
 /* RGB */
 .add-structure {
   font-family: "Andale mono", "Menlo", "Monaco", monospace;
-  max-width: 960px;
+  max-width: 840px;
   background-color: #2b3341;
   color: #fedc97;
-  margin: 2em auto;
-  padding: 12px; }
+  margin: 2em 0;
+  padding: 6px;
+  display: inline-block; }
   .add-structure h1, .add-structure h2, .add-structure h3, .add-structure h4 {
     padding: 6px;
     margin: 0.25em; }
@@ -103,8 +104,10 @@ table {
 
 .review {
   color: black;
-  background-color: white;
-  margin: 1em auto; }
+  background-color: #70c1b3;
+  margin: 1em 0;
+  display: inline-block;
+  padding: 12px; }
 
 .sites-view {
   font-family: "Andale mono", "Menlo", "Monaco", monospace;

@@ -278,7 +278,7 @@ if (window.AL === undefined) {
               null,
               'Description'
             ),
-            React.createElement('textarea', { rows: 5, cols: 40, placeholder: description, defaultValue: description, ref: function ref(input) {
+            React.createElement('textarea', { rows: 5, cols: 120, placeholder: description, defaultValue: description, ref: function ref(input) {
                 _this3.descriptionInput = input;
               } }),
             React.createElement('hr', null),
@@ -561,6 +561,7 @@ if (window.AL === undefined) {
       var _this = this;
 
       if (this.sendData !== undefined) {
+        this.locationObjects = this.sendData.sites;
         emitter.emit('loaded');
         return;
       }
@@ -612,6 +613,7 @@ if (window.AL === undefined) {
         console.log('callbacksEdit', _this3.callbacksEdit);
         console.log('deleted, ', data);
         _this3.sendData = data;
+        console.log('when deleted, sendData is...', _this3.sendData);
         emitter.emit('deleted');
       }).fail(function (req, stat, err) {
         console.log('delete failure');
@@ -649,12 +651,12 @@ if (window.AL === undefined) {
         console.log("stat", stat);
         console.log("err", error);
         _this4.sendData = (req, stat, error);
-        emitter.emit('added');
+        emitter.emit('saved');
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
         _this4.sendData = data;
-        emitter.emit('added');
+        emitter.emit('saved');
       });
     }, //end of addItem
     editItem: function editItem(itemId, inputs) {
@@ -708,12 +710,12 @@ if (window.AL === undefined) {
         console.log("stat", stat);
         console.log("err", error);
         _this6.sendData = (req, stat, err);
-        _this6.callbacksEdit();
+        emitter.emit('saved');
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
         _this6.sendData = data;
-        _this6.callbacksEdit();
+        emitter.emit('saved');
       });
     },
 
@@ -1239,12 +1241,20 @@ if (window.AL === undefined) {
         console.log('show all will mount');
 
         this.loadedCallback = function () {
+          console.log('viewer, loaded callback fired');
           _this2.setState({
             sites: AL.ControlObject.locationObjects
           });
         };
 
+        this.deletedCallback = function () {
+          AL.ControlObject.getAll();
+        };
+        //reload list after a delete to reflect changes
+
+
         AL.ControlObject.emitter.on('loaded', this.loadedCallback);
+        AL.ControlObject.emitter.on('deleted', this.deletedCallback);
       }
     }, {
       key: 'componentDidMount',
@@ -1256,6 +1266,7 @@ if (window.AL === undefined) {
       value: function componentWillUnmount() {
         console.log('unmounting show all');
         AL.ControlObject.emitter.off('loaded', this.loadedCallback);
+        AL.ControlObject.emitter.off('deleted', this.deletedCallback);
       }
     }, {
       key: 'populateList',
@@ -1414,7 +1425,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'li',
                 null,
-                this.props.info.styles
+                JSON.stringify(this.props.info.styles)
               )
             )
           ),

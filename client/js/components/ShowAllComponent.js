@@ -16,13 +16,20 @@ if (window.AL === undefined){window.AL = {}; }
       console.log('show all will mount');
 
       this.loadedCallback = () => {
+        console.log('viewer, loaded callback fired');
         this.setState({
           sites:AL.ControlObject.locationObjects
         });
       }
 
-      AL.ControlObject.emitter.on('loaded',this.loadedCallback);
+      this.deletedCallback = () => {
+        AL.ControlObject.getAll();
+      }
+      //reload list after a delete to reflect changes
 
+
+      AL.ControlObject.emitter.on('loaded',this.loadedCallback);
+      AL.ControlObject.emitter.on('deleted',this.deletedCallback);
     }
 
     componentDidMount(){
@@ -32,7 +39,8 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillUnmount(){
       console.log('unmounting show all');
-        AL.ControlObject.emitter.off('loaded',this.loadedCallback);
+        AL.ControlObject.emitter.off('loaded',this.loadedCallback)
+        AL.ControlObject.emitter.off('deleted',this.deletedCallback)
     }
 
     populateList(){
@@ -118,7 +126,7 @@ if (window.AL === undefined){window.AL = {}; }
             <li>{this.props.info.street}</li>
             <li>{this.props.info.city}</li>
             <li>{this.props.info.country}</li>
-            <li>{this.props.info.styles}</li>
+            <li>{JSON.stringify(this.props.info.styles)}</li>
           </ol>
         </div>
 

@@ -21,6 +21,7 @@ if (window.AL === undefined){window.AL = {}; }
     getAll:function(){
 
       if (this.sendData !== undefined) {
+        this.locationObjects = this.sendData.sites;
         emitter.emit('loaded');
         return;
       }
@@ -75,6 +76,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log('callbacksEdit',this.callbacksEdit);
         console.log('deleted, ',data);
         this.sendData = data;
+        console.log('when deleted, sendData is...',this.sendData);
         emitter.emit('deleted');
 
       })
@@ -113,13 +115,13 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("stat",stat);
           console.log("err",error);
           this.sendData = (req,stat,error);
-          emitter.emit('added');
+          emitter.emit('saved');
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
           this.sendData = data;
-          emitter.emit('added');
+          emitter.emit('saved');
 
         })
       },//end of addItem
@@ -175,13 +177,14 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("stat",stat);
           console.log("err",error);
           this.sendData = (req,stat,err);
-          this.callbacksEdit();
+          emitter.emit('saved');
+
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
           this.sendData = data;
-          this.callbacksEdit();
+          emitter.emit('saved');
 
         })
       },
