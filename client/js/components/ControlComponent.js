@@ -3,12 +3,14 @@ if (window.AL === undefined){window.AL = {}; }
 (() => {
   var ControlObject;
   var sendData;
+  var emitter = new Emitter;
 
   window.AL.ControlObject = {
     mapMarkers:[],
     locationObjects:[],
     sendData: sendData,
     callbacks: [],
+    emitter:emitter,
     registerCallback: function(cb){
       this.callbacks.push(cb);
     },
@@ -29,7 +31,7 @@ if (window.AL === undefined){window.AL = {}; }
     getAll:function(){
 
       if (this.sendData !== undefined) {
-        this.callbacksEdit();
+        emitter.emit('loaded');
         return;
       }
 
@@ -44,7 +46,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log("ajax get all done, recieved: \n ",data, "type of", typeof data);
         this.sendData = data;
         this.locationObjects = this.sendData.sites;
-
+        emitter.emit('loaded');
         this.callbacksEdit();
         // console.log('grabbd everything',data);
       })

@@ -22,7 +22,7 @@ module.exports = function(){
     site.arch = req.body.arch;
     site.street = req.body.street;
     site.cityState = req.body.cityState;
-    site.country = req.body.country
+    site.country = req.body.country;
     site.pic = req.body.pic;
     site.description = req.body.description;
     // site.styles.set(req.body.styles);

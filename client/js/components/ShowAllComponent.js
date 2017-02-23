@@ -14,15 +14,14 @@ if (window.AL === undefined){window.AL = {}; }
     componentWillMount(){
 
       console.log('show all will mount');
-      AL.ControlObject.registerCallback(()=>
-       AL.ControlObject.locationObjects.forEach(item => {
-        AL.mapData.locations.push(item);
-      }))
-      AL.ControlObject.registerCallback(() => {
+
+      this.loadedCallback = () => {
         this.setState({
           sites:AL.ControlObject.locationObjects
         });
-      });
+      }
+
+      AL.ControlObject.emitter.on('loaded',this.loadedCallback);
 
     }
 
@@ -34,12 +33,12 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillUnmount(){
       console.log('unmounting show all');
-        AL.ControlObject.resetControl();
+        AL.ControlObject.emitter.off('loaded',this.loadedCallback);
     }
 
     populateList(){
       //reset
-
+      console.log('populate button clicked');
       AL.ControlObject.getAll();
 
     }

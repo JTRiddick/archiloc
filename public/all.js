@@ -145,30 +145,18 @@ if (window.AL === undefined) {
         //set placeholders and defaults if editing
 
         console.log('last added/edit', this.state.lastAdded);
-        if (!this.state.editMode && !this.state.lastAdded) {
-          console.log('generic placeholders');
-          name = "Name";
-          year = "Year of Construction/Completion";
-          arch = "Architect/Firm";
-          type = "Cultural";
-          street = "Street";
-          city = "City, State";
-          country = "Country";
-          styles = "Styles";
-          description = "This is a Building, probably";
-          picUrl = "add a URL";
-        }
+
         if (this.state.lastAdded) {
           console.log('default values');
-          name = this.state.lastAdded.title;
-          year = this.state.lastAdded.year;
-          arch = this.state.lastAdded.arch;
-          type = this.state.lastAdded.type;
-          city = this.state.lastAdded.cityState;
-          street = this.state.lastAdded.street;
-          country = this.state.lastAdded.country;
-          picUrl = this.state.lastAdded.pic;
-          description = this.state.lastAdded.description;
+          this.nameInput.value = this.state.lastAdded.title;
+          this.yearInput.value = this.state.lastAdded.year;
+          this.archInput.value = this.state.lastAdded.arch;
+          this.typeInput.value = this.state.lastAdded.type;
+          this.cityInput.value = this.state.lastAdded.cityState;
+          this.streetInput.value = this.state.lastAdded.street;
+          this.countryInput.value = this.state.lastAdded.country;
+          this.picInput.value = decodeURIComponent(this.state.lastAdded.pic);
+          this.descriptionInput.value = this.state.lastAdded.description;
         }
         if (this.state.error) {
           review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
@@ -217,13 +205,13 @@ if (window.AL === undefined) {
               null,
               'Details'
             ),
-            React.createElement('input', { defaultValue: name, placeholder: name, ref: function ref(input) {
+            React.createElement('input', { defaultValue: name, placeholder: 'Name', ref: function ref(input) {
                 _this3.nameInput = input;
               } }),
-            React.createElement('input', { defaultValue: year, placeholder: year, ref: function ref(input) {
+            React.createElement('input', { defaultValue: year, placeholder: 'Year', ref: function ref(input) {
                 _this3.yearInput = input;
               } }),
-            React.createElement('input', { defaultValue: arch, placeholder: arch, ref: function ref(input) {
+            React.createElement('input', { defaultValue: arch, placeholder: 'Architect/Firm', ref: function ref(input) {
                 _this3.archInput = input;
               } }),
             React.createElement('hr', null),
@@ -274,13 +262,13 @@ if (window.AL === undefined) {
               null,
               'Location'
             ),
-            React.createElement('input', { defaultValue: street, placeholder: street, ref: function ref(input) {
+            React.createElement('input', { defaultValue: street, placeholder: 'Street', ref: function ref(input) {
                 _this3.streetInput = input;
               } }),
-            React.createElement('input', { defaultValue: city, placeholder: city, ref: function ref(input) {
+            React.createElement('input', { defaultValue: city, placeholder: 'City', ref: function ref(input) {
                 _this3.cityInput = input;
               } }),
-            React.createElement('input', { defaultValue: country, placeholder: country, ref: function ref(input) {
+            React.createElement('input', { defaultValue: country, placeholder: 'Country', ref: function ref(input) {
                 _this3.countryInput = input;
               } }),
             React.createElement('hr', null),
@@ -289,7 +277,7 @@ if (window.AL === undefined) {
               null,
               'Description'
             ),
-            React.createElement('textfield', { rows: 5, cols: 40, placeholder: description, defaultValue: description, ref: function ref(input) {
+            React.createElement('textarea', { rows: 5, cols: 40, placeholder: description, defaultValue: description, ref: function ref(input) {
                 _this3.descriptionInput = input;
               } }),
             React.createElement('hr', null),
@@ -553,12 +541,14 @@ if (window.AL === undefined) {
 (function () {
   var ControlObject;
   var sendData;
+  var emitter = new Emitter();
 
   window.AL.ControlObject = {
     mapMarkers: [],
     locationObjects: [],
     sendData: sendData,
     callbacks: [],
+    emitter: emitter,
     registerCallback: function registerCallback(cb) {
       this.callbacks.push(cb);
     },
@@ -582,7 +572,7 @@ if (window.AL === undefined) {
       var _this2 = this;
 
       if (this.sendData !== undefined) {
-        this.callbacksEdit();
+        emitter.emit('loaded');
         return;
       }
 
@@ -596,7 +586,7 @@ if (window.AL === undefined) {
         console.log("ajax get all done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
         _this2.sendData = data;
         _this2.locationObjects = _this2.sendData.sites;
-
+        emitter.emit('loaded');
         _this2.callbacksEdit();
         // console.log('grabbd everything',data);
       }).fail(function () {
@@ -1259,16 +1249,14 @@ if (window.AL === undefined) {
         var _this2 = this;
 
         console.log('show all will mount');
-        AL.ControlObject.registerCallback(function () {
-          return AL.ControlObject.locationObjects.forEach(function (item) {
-            AL.mapData.locations.push(item);
-          });
-        });
-        AL.ControlObject.registerCallback(function () {
+
+        this.loadedCallback = function () {
           _this2.setState({
             sites: AL.ControlObject.locationObjects
           });
-        });
+        };
+
+        AL.ControlObject.emitter.on('loaded', this.loadedCallback);
       }
     }, {
       key: 'componentDidMount',
@@ -1279,13 +1267,13 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('unmounting show all');
-        AL.ControlObject.resetControl();
+        AL.ControlObject.emitter.off('loaded', this.loadedCallback);
       }
     }, {
       key: 'populateList',
       value: function populateList() {
         //reset
-
+        console.log('populate button clicked');
         AL.ControlObject.getAll();
       }
     }, {
