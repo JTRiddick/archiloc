@@ -59,8 +59,8 @@ if (window.AL === undefined) {
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
-        console.log('unmount');
-        // AL.ControlObject.resetControl();
+        console.log('unmounting ASD');
+        AL.ControlObject.resetControl();
       }
     }, {
       key: 'sendToViewer',
@@ -1453,11 +1453,11 @@ if (window.AL === undefined) {
               'delete'
             ),
             React.createElement(
-              'div',
-              { className: 'button' },
+              ReactRouter.Link,
+              { className: 'link', to: "/test/asd/" + editLinkId + "/edit" },
               React.createElement(
-                ReactRouter.Link,
-                { className: 'link', to: "/test/asd/" + editLinkId + "/edit" },
+                'div',
+                { className: 'button' },
                 'edit'
               )
             ),

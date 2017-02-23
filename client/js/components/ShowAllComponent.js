@@ -127,9 +127,9 @@ if (window.AL === undefined){window.AL = {}; }
         <div className = "site-controls">
           <div className = "button" onClick={() =>
             {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
-          <div className = "button">
-           <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }>edit</ReactRouter.Link>
-          </div>
+
+           <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }><div className = "button">edit</div></ReactRouter.Link>
+
           <div className = "button" onClick={() =>
             {this.tagOneItem(this.state.info.id)}}>tag
           </div>
