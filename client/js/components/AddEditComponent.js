@@ -15,25 +15,25 @@ if (window.AL === undefined){window.AL = {}; }
     componentWillMount(){
       AL.ControlObject.resetControl();
       console.log('mounting with props, ',this.props);
-      AL.ControlObject.registerCallback(() => {
+      this.editorCallback = () => {
         this.setState({
           lastAdded:AL.ControlObject.sendData
         })
-      });
+      };
+
+      AL.ControlObject.emitter.on('foundId',this.editorCallback);
+      AL.ControlObject.emitter.on('saved',this.editorCallback);
+
       if(this.props.location.pathname.includes('tag')){
-        AL.ControlObject.registerCallback(() => {
           this.setState({
             tagMode:true
           })
-        });
         AL.ControlObject.getStructById(this.props.params.sId);
       }
       else if(this.props.params.sId && !this.state.editMode && !this.state.tagMode){
-        AL.ControlObject.registerCallback(() => {
           this.setState({
             editMode:true
-          })
-        });
+          });
         AL.ControlObject.getStructById(this.props.params.sId);
       }
       else{
@@ -43,8 +43,10 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillUnmount(){
-      console.log('unmounting ASD');
-        AL.ControlObject.resetControl();
+      console.log('unmounting ASD/editor');
+      AL.ControlObject.emitter.off('foundId',this.editorCallback);
+      AL.ControlObject.emitter.off('saved',this.editorCallback);
+
     }
 
     sendToViewer(){

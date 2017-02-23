@@ -11,16 +11,6 @@ if (window.AL === undefined){window.AL = {}; }
     sendData: sendData,
     callbacks: [],
     emitter:emitter,
-    registerCallback: function(cb){
-      this.callbacks.push(cb);
-    },
-    callbacksEdit: function(){
-      this.callbacks.forEach((cb) => {
-        console.log('sendData is ',this.sendData);
-        cb();
-        console.log('callback fired ',cb);
-      })
-    },
     resetControl: function(){
 
       this.callbacks = [];
@@ -47,7 +37,6 @@ if (window.AL === undefined){window.AL = {}; }
         this.sendData = data;
         this.locationObjects = this.sendData.sites;
         emitter.emit('loaded');
-        this.callbacksEdit();
         // console.log('grabbd everything',data);
       })
       .fail(()=>{
@@ -65,13 +54,13 @@ if (window.AL === undefined){window.AL = {}; }
       .done((data)=>{
         console.log("found ", data);
         this.sendData = data;
-        this.callbacksEdit();
+        emitter.emit('foundId');
         console.log('control callbacks test, callbacks are done ',this.callbacks);
       })
       .fail((req,stat,err)=>{
         console.log('failed to get req,', req);
         this.sendData = (req,stat,err);
-        this.callbacksEdit();
+        emitter.emit('foundId');
         //??
       })
     },
@@ -86,13 +75,13 @@ if (window.AL === undefined){window.AL = {}; }
         console.log('callbacksEdit',this.callbacksEdit);
         console.log('deleted, ',data);
         this.sendData = data;
-        this.callbacksEdit();
+        emitter.emit('deleted');
 
       })
       .fail((req,stat,err) => {
         console.log('delete failure');
         this.sendData = (req,stat,err);
-        this.callbacksEdit();
+        emitter.emit('deleted');
       });
     },//end of delete
     addItem: function(inputs){
@@ -124,13 +113,13 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("stat",stat);
           console.log("err",error);
           this.sendData = (req,stat,error);
-          this.callbacksEdit();
+          emitter.emit('added');
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
           this.sendData = data;
-          this.callbacksEdit();
+          emitter.emit('added');
 
         })
       },//end of addItem
@@ -159,13 +148,13 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("stat",stat);
           console.log("err",error);
           this.sendData = (req,stat,err);
-          this.callbacksEdit();
+          emitter.emit('saved');
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
           this.sendData = data;
-          this.callbacksEdit();
+          emitter.emit('saved');
 
         })
       },//end of editor
@@ -207,27 +196,17 @@ if (window.AL === undefined){window.AL = {}; }
         .done((data)=>{
           console.log("found ", data);
           ReactRouter.hashHistory.push('/map/view-one/'+ itemId);
-          // this.sendData = data;
-          // this.callbacksEdit();
+          emitter.emit('mapOne');
         })
         .fail((req,stat,err)=>{
           console.log('failed to get req,', req);
           this.sendData = (req,stat,err);
-          this.callbacksEdit();
+          emitter.emit('mapOne');
           //??
         })
 
       },//end of map one view
 
-      //end of geocode 1
-      // locationToList: function(data){
-      //   console.log('list/geo called',data);
-      //   data.forEach(item =>{
-      //     console.log('hey its,', item);
-      //     AL.MapComponent.locationToGeocoder(item);
-      //     this.locationObjects.push(item);
-      //   })
-      // }
     } //end of control object
   }
 )();

@@ -28,7 +28,6 @@ if (window.AL === undefined){window.AL = {}; }
     componentDidMount(){
       console.log('show all did mount');
 
-
     }
 
     componentWillUnmount(){

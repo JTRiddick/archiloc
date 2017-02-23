@@ -41,20 +41,25 @@ if (window.AL === undefined){window.AL = {}; }
         this.setState({
           findingOne:true
         })
-        AL.ControlObject.registerCallback(()=>{
+        // AL.ControlObject.registerCallback(()=>{
+        //   AL.mapData.locations.push(AL.ControlObject.sendData);
+        // })
+        this.mapOneCallback = () => {
           AL.mapData.locations.push(AL.ControlObject.sendData);
-        })
+          this.locationToGeocoder(AL.mapData.locations);
+        }
+        AL.ControlObject.emitter.once('foundId',this.mapOneCallback);
       }else{
-        //console.log('showing maximum stuff');
         console.log('fill mapdata locations list with',AL.ControlObject.sendData);
-        AL.ControlObject.registerCallback(()=>
-         AL.ControlObject.locationObjects.forEach(item => {
+        this.buildMapCallback = () => {
+          AL.ControlObject.locationObjects.forEach(item => {
           AL.mapData.locations.push(item);
-        }))
+        })
+          this.locationToGeocoder(AL.mapData.locations);
+        }
       }
-      //moves control data to list
-      AL.ControlObject.registerCallback(()=>this.locationToGeocoder(AL.mapData.locations));
-      //registers callback to geocode (then locate and mark) points of interest
+      AL.ControlObject.emitter.on('loaded',this.buildMapCallback);
+
     }
 
 
@@ -82,7 +87,7 @@ if (window.AL === undefined){window.AL = {}; }
 
     componentWillUnmount(){
       console.log('main page unmounted');
-      AL.ControlObject.resetControl();
+      AL.ControlObject.emitter.off('loaded',this.buildMapCallback);
     }
 
     //defaults
