@@ -739,9 +739,10 @@ if (window.AL === undefined) {
     }, //end of map one view
 
     siteGeocode: function siteGeocode(itemRef) {
+      var _this8 = this;
+
       var address = itemRef.street + ' ' + itemRef.cityState + ' ' + itemRef.country;
-      var lat;
-      var lng;
+      var latlng = [0, 0];
       console.log('sending ', address, 'to geocode');
       $.ajax({
         url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyA5B1QULYYb2uGrGReGKSqsuwxCgXL6pOQ',
@@ -751,8 +752,29 @@ if (window.AL === undefined) {
         console.log('geocoded to', results);
         if (results.status === 'OK') {
           console.log('coordinates are', results.results[0].geometry.location);
-          lat = results.results[0].geometry.location.lat;
-          lng = results.results[0].geometry.location.lng;
+          latlng = [results.results[0].geometry.location.lat, results.results[0].geometry.location.lng];
+          console.log('coordinates are', latlng);
+          console.log('for', itemRef);
+          $.ajax({
+            url: '/api/sites/' + itemRef.id + '/coordinates',
+            method: 'PUT',
+            dataType: 'JSON',
+            data: {
+              coordinate: latlng
+            }
+          }).fail(function (req, stat, error) {
+            // window.alert('no');
+            console.log('request unsucessful');
+            console.log("req", req);
+            console.log("stat", stat);
+            console.log("err", error);
+          }).done(function (data) {
+            console.log('request successful');
+            console.log('data: ', data);
+            _this8.sendData = data;
+            emitter.emit('saved');
+          });
+
           emitter.emit('geocoded');
         } else {
           console.log('geocoder failure');

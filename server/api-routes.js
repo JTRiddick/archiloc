@@ -56,7 +56,6 @@ module.exports = function(){
       cityState: req.body.cityState,
       country:req.body.country,
       pic: req.body.pic,
-      // styles:req.body.styles,
       description:req.body.description,
     },{safe:false,upsert:true,new:true,runValidators:false},cb)
   });
@@ -69,9 +68,26 @@ module.exports = function(){
     }
     console.log('tag edit req body',req.body.styles,typeof(req.body.styles));
     Site.findByIdAndUpdate(req.params.siteId, {$push:{styles:req.body.styles}}
-      ,{safe:true,upsert:true,runValidators:false},cb)
+      ,{new:true,safe:true,upsert:true,runValidators:false},cb)
   });
   //^ Add style tag array to style[] property of object
+
+  router.put('/api/sites/:siteId/coordinates', (req,res) => {
+    console.log('xy api route req params', req.params);
+    console.log('xy api route req body', req.body);
+    var latlng = [req.body['coordinate[]'][0],req.body['coordinate[]'][1]];
+    latlng[0] = parseFloat(latlng[0]);
+    latlng[1] = parseFloat(latlng[1]);
+    console.log('xy to latlng', latlng);
+    var cb = (err,data) => {
+      console.log('i saved coordinates to a site a site :',err,data);
+      res.send(data);
+    }
+
+    Site.findByIdAndUpdate(req.params.siteId, {$set:{coordinate:latlng}}
+      ,{new:true,safe:true,upsert:true,runValidators:false},cb);
+  });
+  //^ Save Coordinates if suitable
 
   router.get('/api/sites/:siteId',(req,res) => {
     console.log('find req params', req.params.siteId);
