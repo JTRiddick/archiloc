@@ -873,6 +873,38 @@ if (window.AL === undefined) {
           center: this.state.focus,
           zoom: this.state.zoom
         });
+
+        this.geocoder = new google.maps.Geocoder();
+
+        if (!this.state.findingOne) {
+          AL.ControlObject.getAll();
+        } else {
+          AL.ControlObject.getStructById(this.props.params.sId);
+        }
+
+        //sets mapdata locations and triggers callback to run geo+location
+        //console.log(this.map,this.geocoder);
+        this.centerOnDevice();
+      }
+    }, {
+      key: 'componentWillUnmount',
+      value: function componentWillUnmount() {
+        console.log('main page unmounted');
+        AL.ControlObject.emitter.off('loaded', this.buildMapCallback);
+      }
+
+      //defaults
+
+
+    }, {
+      key: 'handleLocationError',
+      value: function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+        infoWindow.setPosition(pos);
+        infoWindow.setContent(browserHasGeolocation ? 'Error: The Geolocation service failed.' : 'Error: Your browser doesn\'t support geolocation.');
+      }
+    }, {
+      key: 'centerOnDevice',
+      value: function centerOnDevice() {
         if (navigator.geolocation) {
           navigator.geolocation.getCurrentPosition(function (position) {
             var pos = {
@@ -890,33 +922,6 @@ if (window.AL === undefined) {
           // Browser doesn't support Geolocation
           handleLocationError(false, infoWindow, map.getCenter());
         }
-
-        this.geocoder = new google.maps.Geocoder();
-
-        if (!this.state.findingOne) {
-          AL.ControlObject.getAll();
-        } else {
-          AL.ControlObject.getStructById(this.props.params.sId);
-        }
-
-        //sets mapdata locations and triggers callback to run geo+location
-        //console.log(this.map,this.geocoder);
-      }
-    }, {
-      key: 'componentWillUnmount',
-      value: function componentWillUnmount() {
-        console.log('main page unmounted');
-        AL.ControlObject.emitter.off('loaded', this.buildMapCallback);
-      }
-
-      //defaults
-
-
-    }, {
-      key: 'handleLocationError',
-      value: function handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ? 'Error: The Geolocation service failed.' : 'Error: Your browser doesn\'t support geolocation.');
       }
     }, {
       key: 'deselectSite',
