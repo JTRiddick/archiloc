@@ -971,7 +971,7 @@ if (window.AL === undefined) {
             console.log('hi, im geocoding in your mapcomponent', 'geocoder status', status);
             if (status === google.maps.GeocoderStatus.OK) {
               console.log('geo code this check', _this4.map);
-              _this4.googleMap.setCenter(results[0].geometry.location);
+              // this.googleMap.setCenter(results[0].geometry.location);
               var marker = new google.maps.Marker({
                 position: results[0].geometry.location,
                 title: itemId.title
@@ -984,7 +984,6 @@ if (window.AL === undefined) {
           });
         } else {
           var siteLatLng = { lat: itemId.coordinate[0], lng: itemId.coordinate[1] };
-          this.googleMap.setCenter(siteLatLng);
           var marker = new google.maps.Marker({
             position: siteLatLng,
             title: itemId.title
@@ -1015,7 +1014,8 @@ if (window.AL === undefined) {
 
         //Check for service
 
-        marker.addListener('click', function () {
+        marker.addListener('click', function (evt, ele) {
+          deselectSite(evt, ele);
           infowindow.open(_this5.map, marker);
           _this5.setState({
             showSite: item,
