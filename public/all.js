@@ -560,11 +560,11 @@ if (window.AL === undefined) {
     getAll: function getAll() {
       var _this = this;
 
-      if (this.sendData !== undefined) {
-        this.locationObjects = this.sendData.sites;
-        emitter.emit('loaded');
-        return;
-      }
+      // if (this.sendData !== undefined) {
+      //   this.locationObjects = this.sendData.sites;
+      //   emitter.emit('loaded');
+      //   return;
+      // }
 
       // console.log('gettin everything');
       //api get all

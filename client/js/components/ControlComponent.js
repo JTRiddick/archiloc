@@ -20,11 +20,11 @@ if (window.AL === undefined){window.AL = {}; }
 
     getAll:function(){
 
-      if (this.sendData !== undefined) {
-        this.locationObjects = this.sendData.sites;
-        emitter.emit('loaded');
-        return;
-      }
+      // if (this.sendData !== undefined) {
+      //   this.locationObjects = this.sendData.sites;
+      //   emitter.emit('loaded');
+      //   return;
+      // }
 
       // console.log('gettin everything');
       //api get all
