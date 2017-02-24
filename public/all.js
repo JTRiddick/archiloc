@@ -941,12 +941,12 @@ if (window.AL === undefined) {
         //check for item id or obj
         //console.log('GEOCODE',itemId);
         var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
-        if (itemId.coordinate[0] === 0 && idemId.coordinate[1] === 0) {
+        if (itemId.coordinate[0] === 0 && itemId.coordinate[1] === 0) {
           //are we geocoded?
           this.geocoder.geocode({ 'address': address }, handleResults = function handleResults(results, status) {
-            console.log('hi, im geocoding', 'geocoder status', status);
+            console.log('hi, im geocoding in your mapcomponent', 'geocoder status', status);
             if (status === google.maps.GeocoderStatus.OK) {
-              //console.log('geo code this check',this.map);
+              console.log('geo code this check', _this4.map);
               _this4.googleMap.setCenter(results[0].geometry.location);
               var marker = new google.maps.Marker({
                 position: results[0].geometry.location,
