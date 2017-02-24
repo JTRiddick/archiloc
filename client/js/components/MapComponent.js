@@ -6,7 +6,7 @@ if (window.AL === undefined){window.AL = {}; }
     locations:[],
     markers:[],
     filter:'none',
-    defaultView: {lat:15,lng:-80},
+    defaultView: {lat:32.776782,lng:-96.7973409},
     mapZoom: 14
   }
 })();
@@ -83,7 +83,7 @@ if (window.AL === undefined){window.AL = {}; }
 
       //sets mapdata locations and triggers callback to run geo+location
       //console.log(this.map,this.geocoder);
-      this.centerOnDevice();
+      // this.centerOnDevice(this.googleMap);
     }
 
     componentWillUnmount(){
@@ -93,15 +93,15 @@ if (window.AL === undefined){window.AL = {}; }
 
     //defaults
 
+    centerOnDevice(map){
+      var infoWindow = new google.maps.InfoWindow({map: map});
 
-    handleLocationError(browserHasGeolocation, infoWindow, pos) {
-        infoWindow.setPosition(pos);
-        infoWindow.setContent(browserHasGeolocation ?
-                              'Error: The Geolocation service failed.' :
-                              'Error: Your browser doesn\'t support geolocation.');
-    }
-
-    centerOnDevice(){
+      function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+         infoWindow.setPosition(pos);
+         infoWindow.setContent(browserHasGeolocation ?
+                               'Error: The Geolocation service failed.' :
+                               'Error: Your browser doesn\'t support geolocation.');
+      }
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
           var pos = {
@@ -216,7 +216,9 @@ if (window.AL === undefined){window.AL = {}; }
       //Check for service
 
      marker.addListener('click', (evt,ele) => {
-       deselectSite(evt,ele);
+       if(this.state.showSite!==null){
+        deselectSite(evt,ele);
+       }
        infowindow.open(this.map, marker);
        this.setState({
          showSite:item,
