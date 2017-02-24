@@ -41,23 +41,23 @@ if (window.AL === undefined){window.AL = {}; }
         this.setState({
           findingOne:true
         })
-        // AL.ControlObject.registerCallback(()=>{
-        //   AL.mapData.locations.push(AL.ControlObject.sendData);
-        // })
         this.mapOneCallback = () => {
           AL.mapData.locations.push(AL.ControlObject.sendData);
-          this.locationToGeocoder(AL.mapData.locations);
+          this.locationToMapper(AL.mapData.locations);
         }
         AL.ControlObject.emitter.once('foundId',this.mapOneCallback);
       }else{
+
         console.log('fill mapdata locations list with',AL.ControlObject.sendData);
         this.buildMapCallback = () => {
           AL.ControlObject.locationObjects.forEach(item => {
           AL.mapData.locations.push(item);
         })
-          this.locationToGeocoder(AL.mapData.locations);
+          this.locationToMapper(AL.mapData.locations);
         }
       }
+      //^ second block is primary show all
+
       AL.ControlObject.emitter.on('loaded',this.buildMapCallback);
 
     }
@@ -104,14 +104,14 @@ if (window.AL === undefined){window.AL = {}; }
     }
     //master close
 
-    locationToGeocoder(locations){
+    locationToMapper(locations){
       console.log('location to geocoder',locations,'state',this.state.tag);
       var addresses
       if(AL.mapData.filter == 'none'){
         addresses = locations;
-        console.log('locationToGeocoder says this is',addresses);
+        console.log('locationToMapper says this is',addresses);
           addresses.forEach(address => {
-            this.geoCode(address,this.map);
+            this.mapPopulator(address,this.map);
           })
       }else{
         let addresses = locations;
@@ -119,32 +119,47 @@ if (window.AL === undefined){window.AL = {}; }
           console.log('address',address,'includes',address.styles);
           if (address.styles.includes(AL.mapData.filter)){
             console.log('filter including', address);
-            this.geoCode(address,this.map);
+            this.mapPopulator(address,this.map);
           }
         })
       }
     }
 
-    geoCode(itemId,map){
+    mapPopulator(itemId,map){
       var handleResults;
       //check for item id or obj
       //console.log('GEOCODE',itemId);
       var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
-      this.geocoder.geocode({'address':address}, handleResults = (results,status)=>{
-        console.log('hi, im geocoding', 'geocoder status',status);
-        if (status === google.maps.GeocoderStatus.OK){
-          //console.log('geo code this check',this.map);
-          this.googleMap.setCenter(results[0].geometry.location);
-          var marker = new google.maps.Marker({
-            position: (results[0].geometry.location),
-            title:itemId.title
-          });
+      if (itemId.coordinate[0] === 0 && idemId.coordinate[1] === 0){
+        //are we geocoded?
+        this.geocoder.geocode({'address':address}, handleResults = (results,status)=>{
+          console.log('hi, im geocoding', 'geocoder status',status);
+          if (status === google.maps.GeocoderStatus.OK){
+            //console.log('geo code this check',this.map);
+            this.googleMap.setCenter(results[0].geometry.location);
+            var marker = new google.maps.Marker({
+              position: (results[0].geometry.location),
+              title:itemId.title
+            });
 
-          this.markMap(this.googleMap,marker,itemId);
+            this.markMap(this.googleMap,marker,itemId);
+            return;
+          }
           return;
-        }
+        })
+
+      } else {
+        var siteLatLng = {lat: itemId.coordinate[0], lng: itemId.coordinate[1]};
+        this.googleMap.setCenter(siteLatLng);
+        var marker = new google.maps.Marker({
+          position: (siteLatLng),
+          title:itemId.title
+        });
+
+        this.markMap(this.googleMap,marker,itemId);
         return;
-      })
+
+      }
     }
 
 
@@ -222,8 +237,8 @@ if (window.AL === undefined){window.AL = {}; }
       this.setState({
         tag:filter
       })
-      console.log('resending to geocode with filter', filter, 'these',AL.mapData.markers,AL.mapData.locations);
-      this.locationToGeocoder(AL.mapData.locations);
+      console.log('resending to mapPopulator with filter', filter, 'these',AL.mapData.markers,AL.mapData.locations);
+      this.locationToMapper(AL.mapData.locations);
 
     }
 
