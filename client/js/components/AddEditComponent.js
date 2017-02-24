@@ -9,31 +9,30 @@ if (window.AL === undefined){window.AL = {}; }
 
       this.state = {editMode:false,styles:[],tagMode:false};
 
-
-
     }
+
     componentWillMount(){
       AL.ControlObject.resetControl();
       console.log('mounting with props, ',this.props);
-      AL.ControlObject.registerCallback(() => {
+      this.editorCallback = () => {
         this.setState({
           lastAdded:AL.ControlObject.sendData
         })
-      });
+      };
+
+      AL.ControlObject.emitter.on('foundId',this.editorCallback);
+      AL.ControlObject.emitter.on('saved',this.editorCallback);
+
       if(this.props.location.pathname.includes('tag')){
-        AL.ControlObject.registerCallback(() => {
           this.setState({
             tagMode:true
           })
-        });
         AL.ControlObject.getStructById(this.props.params.sId);
       }
       else if(this.props.params.sId && !this.state.editMode && !this.state.tagMode){
-        AL.ControlObject.registerCallback(() => {
           this.setState({
             editMode:true
-          })
-        });
+          });
         AL.ControlObject.getStructById(this.props.params.sId);
       }
       else{
@@ -43,8 +42,10 @@ if (window.AL === undefined){window.AL = {}; }
     }
 
     componentWillUnmount(){
-      console.log('unmounting ASD');
-        AL.ControlObject.resetControl();
+      console.log('unmounting ASD/editor');
+      AL.ControlObject.emitter.off('foundId',this.editorCallback);
+      AL.ControlObject.emitter.off('saved',this.editorCallback);
+
     }
 
     sendToViewer(){
@@ -93,7 +94,6 @@ if (window.AL === undefined){window.AL = {}; }
         AL.ControlObject.addItem(inputs);
       }
 
-
     }
 
     render(){
@@ -128,30 +128,18 @@ if (window.AL === undefined){window.AL = {}; }
       //set placeholders and defaults if editing
 
       console.log('last added/edit', this.state.lastAdded);
-      if (!this.state.editMode && !this.state.lastAdded){
-        console.log('generic placeholders');
-         name = "Name";
-         year = "Year of Construction/Completion";
-         arch = "Architect/Firm";
-         type = "Cultural";
-         street = "Street";
-         city = "City, State";
-         country = "Country";
-         styles = "Styles";
-         description = "This is a Building, probably";
-         picUrl = "add a URL"
-      }
+
      if(this.state.lastAdded){
         console.log('default values');
-        name = this.state.lastAdded.title;
-        year = this.state.lastAdded.year;
-        arch = this.state.lastAdded.arch;
-        type = this.state.lastAdded.type;
-        city = this.state.lastAdded.cityState;
-        street = this.state.lastAdded.street;
-        country = this.state.lastAdded.country;
-        picUrl = this.state.lastAdded.pic;
-        description = this.state.lastAdded.description;
+        this.nameInput.value = this.state.lastAdded.title;
+        this.yearInput.value = this.state.lastAdded.year;
+        this.archInput.value = this.state.lastAdded.arch;
+        this.typeInput.value = this.state.lastAdded.type;
+        this.cityInput.value = this.state.lastAdded.cityState;
+        this.streetInput.value = this.state.lastAdded.street;
+        this.countryInput.value = this.state.lastAdded.country;
+        this.picInput.value = decodeURIComponent(this.state.lastAdded.pic);
+        this.descriptionInput.value = this.state.lastAdded.description;
       }
       if(this.state.error){
         review = <ReviewData warning={this.state.error,this.state.stat} />
@@ -175,9 +163,9 @@ if (window.AL === undefined){window.AL = {}; }
        fields = (
         <form onSubmit = {(evt) => {this.validateStructure(evt)}}>
           <h4>Details</h4>
-          <input defaultValue={name}  placeholder={name} ref={(input) => {this.nameInput = input}}/>
-          <input defaultValue={year} placeholder={year} ref={(input) => {this.yearInput = input}}/>
-          <input defaultValue={arch} placeholder={arch} ref={(input) => {this.archInput = input}}/>
+          <input defaultValue={name} placeholder="Name" ref={(input) => {this.nameInput = input}}/>
+          <input defaultValue={year} placeholder="Year" ref={(input) => {this.yearInput = input}}/>
+          <input defaultValue={arch} placeholder="Architect/Firm" ref={(input) => {this.archInput = input}}/>
 
           <hr/>
           <h4>Categories</h4>
@@ -192,14 +180,14 @@ if (window.AL === undefined){window.AL = {}; }
           <hr/>
 
           <h4>Location</h4>
-          <input defaultValue={street} placeholder={street} ref={(input) => {this.streetInput = input}}/>
-          <input defaultValue={city} placeholder={city} ref={(input) => {this.cityInput = input}}/>
-          <input defaultValue={country} placeholder={country} ref={(input) => {this.countryInput = input}}/>
+          <input defaultValue={street} placeholder="Street" ref={(input) => {this.streetInput = input}}/>
+          <input defaultValue={city} placeholder="City" ref={(input) => {this.cityInput = input}}/>
+          <input defaultValue={country} placeholder="Country" ref={(input) => {this.countryInput = input}}/>
 
           <hr/>
 
           <h4>Description</h4>
-          <textfield rows={5} cols={40} placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
+          <textarea rows={5} cols={120} placeholder={description} defaultValue={description} ref={(input) => {this.descriptionInput = input}}/>
 
 
 

@@ -14,32 +14,38 @@ if (window.AL === undefined){window.AL = {}; }
     componentWillMount(){
 
       console.log('show all will mount');
-      AL.ControlObject.registerCallback(()=>
-       AL.ControlObject.locationObjects.forEach(item => {
-        AL.mapData.locations.push(item);
-      }))
-      AL.ControlObject.registerCallback(() => {
+
+      this.loadedCallback = () => {
+        console.log('viewer, loaded callback fired');
         this.setState({
           sites:AL.ControlObject.locationObjects
         });
-      });
+      }
 
+      this.deletedCallback = () => {
+        AL.ControlObject.getAll();
+      }
+      //reload list after a delete to reflect changes
+
+
+      AL.ControlObject.emitter.on('loaded',this.loadedCallback);
+      AL.ControlObject.emitter.on('deleted',this.deletedCallback);
     }
 
     componentDidMount(){
       console.log('show all did mount');
 
-
     }
 
     componentWillUnmount(){
       console.log('unmounting show all');
-        AL.ControlObject.resetControl();
+        AL.ControlObject.emitter.off('loaded',this.loadedCallback)
+        AL.ControlObject.emitter.off('deleted',this.deletedCallback)
     }
 
     populateList(){
       //reset
-
+      console.log('populate button clicked');
       AL.ControlObject.getAll();
 
     }
@@ -118,24 +124,25 @@ if (window.AL === undefined){window.AL = {}; }
             <li>{this.props.info.arch}</li>
             <li>{this.props.info.type}</li>
             <li>{this.props.info.street}</li>
-            <li>{this.props.info.city}</li>
+            <li>{this.props.info.cityState}</li>
             <li>{this.props.info.country}</li>
-            <li>{this.props.info.styles}</li>
+            <li>{JSON.stringify(this.props.info.styles)}</li>
           </ol>
         </div>
 
         <div className = "site-controls">
           <div className = "button" onClick={() =>
-            {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
-
+            {AL.ControlObject.deleteItem(this.state.info.id)}}>
+            delete
+          </div>
            <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }><div className = "button">edit</div></ReactRouter.Link>
-
           <div className = "button" onClick={() =>
             {this.tagOneItem(this.state.info.id)}}>tag
           </div>
           <div className = "button" onClick={() =>
             {AL.ControlObject.mapOneItem(this.state.info.id)}}>view
           </div>
+          <div className="button btn-gc" onClick={()=>{AL.ControlObject.siteGeocode(this.props.info)}}>GC</div>
         </div>
       </div>)
 

@@ -3,22 +3,14 @@ if (window.AL === undefined){window.AL = {}; }
 (() => {
   var ControlObject;
   var sendData;
+  var emitter = new Emitter;
 
   window.AL.ControlObject = {
     mapMarkers:[],
     locationObjects:[],
     sendData: sendData,
     callbacks: [],
-    registerCallback: function(cb){
-      this.callbacks.push(cb);
-    },
-    callbacksEdit: function(){
-      this.callbacks.forEach((cb) => {
-        console.log('sendData is ',this.sendData);
-        cb();
-        console.log('callback fired ',cb);
-      })
-    },
+    emitter:emitter,
     resetControl: function(){
 
       this.callbacks = [];
@@ -28,10 +20,11 @@ if (window.AL === undefined){window.AL = {}; }
 
     getAll:function(){
 
-      if (this.sendData !== undefined) {
-        this.callbacksEdit();
-        return;
-      }
+      // if (this.sendData !== undefined) {
+      //   this.locationObjects = this.sendData.sites;
+      //   emitter.emit('loaded');
+      //   return;
+      // }
 
       // console.log('gettin everything');
       //api get all
@@ -44,8 +37,7 @@ if (window.AL === undefined){window.AL = {}; }
         console.log("ajax get all done, recieved: \n ",data, "type of", typeof data);
         this.sendData = data;
         this.locationObjects = this.sendData.sites;
-
-        this.callbacksEdit();
+        emitter.emit('loaded');
         // console.log('grabbd everything',data);
       })
       .fail(()=>{
@@ -63,13 +55,13 @@ if (window.AL === undefined){window.AL = {}; }
       .done((data)=>{
         console.log("found ", data);
         this.sendData = data;
-        this.callbacksEdit();
+        emitter.emit('foundId');
         console.log('control callbacks test, callbacks are done ',this.callbacks);
       })
       .fail((req,stat,err)=>{
         console.log('failed to get req,', req);
         this.sendData = (req,stat,err);
-        this.callbacksEdit();
+        emitter.emit('foundId');
         //??
       })
     },
@@ -84,13 +76,14 @@ if (window.AL === undefined){window.AL = {}; }
         console.log('callbacksEdit',this.callbacksEdit);
         console.log('deleted, ',data);
         this.sendData = data;
-        this.callbacksEdit();
+        console.log('when deleted, sendData is...',this.sendData);
+        emitter.emit('deleted');
 
       })
       .fail((req,stat,err) => {
         console.log('delete failure');
         this.sendData = (req,stat,err);
-        this.callbacksEdit();
+        emitter.emit('deleted');
       });
     },//end of delete
     addItem: function(inputs){
@@ -122,13 +115,13 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("stat",stat);
           console.log("err",error);
           this.sendData = (req,stat,error);
-          this.callbacksEdit();
+          emitter.emit('saved');
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
           this.sendData = data;
-          this.callbacksEdit();
+          emitter.emit('saved');
 
         })
       },//end of addItem
@@ -157,13 +150,13 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("stat",stat);
           console.log("err",error);
           this.sendData = (req,stat,err);
-          this.callbacksEdit();
+          emitter.emit('saved');
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
           this.sendData = data;
-          this.callbacksEdit();
+          emitter.emit('saved');
 
         })
       },//end of editor
@@ -184,13 +177,14 @@ if (window.AL === undefined){window.AL = {}; }
           console.log("stat",stat);
           console.log("err",error);
           this.sendData = (req,stat,err);
-          this.callbacksEdit();
+          emitter.emit('saved');
+
         })
         .done((data)=>{
           console.log('request successful');
           console.log('data: ',data);
           this.sendData = data;
-          this.callbacksEdit();
+          emitter.emit('saved');
 
         })
       },
@@ -205,27 +199,67 @@ if (window.AL === undefined){window.AL = {}; }
         .done((data)=>{
           console.log("found ", data);
           ReactRouter.hashHistory.push('/map/view-one/'+ itemId);
-          // this.sendData = data;
-          // this.callbacksEdit();
+          emitter.emit('mapOne');
         })
         .fail((req,stat,err)=>{
           console.log('failed to get req,', req);
           this.sendData = (req,stat,err);
-          this.callbacksEdit();
+          emitter.emit('mapOne');
           //??
         })
 
       },//end of map one view
 
-      //end of geocode 1
-      // locationToList: function(data){
-      //   console.log('list/geo called',data);
-      //   data.forEach(item =>{
-      //     console.log('hey its,', item);
-      //     AL.MapComponent.locationToGeocoder(item);
-      //     this.locationObjects.push(item);
-      //   })
-      // }
+      siteGeocode: function(itemRef){
+        var address = itemRef.street + ' ' + itemRef.cityState + ' ' + itemRef.country;
+        var latlng = [0,0];
+        console.log('sending ',address,'to geocode');
+        $.ajax({
+          url:'https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key=AIzaSyA5B1QULYYb2uGrGReGKSqsuwxCgXL6pOQ',
+          method:'GET',
+          dataType:'JSON',
+        })
+        .done((results)=>{
+          console.log('geocoded to',results);
+          if(results.status === 'OK'){
+            console.log('coordinates are', results.results[0].geometry.location);
+            latlng = [results.results[0].geometry.location.lat,
+            results.results[0].geometry.location.lng];
+            console.log('coordinates are', latlng);
+            console.log('for', itemRef);
+            $.ajax({
+              url:'/api/sites/'+itemRef.id+'/coordinates',
+              method:'PUT',
+              dataType:'JSON',
+              data:{
+                coordinate:latlng
+              }
+            })
+            .fail((req,stat,error)=>{
+              // window.alert('no');
+              console.log('request unsucessful');
+              console.log("req",req);
+              console.log("stat",stat);
+              console.log("err",error);
+
+            })
+            .done((data)=>{
+              console.log('request successful');
+              console.log('data: ',data);
+              this.sendData = data;
+              emitter.emit('saved');
+
+            })
+
+            emitter.emit('geocoded');
+          }
+          else{
+            console.log('geocoder failure');
+          }
+        })
+
+      }
+
     } //end of control object
   }
 )();

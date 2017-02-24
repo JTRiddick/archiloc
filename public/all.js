@@ -33,23 +33,23 @@ if (window.AL === undefined) {
 
         AL.ControlObject.resetControl();
         console.log('mounting with props, ', this.props);
-        AL.ControlObject.registerCallback(function () {
+        this.editorCallback = function () {
           _this2.setState({
             lastAdded: AL.ControlObject.sendData
           });
-        });
+        };
+
+        AL.ControlObject.emitter.on('foundId', this.editorCallback);
+        AL.ControlObject.emitter.on('saved', this.editorCallback);
+
         if (this.props.location.pathname.includes('tag')) {
-          AL.ControlObject.registerCallback(function () {
-            _this2.setState({
-              tagMode: true
-            });
+          this.setState({
+            tagMode: true
           });
           AL.ControlObject.getStructById(this.props.params.sId);
         } else if (this.props.params.sId && !this.state.editMode && !this.state.tagMode) {
-          AL.ControlObject.registerCallback(function () {
-            _this2.setState({
-              editMode: true
-            });
+          this.setState({
+            editMode: true
           });
           AL.ControlObject.getStructById(this.props.params.sId);
         } else {
@@ -59,8 +59,9 @@ if (window.AL === undefined) {
     }, {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
-        console.log('unmounting ASD');
-        AL.ControlObject.resetControl();
+        console.log('unmounting ASD/editor');
+        AL.ControlObject.emitter.off('foundId', this.editorCallback);
+        AL.ControlObject.emitter.off('saved', this.editorCallback);
       }
     }, {
       key: 'sendToViewer',
@@ -145,30 +146,18 @@ if (window.AL === undefined) {
         //set placeholders and defaults if editing
 
         console.log('last added/edit', this.state.lastAdded);
-        if (!this.state.editMode && !this.state.lastAdded) {
-          console.log('generic placeholders');
-          name = "Name";
-          year = "Year of Construction/Completion";
-          arch = "Architect/Firm";
-          type = "Cultural";
-          street = "Street";
-          city = "City, State";
-          country = "Country";
-          styles = "Styles";
-          description = "This is a Building, probably";
-          picUrl = "add a URL";
-        }
+
         if (this.state.lastAdded) {
           console.log('default values');
-          name = this.state.lastAdded.title;
-          year = this.state.lastAdded.year;
-          arch = this.state.lastAdded.arch;
-          type = this.state.lastAdded.type;
-          city = this.state.lastAdded.cityState;
-          street = this.state.lastAdded.street;
-          country = this.state.lastAdded.country;
-          picUrl = this.state.lastAdded.pic;
-          description = this.state.lastAdded.description;
+          this.nameInput.value = this.state.lastAdded.title;
+          this.yearInput.value = this.state.lastAdded.year;
+          this.archInput.value = this.state.lastAdded.arch;
+          this.typeInput.value = this.state.lastAdded.type;
+          this.cityInput.value = this.state.lastAdded.cityState;
+          this.streetInput.value = this.state.lastAdded.street;
+          this.countryInput.value = this.state.lastAdded.country;
+          this.picInput.value = decodeURIComponent(this.state.lastAdded.pic);
+          this.descriptionInput.value = this.state.lastAdded.description;
         }
         if (this.state.error) {
           review = React.createElement(ReviewData, { warning: (this.state.error, this.state.stat) });
@@ -217,13 +206,13 @@ if (window.AL === undefined) {
               null,
               'Details'
             ),
-            React.createElement('input', { defaultValue: name, placeholder: name, ref: function ref(input) {
+            React.createElement('input', { defaultValue: name, placeholder: 'Name', ref: function ref(input) {
                 _this3.nameInput = input;
               } }),
-            React.createElement('input', { defaultValue: year, placeholder: year, ref: function ref(input) {
+            React.createElement('input', { defaultValue: year, placeholder: 'Year', ref: function ref(input) {
                 _this3.yearInput = input;
               } }),
-            React.createElement('input', { defaultValue: arch, placeholder: arch, ref: function ref(input) {
+            React.createElement('input', { defaultValue: arch, placeholder: 'Architect/Firm', ref: function ref(input) {
                 _this3.archInput = input;
               } }),
             React.createElement('hr', null),
@@ -274,13 +263,13 @@ if (window.AL === undefined) {
               null,
               'Location'
             ),
-            React.createElement('input', { defaultValue: street, placeholder: street, ref: function ref(input) {
+            React.createElement('input', { defaultValue: street, placeholder: 'Street', ref: function ref(input) {
                 _this3.streetInput = input;
               } }),
-            React.createElement('input', { defaultValue: city, placeholder: city, ref: function ref(input) {
+            React.createElement('input', { defaultValue: city, placeholder: 'City', ref: function ref(input) {
                 _this3.cityInput = input;
               } }),
-            React.createElement('input', { defaultValue: country, placeholder: country, ref: function ref(input) {
+            React.createElement('input', { defaultValue: country, placeholder: 'Country', ref: function ref(input) {
                 _this3.countryInput = input;
               } }),
             React.createElement('hr', null),
@@ -289,7 +278,7 @@ if (window.AL === undefined) {
               null,
               'Description'
             ),
-            React.createElement('textfield', { rows: 5, cols: 40, placeholder: description, defaultValue: description, ref: function ref(input) {
+            React.createElement('textarea', { rows: 5, cols: 120, placeholder: description, defaultValue: description, ref: function ref(input) {
                 _this3.descriptionInput = input;
               } }),
             React.createElement('hr', null),
@@ -553,24 +542,14 @@ if (window.AL === undefined) {
 (function () {
   var ControlObject;
   var sendData;
+  var emitter = new Emitter();
 
   window.AL.ControlObject = {
     mapMarkers: [],
     locationObjects: [],
     sendData: sendData,
     callbacks: [],
-    registerCallback: function registerCallback(cb) {
-      this.callbacks.push(cb);
-    },
-    callbacksEdit: function callbacksEdit() {
-      var _this = this;
-
-      this.callbacks.forEach(function (cb) {
-        console.log('sendData is ', _this.sendData);
-        cb();
-        console.log('callback fired ', cb);
-      });
-    },
+    emitter: emitter,
     resetControl: function resetControl() {
 
       this.callbacks = [];
@@ -579,12 +558,13 @@ if (window.AL === undefined) {
     },
 
     getAll: function getAll() {
-      var _this2 = this;
+      var _this = this;
 
-      if (this.sendData !== undefined) {
-        this.callbacksEdit();
-        return;
-      }
+      // if (this.sendData !== undefined) {
+      //   this.locationObjects = this.sendData.sites;
+      //   emitter.emit('loaded');
+      //   return;
+      // }
 
       // console.log('gettin everything');
       //api get all
@@ -594,10 +574,9 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         console.log("ajax get all done, recieved: \n ", data, "type of", typeof data === 'undefined' ? 'undefined' : _typeof(data));
-        _this2.sendData = data;
-        _this2.locationObjects = _this2.sendData.sites;
-
-        _this2.callbacksEdit();
+        _this.sendData = data;
+        _this.locationObjects = _this.sendData.sites;
+        emitter.emit('loaded');
         // console.log('grabbd everything',data);
       }).fail(function () {
         console.log('cant get');
@@ -605,7 +584,7 @@ if (window.AL === undefined) {
     }, //end of get all
 
     getStructById: function getStructById(itemId) {
-      var _this3 = this;
+      var _this2 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId,
@@ -613,36 +592,37 @@ if (window.AL === undefined) {
         dataType: 'JSON'
       }).done(function (data) {
         console.log("found ", data);
-        _this3.sendData = data;
-        _this3.callbacksEdit();
-        console.log('control callbacks test, callbacks are done ', _this3.callbacks);
+        _this2.sendData = data;
+        emitter.emit('foundId');
+        console.log('control callbacks test, callbacks are done ', _this2.callbacks);
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this3.sendData = (req, stat, err);
-        _this3.callbacksEdit();
+        _this2.sendData = (req, stat, err);
+        emitter.emit('foundId');
         //??
       });
     },
     deleteItem: function deleteItem(itemId) {
-      var _this4 = this;
+      var _this3 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId + "/delete",
         method: 'DELETE',
         dataType: 'JSON'
       }).done(function (data) {
-        console.log('callbacksEdit', _this4.callbacksEdit);
+        console.log('callbacksEdit', _this3.callbacksEdit);
         console.log('deleted, ', data);
-        _this4.sendData = data;
-        _this4.callbacksEdit();
+        _this3.sendData = data;
+        console.log('when deleted, sendData is...', _this3.sendData);
+        emitter.emit('deleted');
       }).fail(function (req, stat, err) {
         console.log('delete failure');
-        _this4.sendData = (req, stat, err);
-        _this4.callbacksEdit();
+        _this3.sendData = (req, stat, err);
+        emitter.emit('deleted');
       });
     }, //end of delete
     addItem: function addItem(inputs) {
-      var _this5 = this;
+      var _this4 = this;
 
       //test
       console.log("sending...", inputs);
@@ -670,17 +650,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this5.sendData = (req, stat, error);
-        _this5.callbacksEdit();
+        _this4.sendData = (req, stat, error);
+        emitter.emit('saved');
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this5.sendData = data;
-        _this5.callbacksEdit();
+        _this4.sendData = data;
+        emitter.emit('saved');
       });
     }, //end of addItem
     editItem: function editItem(itemId, inputs) {
-      var _this6 = this;
+      var _this5 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId + '/edit',
@@ -703,17 +683,17 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this6.sendData = (req, stat, err);
-        _this6.callbacksEdit();
+        _this5.sendData = (req, stat, err);
+        emitter.emit('saved');
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this6.sendData = data;
-        _this6.callbacksEdit();
+        _this5.sendData = data;
+        emitter.emit('saved');
       });
     }, //end of editor
     setStyleTags: function setStyleTags(itemId, tags) {
-      var _this7 = this;
+      var _this6 = this;
 
       console.log('set tags of ', itemId, ' to ', tags);
       $.ajax({
@@ -729,18 +709,18 @@ if (window.AL === undefined) {
         console.log("req", req);
         console.log("stat", stat);
         console.log("err", error);
-        _this7.sendData = (req, stat, err);
-        _this7.callbacksEdit();
+        _this6.sendData = (req, stat, err);
+        emitter.emit('saved');
       }).done(function (data) {
         console.log('request successful');
         console.log('data: ', data);
-        _this7.sendData = data;
-        _this7.callbacksEdit();
+        _this6.sendData = data;
+        emitter.emit('saved');
       });
     },
 
     mapOneItem: function mapOneItem(itemId) {
-      var _this8 = this;
+      var _this7 = this;
 
       $.ajax({
         url: '/api/sites/' + itemId + '/view-map',
@@ -749,15 +729,60 @@ if (window.AL === undefined) {
       }).done(function (data) {
         console.log("found ", data);
         ReactRouter.hashHistory.push('/map/view-one/' + itemId);
-        // this.sendData = data;
-        // this.callbacksEdit();
+        emitter.emit('mapOne');
       }).fail(function (req, stat, err) {
         console.log('failed to get req,', req);
-        _this8.sendData = (req, stat, err);
-        _this8.callbacksEdit();
+        _this7.sendData = (req, stat, err);
+        emitter.emit('mapOne');
         //??
       });
-    } };
+    }, //end of map one view
+
+    siteGeocode: function siteGeocode(itemRef) {
+      var _this8 = this;
+
+      var address = itemRef.street + ' ' + itemRef.cityState + ' ' + itemRef.country;
+      var latlng = [0, 0];
+      console.log('sending ', address, 'to geocode');
+      $.ajax({
+        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyA5B1QULYYb2uGrGReGKSqsuwxCgXL6pOQ',
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function (results) {
+        console.log('geocoded to', results);
+        if (results.status === 'OK') {
+          console.log('coordinates are', results.results[0].geometry.location);
+          latlng = [results.results[0].geometry.location.lat, results.results[0].geometry.location.lng];
+          console.log('coordinates are', latlng);
+          console.log('for', itemRef);
+          $.ajax({
+            url: '/api/sites/' + itemRef.id + '/coordinates',
+            method: 'PUT',
+            dataType: 'JSON',
+            data: {
+              coordinate: latlng
+            }
+          }).fail(function (req, stat, error) {
+            // window.alert('no');
+            console.log('request unsucessful');
+            console.log("req", req);
+            console.log("stat", stat);
+            console.log("err", error);
+          }).done(function (data) {
+            console.log('request successful');
+            console.log('data: ', data);
+            _this8.sendData = data;
+            emitter.emit('saved');
+          });
+
+          emitter.emit('geocoded');
+        } else {
+          console.log('geocoder failure');
+        }
+      });
+    }
+
+  }; //end of control object
 })();
 'use strict';
 
@@ -820,23 +845,24 @@ if (window.AL === undefined) {
           this.setState({
             findingOne: true
           });
-          AL.ControlObject.registerCallback(function () {
+          this.mapOneCallback = function () {
             AL.mapData.locations.push(AL.ControlObject.sendData);
-          });
+            _this2.locationToMapper(AL.mapData.locations);
+          };
+          AL.ControlObject.emitter.once('foundId', this.mapOneCallback);
         } else {
-          //console.log('showing maximum stuff');
+
           console.log('fill mapdata locations list with', AL.ControlObject.sendData);
-          AL.ControlObject.registerCallback(function () {
-            return AL.ControlObject.locationObjects.forEach(function (item) {
+          this.buildMapCallback = function () {
+            AL.ControlObject.locationObjects.forEach(function (item) {
               AL.mapData.locations.push(item);
             });
-          });
+            _this2.locationToMapper(AL.mapData.locations);
+          };
         }
-        //moves control data to list
-        AL.ControlObject.registerCallback(function () {
-          return _this2.locationToGeocoder(AL.mapData.locations);
-        });
-        //registers callback to geocode (then locate and mark) points of interest
+        //^ second block is primary show all
+
+        AL.ControlObject.emitter.on('loaded', this.buildMapCallback);
       }
     }, {
       key: 'componentDidMount',
@@ -863,7 +889,7 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('main page unmounted');
-        AL.ControlObject.resetControl();
+        AL.ControlObject.emitter.off('loaded', this.buildMapCallback);
       }
 
       //defaults
@@ -883,17 +909,17 @@ if (window.AL === undefined) {
       //master close
 
     }, {
-      key: 'locationToGeocoder',
-      value: function locationToGeocoder(locations) {
+      key: 'locationToMapper',
+      value: function locationToMapper(locations) {
         var _this3 = this;
 
         console.log('location to geocoder', locations, 'state', this.state.tag);
         var addresses;
         if (AL.mapData.filter == 'none') {
           addresses = locations;
-          console.log('locationToGeocoder says this is', addresses);
+          console.log('locationToMapper says this is', addresses);
           addresses.forEach(function (address) {
-            _this3.geoCode(address, _this3.map);
+            _this3.mapPopulator(address, _this3.map);
           });
         } else {
           var _addresses = locations;
@@ -901,35 +927,48 @@ if (window.AL === undefined) {
             console.log('address', address, 'includes', address.styles);
             if (address.styles.includes(AL.mapData.filter)) {
               console.log('filter including', address);
-              _this3.geoCode(address, _this3.map);
+              _this3.mapPopulator(address, _this3.map);
             }
           });
         }
       }
     }, {
-      key: 'geoCode',
-      value: function geoCode(itemId, map) {
+      key: 'mapPopulator',
+      value: function mapPopulator(itemId, map) {
         var _this4 = this;
 
         var handleResults;
         //check for item id or obj
         //console.log('GEOCODE',itemId);
         var address = itemId.street + " " + itemId.cityState + " " + itemId.country;
-        this.geocoder.geocode({ 'address': address }, handleResults = function handleResults(results, status) {
-          console.log('hi, im geocoding', 'geocoder status', status);
-          if (status === google.maps.GeocoderStatus.OK) {
-            //console.log('geo code this check',this.map);
-            _this4.googleMap.setCenter(results[0].geometry.location);
-            var marker = new google.maps.Marker({
-              position: results[0].geometry.location,
-              title: itemId.title
-            });
+        if (itemId.coordinate[0] === 0 && itemId.coordinate[1] === 0) {
+          //are we geocoded?
+          this.geocoder.geocode({ 'address': address }, handleResults = function handleResults(results, status) {
+            console.log('hi, im geocoding in your mapcomponent', 'geocoder status', status);
+            if (status === google.maps.GeocoderStatus.OK) {
+              console.log('geo code this check', _this4.map);
+              _this4.googleMap.setCenter(results[0].geometry.location);
+              var marker = new google.maps.Marker({
+                position: results[0].geometry.location,
+                title: itemId.title
+              });
 
-            _this4.markMap(_this4.googleMap, marker, itemId);
+              _this4.markMap(_this4.googleMap, marker, itemId);
+              return;
+            }
             return;
-          }
+          });
+        } else {
+          var siteLatLng = { lat: itemId.coordinate[0], lng: itemId.coordinate[1] };
+          this.googleMap.setCenter(siteLatLng);
+          var marker = new google.maps.Marker({
+            position: siteLatLng,
+            title: itemId.title
+          });
+
+          this.markMap(this.googleMap, marker, itemId);
           return;
-        });
+        }
       }
 
       //^^ Test Geocode
@@ -1003,8 +1042,8 @@ if (window.AL === undefined) {
         this.setState({
           tag: filter
         });
-        console.log('resending to geocode with filter', filter, 'these', AL.mapData.markers, AL.mapData.locations);
-        this.locationToGeocoder(AL.mapData.locations);
+        console.log('resending to mapPopulator with filter', filter, 'these', AL.mapData.markers, AL.mapData.locations);
+        this.locationToMapper(AL.mapData.locations);
       }
     }, {
       key: 'render',
@@ -1259,16 +1298,22 @@ if (window.AL === undefined) {
         var _this2 = this;
 
         console.log('show all will mount');
-        AL.ControlObject.registerCallback(function () {
-          return AL.ControlObject.locationObjects.forEach(function (item) {
-            AL.mapData.locations.push(item);
-          });
-        });
-        AL.ControlObject.registerCallback(function () {
+
+        this.loadedCallback = function () {
+          console.log('viewer, loaded callback fired');
           _this2.setState({
             sites: AL.ControlObject.locationObjects
           });
-        });
+        };
+
+        this.deletedCallback = function () {
+          AL.ControlObject.getAll();
+        };
+        //reload list after a delete to reflect changes
+
+
+        AL.ControlObject.emitter.on('loaded', this.loadedCallback);
+        AL.ControlObject.emitter.on('deleted', this.deletedCallback);
       }
     }, {
       key: 'componentDidMount',
@@ -1279,13 +1324,14 @@ if (window.AL === undefined) {
       key: 'componentWillUnmount',
       value: function componentWillUnmount() {
         console.log('unmounting show all');
-        AL.ControlObject.resetControl();
+        AL.ControlObject.emitter.off('loaded', this.loadedCallback);
+        AL.ControlObject.emitter.off('deleted', this.deletedCallback);
       }
     }, {
       key: 'populateList',
       value: function populateList() {
         //reset
-
+        console.log('populate button clicked');
         AL.ControlObject.getAll();
       }
     }, {
@@ -1428,7 +1474,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'li',
                 null,
-                this.props.info.city
+                this.props.info.cityState
               ),
               React.createElement(
                 'li',
@@ -1438,7 +1484,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'li',
                 null,
-                this.props.info.styles
+                JSON.stringify(this.props.info.styles)
               )
             )
           ),
@@ -1474,6 +1520,13 @@ if (window.AL === undefined) {
                   AL.ControlObject.mapOneItem(_this5.state.info.id);
                 } },
               'view'
+            ),
+            React.createElement(
+              'div',
+              { className: 'button btn-gc', onClick: function onClick() {
+                  AL.ControlObject.siteGeocode(_this5.props.info);
+                } },
+              'GC'
             )
           )
         );

@@ -3,11 +3,12 @@
 
 .add-structure{
   font-family: $stack-one;
-  max-width: 960px;
+  max-width: 840px;
   background-color: $color1;
   color: $color5;
-  margin: 2em auto;
-  padding:12px;
+  margin: 2em 0;
+  padding:6px;
+  display: inline-block;
 
   h1,h2,h3,h4{
     padding:6px;
@@ -68,6 +69,8 @@
 
 .review{
   color:black;
-  background-color:white;
-  margin: 1em auto;
+  background-color:$teel;
+  margin: 1em 0;
+  display:inline-block;
+  padding:12px;
 }
