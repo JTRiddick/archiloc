@@ -210,6 +210,31 @@ if (window.AL === undefined){window.AL = {}; }
 
       },//end of map one view
 
+      siteGeocode: function(itemRef){
+        var address = itemRef.street + ' ' + itemRef.cityState + ' ' + itemRef.country;
+        var lat;
+        var lng;
+        console.log('sending ',address,'to geocode');
+        $.ajax({
+          url:'https://maps.googleapis.com/maps/api/geocode/json?address='+address+'&key=AIzaSyA5B1QULYYb2uGrGReGKSqsuwxCgXL6pOQ',
+          method:'GET',
+          dataType:'JSON',
+        })
+        .done((results)=>{
+          console.log('geocoded to',results);
+          if(results.status === 'OK'){
+            console.log('coordinates are', results.results[0].geometry.location);
+            lat = results.results[0].geometry.location.lat;
+            lng = results.results[0].geometry.location.lng;
+            emitter.emit('geocoded');
+          }
+          else{
+            console.log('geocoder failure');
+          }
+        })
+
+      }
+
     } //end of control object
   }
 )();

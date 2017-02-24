@@ -736,7 +736,31 @@ if (window.AL === undefined) {
         emitter.emit('mapOne');
         //??
       });
-    } };
+    }, //end of map one view
+
+    siteGeocode: function siteGeocode(itemRef) {
+      var address = itemRef.street + ' ' + itemRef.cityState + ' ' + itemRef.country;
+      var lat;
+      var lng;
+      console.log('sending ', address, 'to geocode');
+      $.ajax({
+        url: 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyA5B1QULYYb2uGrGReGKSqsuwxCgXL6pOQ',
+        method: 'GET',
+        dataType: 'JSON'
+      }).done(function (results) {
+        console.log('geocoded to', results);
+        if (results.status === 'OK') {
+          console.log('coordinates are', results.results[0].geometry.location);
+          lat = results.results[0].geometry.location.lat;
+          lng = results.results[0].geometry.location.lng;
+          emitter.emit('geocoded');
+        } else {
+          console.log('geocoder failure');
+        }
+      });
+    }
+
+  }; //end of control object
 })();
 'use strict';
 
@@ -1415,7 +1439,7 @@ if (window.AL === undefined) {
               React.createElement(
                 'li',
                 null,
-                this.props.info.city
+                this.props.info.cityState
               ),
               React.createElement(
                 'li',
@@ -1461,6 +1485,13 @@ if (window.AL === undefined) {
                   AL.ControlObject.mapOneItem(_this5.state.info.id);
                 } },
               'view'
+            ),
+            React.createElement(
+              'div',
+              { className: 'button btn-gc', onClick: function onClick() {
+                  AL.ControlObject.siteGeocode(_this5.props.info);
+                } },
+              'GC'
             )
           )
         );

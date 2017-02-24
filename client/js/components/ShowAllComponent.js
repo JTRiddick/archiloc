@@ -124,7 +124,7 @@ if (window.AL === undefined){window.AL = {}; }
             <li>{this.props.info.arch}</li>
             <li>{this.props.info.type}</li>
             <li>{this.props.info.street}</li>
-            <li>{this.props.info.city}</li>
+            <li>{this.props.info.cityState}</li>
             <li>{this.props.info.country}</li>
             <li>{JSON.stringify(this.props.info.styles)}</li>
           </ol>
@@ -132,16 +132,17 @@ if (window.AL === undefined){window.AL = {}; }
 
         <div className = "site-controls">
           <div className = "button" onClick={() =>
-            {AL.ControlObject.deleteItem(this.state.info.id)}}>delete</div>
-
+            {AL.ControlObject.deleteItem(this.state.info.id)}}>
+            delete
+          </div>
            <ReactRouter.Link className="link" to={"/test/asd/"+ editLinkId + "/edit" }><div className = "button">edit</div></ReactRouter.Link>
-
           <div className = "button" onClick={() =>
             {this.tagOneItem(this.state.info.id)}}>tag
           </div>
           <div className = "button" onClick={() =>
             {AL.ControlObject.mapOneItem(this.state.info.id)}}>view
           </div>
+          <div className="button btn-gc" onClick={()=>{AL.ControlObject.siteGeocode(this.props.info)}}>GC</div>
         </div>
       </div>)
 
