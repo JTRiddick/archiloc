@@ -3,7 +3,11 @@ var express = require('express');
 var session = require('express-session')
 var bodyParser = require("body-parser");
 var mongoose = require('mongoose');
-
+var passport = require('passport');
+var flash = require('connect-flash');
+var morgan = require('morgan');
+var cookieParser = require('cookie-parser');
+var port = process.env.PORT || 5056;
 
 var app = express();
 
@@ -24,17 +28,54 @@ db.once('open',function(){
   // console.log('db',db);
 });
 
+
+app.get('/', (req, res) => { res.render('app.ejs'); });
 app.use(require('./api-routes.js')());
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 
-app.get('/', (req, res) => { res.render('app.ejs'); });
-// app.get('/'),(req, res) => {res.render('index.ejs');})
-// app.get('/map', (req, res) => { res.render('app.ejs'); });
+//passport=========================================
+
+app.use(session({secret: 'howmuchdoesyourbuildingweigh'}));
+app.use(passport.initialize());
+app.use(passport.session());
+app.use(flash()); //flash messages stored in session
+
+require('./authentication.js')(passport); // Where the authentication configuration is
+
+// In every view we need to know if they are authenticated for the header, so add to locals
+app.use(function(req, res, next) {
+  res.locals.isAuthenticated = req.isAuthenticated();
+  next();
+});
 
 
-var port = process.env.PORT || 5056;
+// The routes for the authentication stuff goes in this separate route file.
+app.use(require('./account-routes.js')(passport));
+// All routes after this point require authentication
+app.use(function(req, res, next) {
+  var isAuthed = req.isAuthenticated();
+  if (!isAuthed) {
+    console.log("redirected to login");
+    res.redirect('/login');
+    return;
+  }
+
+  next();
+});
+
+app.get('/test', function(req,res){
+  passport.authenticate('local');
+  res.render('app.ejs');
+});
+
+// ================================================
+
+
+
+
+
 
 app.listen(port, function(){
   console.log('listening to port',port);
