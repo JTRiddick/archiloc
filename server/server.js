@@ -7,6 +7,7 @@ var passport = require('passport');
 var flash = require('connect-flash');
 var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
+var userdata = require('./userdata.js');
 var port = process.env.PORT || 5056;
 
 var app = express();
@@ -30,19 +31,27 @@ db.once('open',function(){
 
 
 app.get('/', (req, res) => { res.render('index.ejs'); });
-app.use(require('./api-routes.js')());
+app.all(require('./api-routes.js')());
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
 
 //passport=========================================
 
-app.use(session({secret: 'howmuchdoesyourbuildingweigh'}));
+app.use(session({secret: 'howmuchdoesyourbuildingweigh',resave: false,
+  saveUninitialized: true}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash()); //flash messages stored in session
 
 require('./authentication.js')(passport); // Where the authentication configuration is
+
+app.get('/api/raw/users', function(req, res) {
+  User.find()
+    .exec(function(err, users) {
+      res.send(users);
+    });
+});
 
 // In every view we need to know if they are authenticated for the header, so add to locals
 app.use(function(req, res, next) {

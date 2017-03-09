@@ -25,9 +25,11 @@ module.exports = {
     for (var key in users) {
       var user = users[key];
       if (user.email === email && user.password === password) {
+        console.log('userdata validation success',email,password);
         success(user);
       }
       else {
+        console.log('userdata validation failure');
         failure();
       }
     }

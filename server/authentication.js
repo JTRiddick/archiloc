@@ -1,8 +1,7 @@
 var mongoose = require('mongoose');
 var PassportLocalStrategy = require('passport-local').Strategy;
 var User = require('./models/user');
-var GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
-
+var userdata = require('./userdata.js');
 
 
 module.exports = function(passport){
@@ -50,7 +49,7 @@ module.exports = function(passport){
         });
       });
 
-      // datasource.validateLogin(username, password, success, failure);
+      // userdata.validateLogin(username, password, success, failure);
     }
   ));
 

@@ -1,10 +1,13 @@
 // account authentication sub router
 var express = require('express');
-
+var userdata = require('./userdata.js');
+var flash = require('connect-flash');
 
 var alreadyAuthed = (req,res,next) => {
-  var isAuthed = req.isAuthenticated;
+  var isAuthed = req.isAuthenticated();
   if(isAuthed){
+    console.log('authorized');
+    req.flash('info', 'flash test')
     res.redirect('/app');
     return;
   }
@@ -23,9 +26,12 @@ module.exports = function(passport){
   router.post('/login',
     passport.authenticate('local-login',
   { successRedirect:'/app',
-    failureRedirect:'/login' }),
+    failureRedirect:'/' }),
 
-    function (req,res){}
+    function (req,res){
+      console.log(this,'login callback?');
+    
+    }
   );
 
   router.get('/logout', function(req,res){
@@ -39,9 +45,11 @@ module.exports = function(passport){
   });
 
   router.post('/create-account', passport.authenticate('local-create-account',
-{successRedirect:'/app',failureRedirect:'/create-account'}),
-  function(req,res){}
-);
+  {successRedirect:'/app',failureRedirect:'/create-account'}),
+  function(req,res){
+    console.log('create account');
+  }
+  );
 
 return router;
 

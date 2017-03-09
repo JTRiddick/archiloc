@@ -1,5 +1,7 @@
 var express = require('express');
+var userdata = require('./userdata.js');
 var Site = require('./models/site.js');
+var User = require('./models/user.js')
 
 module.exports = function(){
 
@@ -77,7 +79,7 @@ module.exports = function(){
     var latlng = [req.body['coordinate[]'][0],req.body['coordinate[]'][1]];
     latlng[0] = parseFloat(latlng[0]);
     latlng[1] = parseFloat(latlng[1]);
-    
+
     var cb = (err,data) => {
       console.log('i saved coordinates to a site a site :',err,data);
       res.send(data);
