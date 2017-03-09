@@ -11,9 +11,10 @@ module.exports = function(passport){
     done(null,user.id);
   });
 
-  passport.deserializeUser(function(user,done){
-    user.findById(id,function(err,user){
-      done(err,user);
+  passport.deserializeUser(function(id,done){
+    var objectId = mongoose.Types.ObjectId(id);
+    User.findById(objectId,function(err,user){
+      done(null,user);
     });
   });
 

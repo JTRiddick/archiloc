@@ -26,11 +26,13 @@ module.exports = function(passport){
   router.post('/login',
     passport.authenticate('local-login',
   { successRedirect:'/app',
-    failureRedirect:'/' }),
+    failureRedirect:'/',
+    failureFlash:true,
+    successFlash:true}),
 
     function (req,res){
       console.log(this,'login callback?');
-    
+
     }
   );
 
@@ -45,7 +47,11 @@ module.exports = function(passport){
   });
 
   router.post('/create-account', passport.authenticate('local-create-account',
-  {successRedirect:'/app',failureRedirect:'/create-account'}),
+  { successRedirect:'/app',
+    failureRedirect:'/create-account',
+    failureFlash:true,
+    successFlash:true
+  }),
   function(req,res){
     console.log('create account');
   }
