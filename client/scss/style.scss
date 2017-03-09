@@ -64,7 +64,7 @@ i{
   margin:-0.1em 0 1em 0;
   clear: both;
   overflow: auto;
-  height:54px;
+  height:128px;
 }
 
 .top-bar{
@@ -77,16 +77,16 @@ i{
   float:right;
   display: inline-block;
   width:20%;
-  height: 100%;
+  pointer-events: auto;
+  cursor: crosshair;
 
   li{
     padding: 2px 0 2px 6px;
     border-bottom: 1px solid $wit;
-    border-right:1px solid $wit;
     text-decoration: none;
     color:$wit;
   }
-  li:hover{
+  a,li:hover{
     background-color:$deepred;
     color:$color6;
     border-bottom: 1px solid $color5;

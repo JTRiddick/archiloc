@@ -366,7 +366,7 @@ i {
   margin: -0.1em 0 1em 0;
   clear: both;
   overflow: auto;
-  height: 54px; }
+  height: 128px; }
 
 .top-bar {
   background-color: #a0332f;
@@ -377,14 +377,14 @@ i {
   float: right;
   display: inline-block;
   width: 20%;
-  height: 100%; }
+  pointer-events: auto;
+  cursor: crosshair; }
   .nav li {
     padding: 2px 0 2px 6px;
     border-bottom: 1px solid #fbfffa;
-    border-right: 1px solid #fbfffa;
     text-decoration: none;
     color: #fbfffa; }
-  .nav li:hover {
+  .nav a, .nav li:hover {
     background-color: #a0332f;
     color: #dbd83b;
     border-bottom: 1px solid #fedc97;

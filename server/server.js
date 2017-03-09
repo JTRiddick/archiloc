@@ -79,6 +79,7 @@ app.use(function(req, res, next) {
 
 app.get('/app', function(req,res){
   passport.authenticate('local');
+  console.log('res locals', res.locals);
   res.render('app.ejs');
 });
 

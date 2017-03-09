@@ -11,6 +11,7 @@ if (window.AL === undefined) {window.AL = { }; }
         <ul>
           <li className="link" onClick={()=> {ReactRouter.hashHistory.push('/map');}}>Map</li>
           <li className="link" onClick={()=> {ReactRouter.hashHistory.push('/test/all');}}>Admin/Testing</li>
+          <li className="link"><a href='/logout'>LogOut</a></li>
         </ul>
       </div>)
 

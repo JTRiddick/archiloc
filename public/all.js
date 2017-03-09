@@ -491,6 +491,15 @@ if (window.AL === undefined) {
                   ReactRouter.hashHistory.push('/test/all');
                 } },
               "Admin/Testing"
+            ),
+            React.createElement(
+              "li",
+              { className: "link" },
+              React.createElement(
+                "a",
+                { href: "/logout" },
+                "LogOut"
+              )
             )
           )
         );
