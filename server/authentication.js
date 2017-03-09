@@ -27,8 +27,8 @@ module.exports = function(passport){
     function(req, email, password, done) {
 
       var success = function(user) {
-        res.locals.currentUser = user;
-        done(null, user);
+        res.locals.currentUser = user; //why does this line make api routes work
+        done(null, user, {message:'Valid login'});
       }
 
       var failure = function() {

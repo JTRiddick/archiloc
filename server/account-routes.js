@@ -20,7 +20,7 @@ module.exports = function(passport){
 
   //login
   router.get('/login', alreadyAuthed, function(req,res){
-    res.render('login.ejs')
+    res.render('login.ejs',{ messages: req.flash('info') });
   });
 
   router.post('/login',
