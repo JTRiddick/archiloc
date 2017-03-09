@@ -29,7 +29,7 @@ db.once('open',function(){
 });
 
 
-app.get('/', (req, res) => { res.render('app.ejs'); });
+app.get('/', (req, res) => { res.render('index.ejs'); });
 app.use(require('./api-routes.js')());
 
 app.set('view engine', 'ejs');
@@ -65,15 +65,13 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/test', function(req,res){
+app.get('/app', function(req,res){
   passport.authenticate('local');
   res.render('app.ejs');
 });
 
+
 // ================================================
-
-
-
 
 
 

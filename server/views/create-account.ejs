@@ -3,7 +3,20 @@
   <div id='create-account'>
     <h1>Create An Account Here</h1>
 
-    <h3>Show me the <a href="/#/map">Map</a></h3>
-  </div>
+    <div class="create-account">
+      <h1>Create Account</h1>
 
+      <form class="create-account-form" method="POST" action="create-account">
+
+        <input class="email-validate" name="email" placeholder="email"></input>
+
+        <input class="password-validate" name="password" placeholder="password"></input>
+
+        <button class="create-account-submit-button">create account</button>
+
+      </form>
+    </div>
+
+  </div>
+<script src="form-validation.js"></script>
 <%- include('footer'); %>

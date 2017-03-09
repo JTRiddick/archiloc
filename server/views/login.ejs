@@ -3,7 +3,22 @@
   <div id='login'>
     <h1>Log In?</h1>
 
-    <h3>Show me the <a href="/#/map">Map</a></h3>
+    <div class="login">
+      <h1>Login!</h1>
+
+      <form method="POST" action="login">
+
+        <input name="email" placeholder="email" ></input>
+
+        <input name="password" placeholder="password" ></input>
+
+        <button>login</button>
+
+      </form>
+
+      <p>Or, <a href="/create-account">register for a new account</a>.</p>
+    </div>
+
   </div>
 
 <%- include('footer'); %>
