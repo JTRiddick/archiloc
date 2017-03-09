@@ -1,12 +1,13 @@
 var express = require('express');
 var userdata = require('./userdata.js');
 var Site = require('./models/site.js');
-var User = require('./models/user.js')
+var User = require('./models/user.js');
+var flash = require('connect-flash');
 
-module.exports = function(){
+
+module.exports = function(passport){
 
   var router = express.Router();
-
 
   // console.log('site is',Site);
 

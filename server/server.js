@@ -6,7 +6,7 @@ var mongoose = require('mongoose');
 var passport = require('passport');
 var flash = require('connect-flash');
 var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
+var cookieParser = require('cookie-parser'); //cookie parser no longer necessary
 var userdata = require('./userdata.js');
 var port = process.env.PORT || 5056;
 
@@ -31,7 +31,9 @@ db.once('open',function(){
 
 
 app.get('/', (req, res) => { res.render('index.ejs'); });
-app.get(require('./api-routes.js')());
+
+//api routes
+app.use(require('./api-routes.js')(passport));
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '/views'));
@@ -43,6 +45,7 @@ app.use(session({secret: 'howmuchdoesyourbuildingweigh',resave: false,
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash()); //flash messages stored in session
+
 
 require('./authentication.js')(passport); // Where the authentication configuration is
 

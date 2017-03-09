@@ -27,6 +27,7 @@ module.exports = function(passport){
     function(req, email, password, done) {
 
       var success = function(user) {
+        res.locals.currentUser = user;
         done(null, user);
       }
 
