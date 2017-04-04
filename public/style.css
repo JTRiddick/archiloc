@@ -169,9 +169,9 @@ table {
 
 #map-component {
   position: absolute;
-  width: 1360px;
+  width: 100%;
   min-height: 960px;
-  overflow: auto; }
+  overflow: visible; }
   #map-component .component-inner {
     margin: 0;
     padding: 0;
@@ -298,18 +298,17 @@ table {
     height: 64px;
     opacity: 0; }
   #map-component .mapview-image {
-    position: absolute;
-    float: left;
-    max-height: 640px; }
+    width: 66%;
+    height: 100%;
+    display: inline-block; }
     #map-component .mapview-image img {
       display: inline-block;
-      width: auto;
-      height: 640px; }
+      max-width: 100%;
+      max-height: auto; }
   #map-component .mapview-desc {
-    float: right;
-    width: 440px;
-    height: 440px;
-    margin: 2em;
+    display: inline-block;
+    max-width: 33.333%;
+    max-height: 440px;
     padding: 1em;
     background: #a0332f;
     color: #fbfffa; }

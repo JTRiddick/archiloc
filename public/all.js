@@ -147,8 +147,8 @@ if (window.AL === undefined) {
 
         console.log('last added/edit', this.state.lastAdded);
 
-        if (this.state.lastAdded) {
-          console.log('default values');
+        if (this.state.lastAdded && this.state.tagMode === "false") {
+          console.log('default values \n', this.state);
           this.nameInput.value = this.state.lastAdded.title;
           this.yearInput.value = this.state.lastAdded.year;
           this.archInput.value = this.state.lastAdded.arch;

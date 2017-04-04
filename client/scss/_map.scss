@@ -1,9 +1,9 @@
 #map-component{
 
   position: absolute;
-  width: 1360px;
+  width: 100%;
   min-height: 960px;
-  overflow: auto;
+  overflow: visible;
 
 
   .component-inner{
@@ -170,20 +170,20 @@
   }
 
   .mapview-image{
-    position: absolute;
-    float:left;
-    max-height:640px;
+    // position: absolute;
+    width: 66%;
+    height:100%;
+    display: inline-block;
     img{
       display: inline-block;
-      width: auto;
-      height: 640px;
+      max-width: 100%;
+      max-height: auto;
     }
   }
   .mapview-desc{
-    float:right;
-    width:440px;
-    height:440px;
-    margin:2em;
+    display:inline-block;
+    max-width:33.333%;
+    max-height:440px;
     padding:1em;
     background: $deepred;
     color:$wit;
