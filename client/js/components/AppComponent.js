@@ -6,7 +6,9 @@ if (window.AL === undefined) {window.AL = { }; }
   class AppComponent extends React.Component {
     render() {
       console.log('rendering app component');
-
+      var blankContent = (<div className="app-content blank">
+        <h4>Use the Navigation Buttons</h4>
+      </div>)
       var testBar = (<div className = "top-bar nav">
         <ul>
           <li className="link" onClick={()=> {ReactRouter.hashHistory.push('/map');}}>Map</li>
@@ -24,7 +26,8 @@ if (window.AL === undefined) {window.AL = { }; }
           </div>
           {testBar}
         </div>
-        {this.props.children}
+        {console.log('props.children\n',this.props.children)}
+        {this.props.children || blankContent}
       </div>);
     }
   }

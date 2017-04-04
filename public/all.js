@@ -471,7 +471,15 @@ if (window.AL === undefined) {
       key: "render",
       value: function render() {
         console.log('rendering app component');
-
+        var blankContent = React.createElement(
+          "div",
+          { className: "app-content blank" },
+          React.createElement(
+            "h4",
+            null,
+            "Use the Navigation Buttons"
+          )
+        );
         var testBar = React.createElement(
           "div",
           { className: "top-bar nav" },
@@ -530,7 +538,8 @@ if (window.AL === undefined) {
             ),
             testBar
           ),
-          this.props.children
+          console.log('props.children\n', this.props.children),
+          this.props.children || blankContent
         );
       }
     }]);

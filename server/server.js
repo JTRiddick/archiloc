@@ -61,6 +61,12 @@ app.use(function(req, res, next) {
   next();
 });
 
+app.get('/app', function(req,res){
+  passport.authenticate('local');
+  console.log('res locals', res.locals);
+  res.render('app.ejs');
+});
+
 
 // The routes for the authentication stuff goes in this separate route file.
 app.use(require('./account-routes.js')(passport));
@@ -76,11 +82,6 @@ app.use(function(req, res, next) {
   next();
 });
 
-app.get('/app', function(req,res){
-  passport.authenticate('local');
-  console.log('res locals', res.locals);
-  res.render('app.ejs');
-});
 
 
 // ================================================

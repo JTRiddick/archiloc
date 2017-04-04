@@ -189,7 +189,7 @@ table {
       width: 20%;
       text-align: center;
       padding: 2px 3px;
-      cursor: default;
+      cursor: pointer;
       user-select: none; }
     #map-component .filter-controls .filter-button:hover {
       border-color: #35ad1a;
@@ -249,7 +249,7 @@ table {
         width: 10%;
         text-align: center;
         padding: 2px 2px;
-        cursor: default;
+        cursor: pointer;
         user-select: none;
         margin: 0.25em 0.75em;
         padding: 5px;
@@ -314,6 +314,16 @@ table {
     background: #a0332f;
     color: #fbfffa; }
 
+html {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
+
+*, *:before, *:after {
+  -webkit-box-sizing: inherit;
+  -moz-box-sizing: inherit;
+  box-sizing: inherit; }
+
 body {
   background-color: #fbfffa;
   font-family: "Roboto", sans-serif;
@@ -340,6 +350,32 @@ h4 {
 i {
   font-style: italic; }
 
+#index h1 {
+  text-align: center;
+  padding: 1em; }
+
+#index ul {
+  margin-left: 2em;
+  display: inline-block;
+  width: 60%; }
+
+#index li {
+  padding: 1em 2em 1em 1em;
+  color: #fbfffa;
+  background-color: #a0332f;
+  border: 2px solid #a0332f; }
+
+#index a {
+  background-color: #e3e3e3;
+  color: #a0332f;
+  display: inline-block;
+  width: 20%;
+  text-align: center;
+  padding: 2px 3px;
+  cursor: pointer;
+  user-select: none;
+  width: 35%; }
+
 .left {
   float: left;
   clear: none; }
@@ -349,13 +385,12 @@ i {
   clear: none; }
 
 .main-content {
-  height: auto; }
+  height: auto;
+  max-width: 100vw; }
 
 .app-component {
   background-color: #fbfffa;
   color: #222;
-  padding: 1em;
-  width: 1400px;
   clear: both;
   height: 96px; }
   .app-component .title {
@@ -399,7 +434,7 @@ i {
   width: 10%;
   text-align: center;
   padding: 2px 2px;
-  cursor: default;
+  cursor: pointer;
   user-select: none;
   position: relative;
   border: 1px solid #a0332f;
