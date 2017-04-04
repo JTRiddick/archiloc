@@ -36,6 +36,10 @@
     border: none;
   }
 
+  textarea{
+    max-width: 90%;
+  }
+
   .nav-button{
     background-color:$color2;
     color:$color5;

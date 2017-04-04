@@ -78,6 +78,8 @@ table {
     text-align: center;
     padding: 1em;
     border: none; }
+  .add-structure textarea {
+    max-width: 90%; }
   .add-structure .nav-button {
     background-color: #546a7b;
     color: #fedc97;
@@ -111,7 +113,7 @@ table {
 
 .sites-view {
   font-family: "Andale mono", "Menlo", "Monaco", monospace;
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0.5em auto;
   background-color: #2b3341;
   color: #fbfffa;
@@ -120,18 +122,17 @@ table {
   border: 4px solid #e3e3e3; }
   .sites-view .info-boxes-container {
     overflow: auto;
-    background-color: #a0332f; }
+    background-color: #247ba0; }
   .sites-view .site-info-box {
     position: relative;
     float: left;
     width: calc(33.333% - 0.75em);
     background-color: black;
     margin: 0.5em 0.25em;
-    overflow: none; }
+    overflow: inherit; }
   .sites-view .site-info {
-    background-color: #247ba0;
-    color: #2b3341;
-    height: 144px; }
+    background-color: #e3e3e3;
+    color: #2b3341; }
   .sites-view .site-controls {
     margin: 0.2em 0; }
   .sites-view .button {
@@ -140,17 +141,17 @@ table {
     color: #546a7b;
     display: inline-block;
     width: 16%;
+    height: 22px;
     text-align: center;
     padding: 2px 3px;
-    cursor: default;
+    cursor: pointer;
     user-select: none; }
   .sites-view .load {
     background-color: #546a7b;
     color: #fedc97;
     margin: 1em;
     padding: 0.25em;
-    min-width: 1em;
-    height: 1em; }
+    min-width: 1em; }
   .sites-view .button:hover {
     background-color: #fedc97;
     color: #35ad1a; }
@@ -425,6 +426,10 @@ i {
     border-right: 1px solid #fedc97; }
   .nav a:visited {
     color: #e3e3e3; }
+  .nav a {
+    border: none;
+    outline: none;
+    text-decoration: none; }
 
 .close {
   background-color: #fbfffa;

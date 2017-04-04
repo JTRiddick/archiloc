@@ -127,6 +127,11 @@ i{
   a:visited{
     color:$grau;
   }
+  a{
+    border:none;
+    outline:none;
+    text-decoration:none;
+  }
 }
 
 .close{

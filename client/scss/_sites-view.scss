@@ -1,7 +1,7 @@
 
 .sites-view{
   font-family: $stack-one;
-  max-width: 1200px;
+  max-width: 100%;
   margin:0.5em auto;
   background-color: $color1;
   color:$wit;
@@ -11,7 +11,7 @@
 
   .info-boxes-container{
     overflow: auto;
-    background-color: $deepred;
+    background-color: $blau;
   }
 
 
@@ -21,12 +21,11 @@
     width: calc(33.333% - 0.75em);
     background-color: black;
     margin: 0.5em 0.25em;
-    overflow: none;
+    overflow:inherit;
   }
   .site-info{
-    background-color: $blau;
+    background-color: $grau;
     color: $color1;
-    height:144px;
   }
   .site-controls{
 
@@ -39,9 +38,10 @@
     color:$color2;
     display: inline-block;
     width: 16%;
+    height: 22px;
     text-align: center;
     padding: 2px 3px;
-    cursor: default;
+    cursor: pointer;
     user-select: none;
   }
   .load{
@@ -50,7 +50,6 @@
     margin: 1em;
     padding:0.25em;
     min-width: 1em;
-    height: 1em;
   }
   .button:hover{
     background-color: $color5;

@@ -27,7 +27,7 @@ if (window.AL === undefined) {window.AL = { }; }
           {testBar}
         </div>
         {console.log('props.children\n',this.props.children)}
-        {this.props.children || blankContent}
+        {this.props.children || ReactRouter.hashHistory.push('/map')}
       </div>);
     }
   }

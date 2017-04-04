@@ -539,7 +539,7 @@ if (window.AL === undefined) {
             testBar
           ),
           console.log('props.children\n', this.props.children),
-          this.props.children || blankContent
+          this.props.children || ReactRouter.hashHistory.push('/map')
         );
       }
     }]);
