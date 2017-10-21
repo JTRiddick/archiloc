@@ -135,7 +135,6 @@ if (window.AL === undefined) {
           console.log('last added/edit', this.state.lastAdded);
           if (this.state.lastAdded) {
             review = React.createElement(ReviewData, { info: this.state.lastAdded });
-
             console.log('returned data in state', this.state.lastAdded);
           }
           if (this.state.error) {

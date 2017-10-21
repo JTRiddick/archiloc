@@ -154,8 +154,9 @@ module.exports = function(passport){
 
   router.get('/api/csv',(req,res) => {
     console.log(getCSV); //does this show up idk
-    const output = getCSV.getCSV;
-    return output;
+    const output = getCSV();
+    console.log('csv get output: ',output);
+    res.send(output);
   })
 
 

@@ -6,4 +6,4 @@ And a Separate API
 
 Make sure there's a database to connect to
 
-Start with npm run start
+Start with $gulp start
