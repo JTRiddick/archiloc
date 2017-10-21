@@ -1,5 +1,5 @@
 const express = require('express');
-const mongotocsv = require('mongo-to-csv');
+const getCSV = require('./csv.js');
 const userdata = require('./userdata.js');
 const Site = require('./models/site.js');
 const User = require('./models/user.js');
@@ -151,6 +151,12 @@ module.exports = function(passport){
 
     });
   });
+
+  router.get('/api/csv',(req,res) => {
+    console.log(getCSV); //does this show up idk
+    const output = getCSV.getCSV;
+    return output;
+  })
 
 
 
