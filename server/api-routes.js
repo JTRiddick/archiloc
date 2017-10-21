@@ -1,5 +1,5 @@
 const express = require('express');
-const getCSV = require('./csv.js');
+const importExport = require('./importexportcsv.js');
 const userdata = require('./userdata.js');
 const Site = require('./models/site.js');
 const User = require('./models/user.js');
@@ -153,8 +153,8 @@ module.exports = function(passport){
   });
 
   router.get('/api/csv',(req,res) => {
-    console.log(getCSV); //does this show up idk
-    const output = getCSV();
+    console.log(importExport.getCSV); //does this show up idk
+    const output = importExport.getCSV();
     console.log('csv get output: ',output);
     res.send(output);
   })

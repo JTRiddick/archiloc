@@ -1,15 +1,17 @@
 const express = require('express');
 const mongotocsv = require('mongo-to-csv');
 
-module.exports = function(passport){
+module.exports = {
   //api routes for exporting CSV should end up here
   // oh yeah maybe validate importing a csv too ha ha ha yeah
 
-  const getCSV = () => {
+  getCSV:function(cmd) {
+    var database;
     if(process.env.MONGODB_URI){
-      const database = 'heroku_6rlvg8wj';
+       database = 'heroku_6rlvg8wj';
     }else{
-      const database = 'arch-test';
+      //  database = 'arch-test';
+      database = 'owls-api'; //when did i do this?
     }
     let options = {
       //change database to local or heroku maybe with env or start command
@@ -20,22 +22,20 @@ module.exports = function(passport){
       fields: ['title','type','year','arch',
         'street','cityState','country','pic','description'],
       output: '/archilocatordata.csv',
-      allValidOptions: '-q'
+      // allValidOptions: '-q'
 
     }
-
-    getCSV = (cmd) => {
-      mongotocsv.export(options,function(err,success){
-        if (err){
-          return err
-        }
+    mongotocsv.export(options,function(err,success){
+      if (err){
+        return err
+      }else{
         return success;
-      })
-    }
+      }
+
+    })
+
 
 
   }
 
-
-  return getCSV;
 }
