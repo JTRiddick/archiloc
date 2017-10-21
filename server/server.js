@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-var dbLocation = process.env.MONGODB_URI || 'mongodb://localhost:28019/test';
+var dbLocation = process.env.MONGODB_URI || 'mongodb://localhost:28019/owls-api';
 mongoose.connect(dbLocation);
 
 var db = mongoose.connection;

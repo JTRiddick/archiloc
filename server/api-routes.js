@@ -1,24 +1,25 @@
-var express = require('express');
-var userdata = require('./userdata.js');
-var Site = require('./models/site.js');
-var User = require('./models/user.js');
-var flash = require('connect-flash');
+const express = require('express');
+const mongotocsv = require('mongo-to-csv');
+const userdata = require('./userdata.js');
+const Site = require('./models/site.js');
+const User = require('./models/user.js');
+const flash = require('connect-flash');
 
 
 module.exports = function(passport){
 
-  var router = express.Router();
+  const router = express.Router();
 
   // console.log('site is',Site);
 
   router.post('/api/sites',(req,res) => {
     console.log('request', req.data);
-    var cb = (err,data) => {
+    const cb = (err,data) => {
       console.log('i saved a site :', err, data);
       res.send(data);
     };
     console.log('req body', req.body);
-    var site = new Site();
+    let site = new Site();
     site.title = req.body.title;
     site.type = req.body.type;
     site.year = req.body.year;
@@ -34,7 +35,7 @@ module.exports = function(passport){
   //added new
 
   router.delete('/api/sites/:siteId/delete', (req,res) => {
-    var cb = (err,data) => {
+    const cb = (err,data) => {
       console.log('delete cb ,',err,data);
       res.send(data);
     }
@@ -44,7 +45,7 @@ module.exports = function(passport){
 
   router.put('/api/sites/:siteId/edit', (req,res) => {
     console.log('req params', req.params.siteId);
-    var cb = (err,data) => {
+    const cb = (err,data) => {
       console.log('i updated a site :',err,data);
       if (err){throw err};
       res.send(data);
@@ -65,7 +66,7 @@ module.exports = function(passport){
 
   router.put('/api/sites/:siteId/tag', (req,res) => {
 
-    var cb = (err,data) => {
+    const cb = (err,data) => {
       console.log('i tagged a site :',err,data);
       res.send(data);
     }
@@ -77,11 +78,11 @@ module.exports = function(passport){
 
   router.put('/api/sites/:siteId/coordinates', (req,res) => {
 
-    var latlng = [req.body['coordinate[]'][0],req.body['coordinate[]'][1]];
+    let latlng = [req.body['coordinate[]'][0],req.body['coordinate[]'][1]];
     latlng[0] = parseFloat(latlng[0]);
     latlng[1] = parseFloat(latlng[1]);
 
-    var cb = (err,data) => {
+    const cb = (err,data) => {
       console.log('i saved coordinates to a site a site :',err,data);
       res.send(data);
     }
@@ -93,7 +94,7 @@ module.exports = function(passport){
 
   router.get('/api/sites/:siteId',(req,res) => {
     console.log('find req params', req.params.siteId);
-    var cb = (err,data) => {
+    const cb = (err,data) => {
       console.log('i found something!');
       if (err){throw err};
       res.send(data);
@@ -107,7 +108,7 @@ module.exports = function(passport){
 
   router.get('/api/sites/:siteId/view-map',(req,res) => {
     //
-    var cb = (err,data) => {
+    const cb = (err,data) => {
       console.log('i forund something!');
       if (err) throw err;
       res.send(data);
@@ -124,7 +125,7 @@ module.exports = function(passport){
       //all of them?
     })
     .exec((err,data)=>{
-      var siteArray = [];
+      let siteArray = [];
       data.forEach((item) =>{
           site = {
             id:item._id,

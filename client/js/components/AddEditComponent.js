@@ -115,14 +115,12 @@ if (window.AL === undefined){window.AL = {}; }
       if(this.state){
         console.log('last added/edit', this.state.lastAdded);
         if(this.state.lastAdded){
-          review = <ReviewData info={this.state.lastAdded} />
-
+          review = <ReviewData info={this.state.lastAdded} />;
           console.log('returned data in state', this.state.lastAdded);
         }
         if(this.state.error){
-          review = <ReviewData warning={this.state.error,this.state.stat} />
+          review = <ReviewData warning={this.state.error,this.state.stat} />;
         }
-
       }
 
       //set placeholders and defaults if editing
